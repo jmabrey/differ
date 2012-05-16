@@ -16,7 +16,7 @@ To update the widgetsets
 
 	mvn vaadin:update-widgetset
 	
-To compile as needed and run on local Jetty server
+To compile as needed and run on a local Jetty server
 	
 	mvn jetty:run
 	
