@@ -20,6 +20,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.4</version>
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
@@ -36,7 +37,7 @@
         <version>${gwt.plugin.version}</version>
         <configuration>
           <!-- if you don't specify any modules, the plugin will find them -->
-          <!-- <modules> <module>cz.nkp.differ.gwt.ColorPickerWidgetSet</module> </modules> -->
+          <modules> <module>cz.nkp.differ.gwt.DifferWidgetSet</module> </modules>
           <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
           <!-- On Mac running Snow Leopard, add "-d32" -->
           <!-- This causes error messages (but build works) in phase "package": two processes would use the same debug 
