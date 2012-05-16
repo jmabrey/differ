@@ -14,12 +14,10 @@
             <param-name>application</param-name>
             <param-value>cz.nkp.differ.Application</param-value>
         </init-param>
-        <!--
 		<init-param>
             <param-name>widgetset</param-name>
-            <param-value>cz.nkp.differ.gwt.</param-value>
+            <param-value>cz.nkp.differ.gwt.DifferWidgetSet</param-value>
         </init-param>
-		-->
     </servlet>
     <servlet-mapping>
         <servlet-name>Differ Application Servlet</servlet-name>
