@@ -16,7 +16,7 @@
         </init-param>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Differ Application Servlet</servlet-name>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
