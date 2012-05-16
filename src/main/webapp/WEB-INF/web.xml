@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-    <display-name>Vaadin Web Application</display-name>
+    <display-name>Differ Web Application</display-name>
     <context-param>
         <description>Vaadin production mode</description>
         <param-name>productionMode</param-name>
@@ -12,15 +12,17 @@
         <init-param>
             <description>Vaadin application class to start</description>
             <param-name>application</param-name>
-            <param-value>cz.nkp.differ.ColorPickerApplication</param-value>
+            <param-value>cz.nkp.differ.Application</param-value>
         </init-param>
-        <init-param>
+        <!--
+		<init-param>
             <param-name>widgetset</param-name>
-            <param-value>cz.nkp.differ.gwt.ColorPickerWidgetSet</param-value>
+            <param-value>cz.nkp.differ.gwt.</param-value>
         </init-param>
+		-->
     </servlet>
     <servlet-mapping>
-        <servlet-name>Vaadin Application Servlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <servlet-name>Differ Application Servlet</servlet-name>
+        <url-pattern>/Differ</url-pattern>
     </servlet-mapping>
 </web-app>
