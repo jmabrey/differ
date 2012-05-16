@@ -6,7 +6,7 @@
   <artifactId>differ</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Vaadin Web Application</name>
+  <name>Differ Web Application</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,7 +78,6 @@
           <execution>
             <configuration>
               <!-- if you don't specify any modules, the plugin will find them -->
-              <!-- <modules> <module>cz.nkp.differ.gwt.ColorPickerWidgetSet</module> </modules> -->
             </configuration>
             <goals>
               <goal>update-widgetset</goal>
