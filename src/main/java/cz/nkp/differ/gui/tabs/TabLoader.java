@@ -2,8 +2,15 @@ package cz.nkp.differ.gui.tabs;
 
 import java.io.IOException;
 
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Runo;
+
+import cz.nkp.differ.util.GeneralHelperFunctions;
 
 /**
  * This is a static stub class that allows the rest of the application to access the package-local
@@ -30,8 +37,14 @@ public class TabLoader extends VerticalLayout{
 	 */
 	public TabLoader(String resource) throws IOException{
 		super();//Create this as a VerticalLayout
-		String content = new java.util.Scanner(TabLoader.class.getResourceAsStream(resource)).useDelimiter("\\A").next();
+		
+		GeneralHelperFunctions.errorIfContainsNull(resource);
+		CustomLayout custom = new CustomLayout(resource);
+		Panel tab = new Panel();
+		tab.setContent(custom);
+		tab.addStyleName(Runo.PANEL_LIGHT);
+		//String content = new java.util.Scanner(TabLoader.class.getResourceAsStream(resource)).useDelimiter("\\A").next();
 		//Special "\\A" reads the whole stream as a single token, easiest way to one line read a file/resource
-		this.addComponent(new Label(content,Label.CONTENT_XHTML));//Adds the XHTML content of the file to a label added to this VerticalLayout
+		this.addComponent(tab);//Adds the XHTML content of the file to a label added to this VerticalLayout
 	}
 }
