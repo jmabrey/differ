@@ -28,10 +28,7 @@ import cz.nkp.differ.util.GeneralHelperFunctions;
 public class TabLoader extends VerticalLayout{
 	
 	/**
-	 * Creates a TabLoader by accessing the file stored within the <code>cz.nkp.differ.gui.tabs</code> package in the form
-	 * of "*_tab.html", where * is replaced with the String argument passed to the Constructor. No file path sanitation is
-	 * needed, as the JVM shouldn't be able to execute anything from within the package, and it is not possible to break out of
-	 * the classloader's current inner path to access arbitrary server data.
+	 * Creates a TabLoader by accessing the file stored within the differ custom theme.
 	 * @param resource
 	 * @throws IOException if the file is not present or readable from the package.
 	 */
@@ -39,12 +36,15 @@ public class TabLoader extends VerticalLayout{
 		super();//Create this as a VerticalLayout
 		
 		GeneralHelperFunctions.errorIfContainsNull(resource);
+		
+		/*
+		 * Load the content of the static html into a custom layout which is placed in a panel and 
+		 * set as this layouts component
+		 */
 		CustomLayout custom = new CustomLayout(resource);
 		Panel tab = new Panel();
 		tab.setContent(custom);
-		tab.addStyleName(Runo.PANEL_LIGHT);
-		//String content = new java.util.Scanner(TabLoader.class.getResourceAsStream(resource)).useDelimiter("\\A").next();
-		//Special "\\A" reads the whole stream as a single token, easiest way to one line read a file/resource
-		this.addComponent(tab);//Adds the XHTML content of the file to a label added to this VerticalLayout
+		tab.addStyleName(Runo.PANEL_LIGHT);//No borders or styling on the panel
+		this.addComponent(tab);
 	}
 }
