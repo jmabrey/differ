@@ -2238,8 +2238,7 @@ public class regularExpressionLexer extends Lexer {
                         break;
                     case 12 : 
                         int LA6_49 = input.LA(1);
-
-                         
+                   
                         int index6_49 = input.index();
                         input.rewind();
                         s = -1;
