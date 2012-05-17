@@ -32,11 +32,11 @@ public class MainDifferWindow extends Window{
 		/*
 		 * Adding the static content tabs
 		 */
-		MainDifferWindow.createStaticContentTab("about_tab.html","About", menuTabs);
-		MainDifferWindow.createStaticContentTab("doc_tab.html","Documents", menuTabs);
-		MainDifferWindow.createStaticContentTab("faq_tab.html","FAQ", menuTabs);
-		MainDifferWindow.createStaticContentTab("tos_tab.html","TOS", menuTabs);
-		MainDifferWindow.createStaticContentTab("help_tab.html","Help", menuTabs);
+		MainDifferWindow.createStaticContentTab("about_tab","About", menuTabs);
+		MainDifferWindow.createStaticContentTab("doc_tab","Documents", menuTabs);
+		MainDifferWindow.createStaticContentTab("faq_tab","FAQ", menuTabs);
+		MainDifferWindow.createStaticContentTab("tos_tab","TOS", menuTabs);
+		MainDifferWindow.createStaticContentTab("help_tab","Help", menuTabs);
 		
 		/*
 		 * Add the actual completed UI components to the root
