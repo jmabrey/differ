@@ -7,7 +7,15 @@
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>Differ Web Application</name>
-
+  <description>Tool designed to help to identify, validate, and characterize selected still image file formats.</description>
+  <inceptionYear>2011</inceptionYear>
+  <url>http://differ.nkp.cz</url>
+  <organization>
+  	<name>The National Library of the Czech Republic</name>
+  	<url>http://www.nkp.cz</url>
+  </organization>
+  
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <vaadin.version>6.7.1</vaadin.version>
@@ -131,6 +139,23 @@
     								</versionRange>
     								<goals>
     									<goal>resources</goal>
+    								</goals>
+    							</pluginExecutionFilter>
+    							<action>
+    								<ignore></ignore>
+    							</action>
+    						</pluginExecution>
+    						<pluginExecution>
+    							<pluginExecutionFilter>
+    								<groupId>com.vaadin</groupId>
+    								<artifactId>
+    									vaadin-maven-plugin
+    								</artifactId>
+    								<versionRange>
+    									[1.0.2,)
+    								</versionRange>
+    								<goals>
+    									<goal>update-widgetset</goal>
     								</goals>
     							</pluginExecutionFilter>
     							<action>
@@ -296,5 +321,4 @@
 	
 	
   </dependencies>
-
 </project>
