@@ -194,7 +194,8 @@ public class AstParser {
                    && node.getText().length() == 1);
     }
 
-    private class ParseErrorException extends RuntimeException {
+    @SuppressWarnings("serial")
+	private class ParseErrorException extends RuntimeException {
         public ParseErrorException(String message) {
             super(message);
         }
