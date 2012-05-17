@@ -211,7 +211,90 @@
       <classifier>sources</classifier>
       <scope>provided</scope>
 	</dependency>
-    
+	
+	<!--Droid Dependencies-->
+  	<dependency>
+  		<groupId>xerces</groupId>
+  		<artifactId>xercesImpl</artifactId>
+  		<version>2.8.1</version>
+  		<type>jar</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-logging</groupId>
+  		<artifactId>commons-logging</artifactId>
+  		<version>1.1.1</version>
+  		<type>jar</type>
+  	</dependency>
+	<dependency>
+  		<groupId>org.apache.commons</groupId>
+  		<artifactId>commons-compress</artifactId>
+  		<version>1.4</version>
+  	</dependency>
+	<dependency>
+  		<groupId>commons-configuration</groupId>
+  		<artifactId>commons-configuration</artifactId>
+  		<version>1.8</version>
+  	</dependency>
+	<dependency>
+  		<groupId>org.apache.directory.studio</groupId>
+  		<artifactId>org.apache.commons.collections</artifactId>
+  		<version>3.2.1</version>
+  	</dependency>
+	<dependency>
+  		<groupId>joda-time</groupId>
+  		<artifactId>joda-time</artifactId>
+  		<version>2.1</version>
+  	</dependency>
+	<dependency>
+		<groupId>org.aspectj</groupId>
+		<artifactId>aspectjtools</artifactId>
+		<version>1.6.2</version>
+	</dependency>          
+	<dependency>
+  		<groupId>commons-codec</groupId>
+  		<artifactId>commons-codec</artifactId>
+  		<version>1.6</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-digester</groupId>
+  		<artifactId>commons-digester</artifactId>
+  		<version>2.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  		<version>2.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-lang</groupId>
+  		<artifactId>commons-lang</artifactId>
+  		<version>2.5</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-beanutils</groupId>
+  		<artifactId>commons-beanutils-core</artifactId>
+  		<version>1.8.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.antlr</groupId>
+  		<artifactId>antlr-runtime</artifactId>
+  		<version>3.2</version>
+  		<type>jar</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.antlr</groupId>
+  		<artifactId>antlr</artifactId>
+  		<version>3.2</version>
+  		<type>jar</type>
+  	</dependency>  
+	<dependency>
+  		<groupId>de.schlichtherle</groupId>
+  		<artifactId>truezip</artifactId>
+  		<version>6.8.4</version>
+  		<type>jar</type>
+  	</dependency>
+	
+	
   </dependencies>
 
 </project>
