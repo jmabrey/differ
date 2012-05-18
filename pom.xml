@@ -237,6 +237,19 @@
       <scope>provided</scope>
 	</dependency>
 	
+	<!-- Apache Jackrabbit dependencies -->
+	
+	<dependency> 
+		<groupId>javax.jcr</groupId> 
+		<artifactId>jcr</artifactId> 
+		<version>2.0</version> 
+	</dependency> 
+	<dependency>
+		<groupId>org.apache.jackrabbit</groupId>
+		<artifactId>jackrabbit-core</artifactId>
+		<version>2.4.1</version>
+	</dependency>
+	
 	<!--Droid Dependencies-->
   	<dependency>
   		<groupId>xerces</groupId>
