@@ -14,6 +14,7 @@ To compile the Differ application without packaging
 	
 To update the widgetsets without running a full compile
 
+	mvn -Pcompile-widgetset clean compile
 	mvn vaadin:update-widgetset
 	
 To compile as needed and run on a local Jetty server first run mvn:package and then run
