@@ -15,7 +15,6 @@
   	<url>http://www.nkp.cz</url>
   </organization>
   
-  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <vaadin.version>6.7.1</vaadin.version>
@@ -39,7 +38,7 @@
 			<configuration>
 			  <!-- if you don't specify any modules, the plugin will find them -->
 			  <modules> <module>cz.nkp.differ.gwt.DifferWidgetSet</module> </modules>
-			  <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+			  <webappDirectory>src//main/webapp/VAADIN/widgetsets</webappDirectory>
 			  <!-- On Mac running Snow Leopard, add "-d32" -->
 			  <!-- This causes error messages (but build works) in phase "package": two processes would use the same debug 
 				port -->
@@ -123,12 +122,22 @@
             <contextPath>/differ</contextPath>
             <baseResource implementation="org.mortbay.resource.ResourceCollection">
               <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
-              <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
-              <resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
+              <!-- <resources>src//main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
+              <resourcesAsCSV>src//main/webapp,${project.build.directory}/${project.build.finalName}</resourcesAsCSV>
             </baseResource>
           </webAppConfig>
         </configuration>
       </plugin>
+	  
+	  <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <outputDirectory>./bin/</outputDirectory>
+                </configuration>
+      </plugin>
+
     </plugins>
     <pluginManagement>
     	<plugins>
@@ -261,89 +270,5 @@
 		<artifactId>jackrabbit-core</artifactId>
 		<version>2.4.1</version>
 	</dependency>
-	
-	<!--Droid Dependencies-->
-  	<dependency>
-  		<groupId>xerces</groupId>
-  		<artifactId>xercesImpl</artifactId>
-  		<version>2.8.1</version>
-  		<type>jar</type>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-logging</groupId>
-  		<artifactId>commons-logging</artifactId>
-  		<version>1.1.1</version>
-  		<type>jar</type>
-  	</dependency>
-	<dependency>
-  		<groupId>org.apache.commons</groupId>
-  		<artifactId>commons-compress</artifactId>
-  		<version>1.4</version>
-  	</dependency>
-	<dependency>
-  		<groupId>commons-configuration</groupId>
-  		<artifactId>commons-configuration</artifactId>
-  		<version>1.8</version>
-  	</dependency>
-	<dependency>
-  		<groupId>org.apache.directory.studio</groupId>
-  		<artifactId>org.apache.commons.collections</artifactId>
-  		<version>3.2.1</version>
-  	</dependency>
-	<dependency>
-  		<groupId>joda-time</groupId>
-  		<artifactId>joda-time</artifactId>
-  		<version>2.1</version>
-  	</dependency>
-	<dependency>
-		<groupId>org.aspectj</groupId>
-		<artifactId>aspectjtools</artifactId>
-		<version>1.6.2</version>
-	</dependency>          
-	<dependency>
-  		<groupId>commons-codec</groupId>
-  		<artifactId>commons-codec</artifactId>
-  		<version>1.6</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-digester</groupId>
-  		<artifactId>commons-digester</artifactId>
-  		<version>2.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-io</groupId>
-  		<artifactId>commons-io</artifactId>
-  		<version>2.0</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-lang</groupId>
-  		<artifactId>commons-lang</artifactId>
-  		<version>2.5</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-beanutils</groupId>
-  		<artifactId>commons-beanutils-core</artifactId>
-  		<version>1.8.3</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.antlr</groupId>
-  		<artifactId>antlr-runtime</artifactId>
-  		<version>3.2</version>
-  		<type>jar</type>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.antlr</groupId>
-  		<artifactId>antlr</artifactId>
-  		<version>3.2</version>
-  		<type>jar</type>
-  	</dependency>  
-	<dependency>
-  		<groupId>de.schlichtherle</groupId>
-  		<artifactId>truezip</artifactId>
-  		<version>6.8.4</version>
-  		<type>jar</type>
-  	</dependency>
-	
-	
   </dependencies>
 </project>
