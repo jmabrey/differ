@@ -3,7 +3,7 @@
   <groupId>uk.gov.nationalarchives</groupId>
   <artifactId>droid</artifactId>
   <version>6.0.1</version>
-  <name>Digital Record Object Identification</name>
+  <name>DROID Plugin</name>
   <description>DROID (Digital Record Object Identification) is an automatic file format identification tool. It is the first in a planned series of tools developed by The National Archives under the umbrella of its PRONOM technical registry service.</description>
    
   <build>
@@ -103,4 +103,5 @@
   </dependencies>
   
   
+   <url>http://droid.sourceforge.net/</url>
 </project>
