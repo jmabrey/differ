@@ -4,6 +4,8 @@ Compilation Information:
  
  You must have Maven installed.
  
+The following commands should be run from the differ root directory:
+ 
 To package the Differ application into a .war simply instruct Maven to target the package goal
  
 	mvn package
@@ -28,3 +30,5 @@ To stop that server once it is started
 (Alternatively simply pass a terminator character to the console you initiated jetty:run on, such as Ctrl-C or Ctrl-Z)
 
 If you get bind errors when running the Jetty server make sure that no other application is bound to port 8080.
+
+To compile plugins run 'mvn package' from the differ-plugins directory.

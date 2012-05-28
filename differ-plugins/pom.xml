@@ -4,6 +4,11 @@
     <artifactId>differ-plugins</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
+	
+	<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
 	<modules>
 		<module>droid</module>
 	</modules>
