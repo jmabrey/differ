@@ -1,0 +1,14 @@
+To prepare a plugin project easily, add the following dependency to the plugins pom
+
+<!-- Differ Plugins Include -->
+<dependency>
+	<groupId>cz.nkp</groupId>
+	<artifactId>differ-plugins</artifactId>
+	<version>1.0</version>
+	<type>pom</type>
+</dependency>   
+
+and make sure that the pom is visible from your machine's maven repository. 
+
+
+This will give your project the minimally needed dependencies to implement the plugin service interface.
