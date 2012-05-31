@@ -22,7 +22,7 @@ To compile as needed and run on a local Jetty server first run mvn:package and t
 	
 	mvn jetty:run-war
 	
-If you run the Jetty server and want to update the server's wra file, run mvn package and it will autodetect and redeploy
+If you run the Jetty server and want to update the server's war file, run mvn package and it will autodetect and redeploy
 	
 To stop that server once it is started
 
