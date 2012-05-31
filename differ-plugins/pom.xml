@@ -2,8 +2,15 @@
     <modelVersion>4.0.0</modelVersion>
 	<groupId>cz.nkp</groupId>
     <artifactId>differ-plugins</artifactId>
-    <version>1.0</version>
+	<version>1.0</version>
     <packaging>pom</packaging>
+	
+	<!-- Differ Parent Include -->
+    <parent>
+		<groupId>cz.nkp</groupId>
+		<artifactId>differ</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>   
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

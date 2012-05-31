@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 
 import com.vaadin.ui.Component;
 
-public interface DifferPlugin {
+public interface DifferPluginInterface {
 	
 	/**
 	 * Takes a JCR Binary stream resource and processes it through the plugin implementation. The plugin 
