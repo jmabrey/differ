@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cz.nkp</groupId>
+  <artifactId>differ-plugins-root</artifactId>
+  <version>1.0</version>
+  <name>plugins-root</name>
+  <description>The root library for plugin interaction with the DIFFER</description>
+  
+  <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<vaadin.version>6.7.1</vaadin.version>
+		<gwt.version>2.3.0</gwt.version>
+		<gwt.plugin.version>2.2.0</gwt.plugin.version>
+  </properties>
+  
+  <parent>
+	<groupId>cz.nkp</groupId>
+    <artifactId>differ</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  
+  
+  <dependencies>
+	
+		<!-- Apache Felix -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.main</artifactId>
+			<version>4.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>4.0.2</version>
+		</dependency>
+	
+		<!-- Apache Logging -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+	
+		<!-- Vaadin dependencies-->
+		<dependency>
+		  <groupId>com.vaadin</groupId>
+		  <artifactId>vaadin</artifactId>
+		  <version>${vaadin.version}</version>
+		</dependency>
+		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
+		<dependency>
+		  <groupId>com.google.gwt</groupId>
+		  <artifactId>gwt-user</artifactId>
+		  <version>${gwt.version}</version>
+		  <scope>provided</scope>
+		</dependency>
+		<dependency>
+		  <groupId>javax.validation</groupId>
+		  <artifactId>validation-api</artifactId>
+		  <version>1.0.0.GA</version>
+		  <scope>provided</scope>
+		</dependency>
+		<dependency>
+		  <groupId>javax.validation</groupId>
+		  <artifactId>validation-api</artifactId>
+		  <version>1.0.0.GA</version>
+		  <classifier>sources</classifier>
+		  <scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

@@ -45,7 +45,12 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.0</version>
                 <configuration>
-                    <outputDirectory>./bin/</outputDirectory>
+					<archive>
+					 <manifestEntries>
+						<Class-Path>plugins/*</Class-Path>
+					 </manifestEntries>
+				    </archive>
+					<outputDirectory>./bin/</outputDirectory>
 					<warName>differ-app</warName>
                 </configuration>
       </plugin>
@@ -146,6 +151,18 @@
   <dependencies>
   
     <dependency>
+	  <groupId>org.codeartisans.thirdparties.swing</groupId>
+	  <artifactId>org-openide-util-lookup</artifactId>
+      <version>8.3.1</version>
+    </dependency>
+  
+	<dependency>
+	  <groupId>cz.nkp</groupId>
+      <artifactId>differ-plugins-root</artifactId>
+      <version>1.0</version>
+    </dependency>	
+  
+    <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>
       <version>${vaadin.version}</version>
@@ -171,17 +188,5 @@
       <scope>provided</scope>
 	</dependency>
 	
-	<!-- Apache Jackrabbit dependencies -->
-	
-	<dependency> 
-		<groupId>javax.jcr</groupId> 
-		<artifactId>jcr</artifactId> 
-		<version>2.0</version> 
-	</dependency> 
-	<dependency>
-		<groupId>org.apache.jackrabbit</groupId>
-		<artifactId>jackrabbit-core</artifactId>
-		<version>2.4.1</version>
-	</dependency>
   </dependencies>
 </project>
