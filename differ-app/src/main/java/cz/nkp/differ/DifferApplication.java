@@ -11,6 +11,7 @@ import com.vaadin.service.ApplicationContext;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import cz.nkp.differ.gui.windows.MainDifferWindow;
+import cz.nkp.differ.io.DatabaseManager;
 import cz.nkp.differ.plugins.PluginManager;
 
 /**
@@ -44,6 +45,9 @@ public class DifferApplication extends Application implements ApplicationContext
 		
 		//Add this as a listener to the context transaction event pump
 		context.addTransactionListener(this);
+		
+		DatabaseManager databaseManager = new DatabaseManager();
+		databaseManager.load();
 		
 		PluginManager pluginManager = new PluginManager();
 		pluginManager.load();//Attempts to find and dynamically load all plugins

@@ -35,10 +35,15 @@
             <contextPath>/differ</contextPath>
           </webAppConfig>
 		  <systemProperties>
+		  <!-- Classpath workarounds because maven modifies working directory-->
             <systemProperty>
               <name>cz.differ.plugins.directory</name>
-               <value>./bin/plugins/</value><!-- Classpath workaround because maven modifies working directory-->
+              <value>./bin/plugins/</value>
             </systemProperty>
+			<systemProperty>
+			  <name>derby.system.home</name>
+			  <value>./bin/</value>
+			</systemProperty>
          </systemProperties>
         </configuration>
       </plugin>
