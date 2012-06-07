@@ -6,6 +6,12 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Form;
 import org.apache.log4j.Logger;
 
+/**
+ * Interface exposed by Differ Plugin Implementations. The PluginManager searches for jars in the plugin folder,
+ * and any appropriately configured jar that identifies an implementation of this interface is considered a plugin.
+ * @author Joshua Mabrey
+ * Jun 7, 2012
+ */
 public interface DifferPluginInterface {
 	
 	/**
@@ -35,7 +41,7 @@ public interface DifferPluginInterface {
 	
 	/**
 	 * The callback implementation of the plugin settings dialog
-	 * @param o
+	 * @param i
 	 */
 	void setPluginSettingsFormItem(Item i);
 	

@@ -36,10 +36,9 @@
           </webAppConfig>
 		  <systemProperties>
             <systemProperty>
-              <name>java.class.path</name>
-               <value>/bin/plugins/*</value><!-- Classpath workaround because maven modifies working directory-->
+              <name>cz.differ.plugins.directory</name>
+               <value>./bin/plugins/</value><!-- Classpath workaround because maven modifies working directory-->
             </systemProperty>
-            ...
          </systemProperties>
         </configuration>
       </plugin>

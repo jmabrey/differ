@@ -10,7 +10,7 @@ public class DROIDPluginInterface implements DifferPluginInterface{
 
 	@Override
 	public String getName() {
-		return "Differ Plugin";
+		return "DROID Plugin";
 	}
 	
 	@Override

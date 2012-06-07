@@ -151,17 +151,18 @@
   <dependencies>
   
     <dependency>
-	  <groupId>org.codeartisans.thirdparties.swing</groupId>
-	  <artifactId>org-openide-util-lookup</artifactId>
-      <version>8.3.1</version>
-    </dependency>
-  
-	<dependency>
 	  <groupId>cz.nkp</groupId>
       <artifactId>differ-plugins-root</artifactId>
       <version>1.0</version>
     </dependency>	
   
+  
+    <dependency>
+		<groupId>org.apache.derby</groupId>
+		<artifactId>derby</artifactId>
+		<version>10.8.2.2</version>
+	</dependency>
+	
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>

@@ -1,10 +1,17 @@
 package cz.nkp.differ;
 
+import java.io.IOException;
+import java.util.Locale;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 import com.vaadin.Application;
 import com.vaadin.service.ApplicationContext;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import cz.nkp.differ.gui.windows.MainDifferWindow;
+import cz.nkp.differ.plugins.PluginManager;
 
 /**
  * The main Application instance, responsible for setting global settings, such as locale, theme, and the root window for the GUI.
@@ -21,14 +28,25 @@ public class DifferApplication extends Application implements ApplicationContext
 	 */
 	@Override
 	public void init() {
-		setTheme("differ");
+		//Setup Apache Log4j Configuration
+		BasicConfigurator.configure();
+		
+		setTheme(DIFFER_THEME_NAME);//Set to custom differ theme
+		LOGGER.debug("Loaded Vaadin theme: " + DIFFER_THEME_NAME);
+		
 		//Get Application Context
 		WebApplicationContext context = (WebApplicationContext) getContext();
+		
 		//Set Context Locale to Browser Locale
-		setLocale(context.getBrowser().getLocale());
+		Locale locale = context.getBrowser().getLocale();
+		setLocale(locale);
+		LOGGER.info("Session Locale: " + locale.getDisplayName());
 		
 		//Add this as a listener to the context transaction event pump
 		context.addTransactionListener(this);
+		
+		PluginManager pluginManager = new PluginManager();
+		pluginManager.load();//Attempts to find and dynamically load all plugins
 		
 		MainDifferWindow mainWindow = new MainDifferWindow();
 		setMainWindow(mainWindow);
@@ -61,4 +79,8 @@ public class DifferApplication extends Application implements ApplicationContext
 	 */
 	private static final ThreadLocal<DifferApplication> currentApplication = new ThreadLocal<DifferApplication>();
  
+	private static final String DIFFER_THEME_NAME = "differ";
+	
+	private static Logger LOGGER = Logger.getLogger(DifferApplication.class);
+	
 }
