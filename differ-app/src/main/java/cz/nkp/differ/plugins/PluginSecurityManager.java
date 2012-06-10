@@ -29,7 +29,7 @@ public class PluginSecurityManager extends SecurityManager{
 	  
       private static void throwLoggedException(){
     	  SecurityException se = new SecurityException("A plugin attempted an unauthorized action.");
-    	  LOGGER.error("PluginSecurityManager stopped unauthorized action.",se);
-    	  throw se;//TODO: should the exception terminate the server?
+    	  LOGGER.error("PluginSecurityManager stopped an unauthorized action.",se);
+    	  throw se;
       }   
 }

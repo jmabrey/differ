@@ -48,7 +48,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		try{
 			 child_response = child.getName();
 		}catch(SecurityException se){
-			LOGGER.info("GetName executed disallowed code",se);
+			LOGGER.warn("GetName executed disallowed code",se);
 		}
 		setSecurityMode(false);
 		return child_response;
@@ -60,7 +60,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		try{
 			child.addFiles(file);
 		}catch(SecurityException se){
-			LOGGER.info(child.getName() + " executed disallowed code",se);
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}		
 		setSecurityMode(false);		
 	}
@@ -72,7 +72,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		try{
 			child_response = child.getMinimumNumberOfImagesRequired();
 		}catch(SecurityException se){
-			LOGGER.info(child.getName() + " executed disallowed code",se);
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}
 		 
 		setSecurityMode(false);
@@ -86,7 +86,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		try{
 			child_response = child.getPluginSettingsFormBean();
 		}catch(SecurityException se){
-			LOGGER.info(child.getName() + " executed disallowed code",se);
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}
 		setSecurityMode(false);
 		return child_response;
@@ -98,7 +98,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		try{
 			child.setPluginSettingsFormItem(i);
 		}catch(SecurityException se){
-			LOGGER.info(child.getName() + " executed disallowed code",se);
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}
 		setSecurityMode(false);	
 	}
@@ -110,7 +110,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		try{
 			child_response = child.getErrorState();
 		}catch(SecurityException se){
-			LOGGER.info(child.getName() + " executed disallowed code",se);
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}
 		setSecurityMode(false);
 		return child_response;
@@ -122,7 +122,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		try{
 			child.setLogger(logger);
 		}catch(SecurityException se){
-			LOGGER.info(child.getName() + " executed disallowed code",se);
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}		
 		setSecurityMode(false);	
 	}
