@@ -16,6 +16,7 @@
    <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<jna.version>3.0.9</jna.version>
+	<differ.bin>../../bin</differ.bin>
    </properties>
    
   <build>
@@ -32,7 +33,7 @@
 			 </manifestEntries>
 			</archive>
 			
-			<outputDirectory>../../bin/plugins</outputDirectory>
+			<outputDirectory>${differ.bin}/plugins</outputDirectory>
 		  </configuration>
 		</plugin>
 		<plugin>
@@ -44,7 +45,7 @@
                                     <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>../../bin/plugins/libs/</outputDirectory>
+                                    <outputDirectory>${differ.bin}/plugins/libs/</outputDirectory>
 									<excludeScope>provided</excludeScope>
                                 </configuration>
                             </execution>

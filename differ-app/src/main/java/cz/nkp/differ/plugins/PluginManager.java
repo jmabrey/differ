@@ -1,7 +1,6 @@
 package cz.nkp.differ.plugins;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -12,6 +11,11 @@ import org.apache.log4j.Logger;
 
 import cz.nkp.differ.util.GeneralHelperFunctions;
 
+/**
+ * Finds loads and maintains plugins throughout the session lifecycle.
+ * @author Joshua Mabrey
+ * Jun 10, 2012
+ */
 public class PluginManager {
 	
 	public PluginManager(){
@@ -49,7 +53,7 @@ public class PluginManager {
 			return;
 		}
 		if(!f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".war") ){
-			LOGGER.error("Plugin " + f.getAbsolutePath() + " does not end with jar file extension! Loading Aborted");
+			LOGGER.error("Plugin " + f.getAbsolutePath() + " does not end with jar or war file extension! Loading Aborted");
 			return;
 		}
 		
@@ -103,7 +107,7 @@ public class PluginManager {
 			LOGGER.error("Plugin " + jarFile.getAbsolutePath() + " does not point to a valid interface implementation! Loading Aborted.");
 		}
 		else{
-			DifferPluginInterface pluginInterfaceImpl = (DifferPluginInterface)pluginInterfaceImplObject;
+			DifferPluginInterface pluginInterfaceImpl = new PluginSecurityWrapper((DifferPluginInterface)pluginInterfaceImplObject);
 			pluginClasses.add(pluginInterfaceImpl);
 			LOGGER.info(pluginInterfaceImpl.getName() + " loaded successfully from " +  jarFile.getAbsolutePath());
 		}

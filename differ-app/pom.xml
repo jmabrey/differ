@@ -26,6 +26,7 @@
     <vaadin.version>6.7.1</vaadin.version>
     <gwt.version>2.3.0</gwt.version>
     <gwt.plugin.version>2.2.0</gwt.plugin.version>
+	<differ.bin>./bin</differ.bin>
   </properties>
   
   <build>
@@ -50,7 +51,7 @@
 						<Class-Path>plugins/*</Class-Path>
 					 </manifestEntries>
 				    </archive>
-					<outputDirectory>./bin/</outputDirectory>
+					<outputDirectory>${differ.bin}</outputDirectory>
 					<warName>differ-app</warName>
                 </configuration>
       </plugin>

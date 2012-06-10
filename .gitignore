@@ -5,3 +5,4 @@ target/
 bin/
 *.war
 *.jar
+*.log
