@@ -44,13 +44,17 @@ public class PluginManager {
 	}
 	
 	private void addFile(File f){
-		if(!f.getName().toLowerCase().endsWith(".jar")){
-			LOGGER.error("Plugin " + f.getAbsolutePath() + "does not end with jar file extension! Loading Aborted");
+		if(f.isDirectory()){
+			LOGGER.error("Plugin " + f.getAbsolutePath() + " is a directory and cannot be loaded as a plugin. Loading Aborted");
+			return;
+		}
+		if(!f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".war") ){
+			LOGGER.error("Plugin " + f.getAbsolutePath() + " does not end with jar file extension! Loading Aborted");
 			return;
 		}
 		
 		try {
-			loadPluginClassFromJarFile(f);
+			loadPluginClassFromFile(f);
 		} catch (MalformedURLException e) {
 			LOGGER.error("Plugin " + f.getAbsolutePath() + " has failed loading! Loading Aborted.",e);
 		} catch (ClassNotFoundException e) {
@@ -78,7 +82,7 @@ public class PluginManager {
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException
 	 */
-	private void loadPluginClassFromJarFile(File jarFile) throws MalformedURLException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+	private void loadPluginClassFromFile(File jarFile) throws MalformedURLException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
 		GeneralHelperFunctions.errorIfContainsNull(jarFile);
 		URLClassLoader child = new URLClassLoader (new URL[]{jarFile.toURI().toURL()}, this.getClass().getClassLoader());
 		//TODO:comment this method

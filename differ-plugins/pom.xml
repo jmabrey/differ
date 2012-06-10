@@ -62,5 +62,6 @@
 	<modules>
 		<module>differ-plugins-root</module>
 		<module>droid</module>
+		<module>differ-JNA-plugin-example</module>
 	</modules>
 </project>
