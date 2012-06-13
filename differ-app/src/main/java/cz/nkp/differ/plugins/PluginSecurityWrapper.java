@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Form;
 
+import cz.nkp.differ.plugins.DifferPluginInterface;
+
 /**
  * Wrapper for server-side handles to DifferPluginInterface's allowing safer execution of untrusted plugin code
  * by using a PluginSecurityManager to enforce the security model.

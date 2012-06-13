@@ -52,7 +52,7 @@
 					 </manifestEntries>
 				    </archive>
 					<outputDirectory>${differ.bin}</outputDirectory>
-					<warName>differ-app</warName>
+					<warName>differ</warName>
                 </configuration>
       </plugin>
 
@@ -151,13 +151,12 @@
 
   <dependencies>
   
-    <dependency>
+  	<dependency>
 	  <groupId>cz.nkp</groupId>
       <artifactId>differ-plugins-root</artifactId>
       <version>1.0</version>
     </dependency>	
-  
-  
+    
     <dependency>
 		<groupId>org.apache.derby</groupId>
 		<artifactId>derby</artifactId>

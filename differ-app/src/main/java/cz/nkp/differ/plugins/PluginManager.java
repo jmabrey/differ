@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+
+import cz.nkp.differ.plugins.DifferPluginInterface;
 import cz.nkp.differ.util.GeneralHelperFunctions;
 
 /**
