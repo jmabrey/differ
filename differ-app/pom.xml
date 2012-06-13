@@ -190,5 +190,13 @@
       <scope>provided</scope>
 	</dependency>
 	
+	<!-- Bouncycastle provides JVM independent free hashing algorithm implementations -->
+	<dependency>
+		<groupId>bouncycastle</groupId>
+		<artifactId>bcprov-jdk15</artifactId>
+		<version>140</version>
+	</dependency>
+	
+	
   </dependencies>
 </project>

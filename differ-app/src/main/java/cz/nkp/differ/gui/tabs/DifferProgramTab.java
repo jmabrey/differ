@@ -13,7 +13,7 @@ import cz.nkp.differ.gui.components.HelpTooltip;
 import cz.nkp.differ.gui.components.LoginRegisterComponent;
 import cz.nkp.differ.gui.windows.ProfileCreationWindow;
 import cz.nkp.differ.gui.windows.UploadFilesWindow;
-import cz.nkp.differ.user.UserAuthenticator;
+import cz.nkp.differ.user.UserDataController;
 import cz.nkp.differ.util.GUIHelperFunctions;
 
 /**
@@ -31,9 +31,11 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 	
 	@Override
 	public void onLogin(LoginEvent event) {
-		if(UserAuthenticator.getInstance().validateUserInfo(event.getLoginParameter("username"), event.getLoginParameter("password"))){
+		if(UserDataController.getInstance().isValidUserInfo(event.getLoginParameter("username"), event.getLoginParameter("password"))){
 			setLoggedInView();	
-		}	
+		}else{
+			//TODO:tell user info entered is incorrect
+		}
 	}
 	
 	private void setLoggedInView(){

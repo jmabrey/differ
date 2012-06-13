@@ -4,11 +4,6 @@
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-
-
 import org.antlr.runtime.tree.*;
 
 public class regularExpressionParser extends Parser {

@@ -2,10 +2,7 @@ package cz.nkp.differ.gui.tabs;
 
 import java.io.IOException;
 
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Runo;
@@ -13,8 +10,8 @@ import com.vaadin.ui.themes.Runo;
 import cz.nkp.differ.util.GeneralHelperFunctions;
 
 /**
- * This is a static stub class that allows the rest of the application to access the package-local
- * html files stored inside the <code>cz.nkp.differ.gui.tabs</code> package. These html files hold
+ * This is a static stub class that allows the rest of the application to easily access the differ custom
+ * themes static html files in a location independent way. These html files hold
  * the html stubs that outline the <b>static</b> content of the applications static pages. Do note
  * that it is not possible to insert AJAX or other dynamic content into these files successfully
  * without modification. (Dynamic taken to mean any content the browser would have to break out of 
@@ -28,7 +25,7 @@ import cz.nkp.differ.util.GeneralHelperFunctions;
 public class TabLoader extends VerticalLayout{
 	
 	/**
-	 * Creates a TabLoader by accessing the file stored within the differ custom theme.
+	 * Creates a TabLoader by accessing the files stored within the differ custom theme.
 	 * @param resource
 	 * @throws IOException if the file is not present or readable from the package.
 	 */

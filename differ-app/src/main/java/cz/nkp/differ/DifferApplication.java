@@ -1,10 +1,11 @@
 package cz.nkp.differ;
 
-import java.io.IOException;
+import java.security.Security;
 import java.util.Locale;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.vaadin.Application;
 import com.vaadin.service.ApplicationContext;
@@ -13,6 +14,7 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import cz.nkp.differ.gui.windows.MainDifferWindow;
 import cz.nkp.differ.io.DatabaseManager;
 import cz.nkp.differ.plugins.PluginManager;
+import cz.nkp.differ.user.UserDataController;
 
 /**
  * The main Application instance, responsible for setting global settings, such as locale, theme, and the root window for the GUI.
@@ -32,6 +34,9 @@ public class DifferApplication extends Application implements ApplicationContext
 		//Setup Apache Log4j Configuration
 		BasicConfigurator.configure();
 		
+		//BouncyCastle Setup
+		Security.addProvider(new BouncyCastleProvider());
+		
 		setTheme(DIFFER_THEME_NAME);//Set to custom differ theme
 		LOGGER.debug("Loaded Vaadin theme: " + DIFFER_THEME_NAME);
 		
@@ -46,11 +51,9 @@ public class DifferApplication extends Application implements ApplicationContext
 		//Add this as a listener to the context transaction event pump
 		context.addTransactionListener(this);
 		
-		DatabaseManager databaseManager = new DatabaseManager();
-		databaseManager.load();
+		DatabaseManager.getInstance();//Attempts to load/create an embedded database
 		
-		PluginManager pluginManager = new PluginManager();
-		pluginManager.load();//Attempts to find and dynamically load all plugins
+		PluginManager.getInstance();//Attempts to find and dynamically load all plugins
 		
 		MainDifferWindow mainWindow = new MainDifferWindow();
 		setMainWindow(mainWindow);

@@ -468,7 +468,8 @@ public class FFSignatureFile extends SimpleElement {
      *
      * @param targetFile The binary file to be identified
      */
-    public final void runFileIdentification(final ByteReader targetFile) {
+    @SuppressWarnings("deprecation")
+	public final void runFileIdentification(final ByteReader targetFile) {
         List<InternalSignature> matchingSigs = intSigs.getMatchingSignatures(targetFile, maxBytesToScan);
         for (InternalSignature internalSig : matchingSigs) {
             targetFile.setPositiveIdent();

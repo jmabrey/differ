@@ -18,7 +18,19 @@ import cz.nkp.differ.util.GeneralHelperFunctions;
  */
 public class PluginManager {
 	
-	public PluginManager(){
+	private static Logger LOGGER = Logger.getLogger(PluginManager.class);
+	private static PluginManager _instance;
+	
+	private PluginManager(){
+	}
+	
+	public static final PluginManager getInstance(){
+		if(_instance == null){
+			_instance = new PluginManager();
+			_instance.load();
+		}
+		
+		return _instance;
 	}
 	
 	public DifferPluginInterface[] getPlugins(){
@@ -33,7 +45,7 @@ public class PluginManager {
 		
 		File f = new File(directory);
 		
-		LOGGER.debug("Attempting to load plugins from directory at: " + f.getAbsolutePath());
+		LOGGER.trace("Attempting to load plugins from directory at: " + f.getAbsolutePath());
 		
 		if(!f.canRead()){
 			LOGGER.error("Unable to read from plugin directory!");
@@ -42,18 +54,18 @@ public class PluginManager {
 		
 		for(File file : f.listFiles()){
 			if(!file.isDirectory())
-			LOGGER.info("Found potential plugin at: " + file.getAbsolutePath());
+			LOGGER.trace("Found potential plugin at: " + file.getAbsolutePath());
 			addFile(file);//add every file that isn't a directory in the plugins folder
 		}
 	}
 	
 	private void addFile(File f){
 		if(f.isDirectory()){
-			LOGGER.error("Plugin " + f.getAbsolutePath() + " is a directory and cannot be loaded as a plugin. Loading Aborted");
+			LOGGER.trace("Plugin " + f.getAbsolutePath() + " is a directory and cannot be loaded as a plugin. Loading Aborted");
 			return;
 		}
 		if(!f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".war") ){
-			LOGGER.error("Plugin " + f.getAbsolutePath() + " does not end with jar or war file extension! Loading Aborted");
+			LOGGER.warn("Plugin " + f.getAbsolutePath() + " does not end with jar or war file extension! Loading Aborted");
 			return;
 		}
 		
@@ -104,16 +116,13 @@ public class PluginManager {
 		}
 		
 		if(!DifferPluginInterface.class.isInstance(pluginInterfaceImplObject)){
-			LOGGER.error("Plugin " + jarFile.getAbsolutePath() + " does not point to a valid interface implementation! Loading Aborted.");
+			LOGGER.warn("Plugin " + jarFile.getAbsolutePath() + " does not point to a valid interface implementation! Loading Aborted.");
 		}
 		else{
 			DifferPluginInterface pluginInterfaceImpl = new PluginSecurityWrapper((DifferPluginInterface)pluginInterfaceImplObject);
 			pluginClasses.add(pluginInterfaceImpl);
-			LOGGER.info(pluginInterfaceImpl.getName() + " loaded successfully from " +  jarFile.getAbsolutePath());
+			LOGGER.trace(pluginInterfaceImpl.getName() + " loaded successfully from " +  jarFile.getAbsolutePath());
 		}
 		
-	}
-	
-	private static Logger LOGGER = Logger.getLogger(PluginManager.class);
-	
+	}	
 }
