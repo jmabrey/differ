@@ -40,7 +40,12 @@ public class UserDataController{
 	private static final String QUERY_USER_INFORMATION = "SELECT password_hash, password_salt FROM users WHERE username = ?";
 	private static final String ADD_USER_INFORMATION = "INSERT INTO USERS(username,password_hash,password_salt) VALUES(?,?,?)";
 	
-	
+	public static enum UserLoginResult{
+		DATABASE_ERROR,
+		USER_DOES_NOT_EXIST,
+		USER_LOGIN_FAIL,
+		USER_LOGIN_SUCCESS
+	}
 	
 	private PreparedStatement queryUserInformationStatement;
 	private PreparedStatement addUserStatement;
@@ -71,20 +76,18 @@ public class UserDataController{
 	 * @param userSuppliedPassword
 	 * @return
 	 */
-	public boolean isValidUserInfo(String username, String userSuppliedPassword){
-		
-		final boolean USER_INVALID = false;
-		final boolean USER_VALID = true;
+	public UserLoginResult isValidUserInfo(String username, String userSuppliedPassword){
 		
 		if(!DatabaseManager.isLoaded()){
 			LOGGER.error("Database is unloaded. User verification failed.");
-			return USER_INVALID;
+			return UserLoginResult.DATABASE_ERROR;
 		}//Database loaded
+		
 		
 		if(GeneralHelperFunctions.containsNull(queryUserInformationStatement)){
 			queryUserInformationStatement = DatabaseManager.getInstance().getStatement(QUERY_USER_INFORMATION);
 			if(GeneralHelperFunctions.containsNull(queryUserInformationStatement)){
-				return USER_INVALID;//We can't determine validity without a database query!
+				return UserLoginResult.DATABASE_ERROR;//We can't determine validity without a database query!
 			}
 		}//Prep statement loaded
 		
@@ -97,13 +100,13 @@ public class UserDataController{
 			hasResult = userInfo.next();
 		} catch (SQLException e) {
 			LOGGER.error("Error executing prepared statement against username: " + username + ". User verification failed.");
-			return USER_INVALID;
+			return UserLoginResult.DATABASE_ERROR;
 		}//ResultSet from query created		
 		
 		if(!hasResult){
 			//No results, meaning no users with that username. verify failed.
 			LOGGER.info("No users were found for username: " + username);
-			return USER_INVALID;
+			return UserLoginResult.USER_DOES_NOT_EXIST;
 		}
 		
 		//At least one result was returned! Excellent!
@@ -114,18 +117,23 @@ public class UserDataController{
 					
 		} catch (SQLException e) {
 			LOGGER.error("Unable to extract result String from password hash in ResultSet. User verification failed.");
-			return USER_INVALID;
+			return UserLoginResult.DATABASE_ERROR;
 		}
 		
 		if(Arrays.equals(new BigInteger(dbSuppliedPassword).toByteArray(),getHashedPassword(userSuppliedPassword.toCharArray(), dbSuppliedSalt.getBytes())) && dbSuppliedPassword != null){
 			//Valid user
-			return USER_VALID;
+			return UserLoginResult.USER_LOGIN_SUCCESS;
 		}
 		
-		return USER_INVALID;//If all else fails, end the method fail-safe			
+		return UserLoginResult.USER_LOGIN_FAIL;//If all else fails, end the method fail-safe			
 	}
 	
 	public void addUser(String username, String passwordPlaintext){
+		if(GeneralHelperFunctions.containsNull(username,passwordPlaintext)){
+			LOGGER.debug("Null username or password!");
+			return;
+		}
+		
 		if(GeneralHelperFunctions.containsNull(queryUserInformationStatement)){
 			addUserStatement = DatabaseManager.getInstance().getStatement(ADD_USER_INFORMATION);
 			if(GeneralHelperFunctions.containsNull(addUserStatement)){
@@ -136,7 +144,11 @@ public class UserDataController{
 		
 		String salt = getPasswordSalt();
 		String hashedPassword = new BigInteger(getHashedPassword(passwordPlaintext.toCharArray(),salt.getBytes())).toString();
-
+		
+		if(GeneralHelperFunctions.containsNull(salt,hashedPassword)){
+			LOGGER.debug("Null Salt or hashed password!");
+			return;
+		}
 		try {
 			addUserStatement.clearParameters();
 			addUserStatement.setString(1,username);

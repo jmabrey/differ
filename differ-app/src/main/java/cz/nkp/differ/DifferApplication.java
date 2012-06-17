@@ -1,5 +1,6 @@
 package cz.nkp.differ;
 
+import java.io.File;
 import java.security.Security;
 import java.util.Locale;
 
@@ -14,7 +15,6 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import cz.nkp.differ.gui.windows.MainDifferWindow;
 import cz.nkp.differ.io.DatabaseManager;
 import cz.nkp.differ.plugins.PluginManager;
-import cz.nkp.differ.user.UserDataController;
 
 /**
  * The main Application instance, responsible for setting global settings, such as locale, theme, and the root window for the GUI.
@@ -38,7 +38,7 @@ public class DifferApplication extends Application implements ApplicationContext
 		Security.addProvider(new BouncyCastleProvider());
 		
 		setTheme(DIFFER_THEME_NAME);//Set to custom differ theme
-		LOGGER.debug("Loaded Vaadin theme: " + DIFFER_THEME_NAME);
+		LOGGER.trace("Loaded Vaadin theme: " + DIFFER_THEME_NAME);
 		
 		//Get Application Context
 		WebApplicationContext context = (WebApplicationContext) getContext();
@@ -46,7 +46,7 @@ public class DifferApplication extends Application implements ApplicationContext
 		//Set Context Locale to Browser Locale
 		Locale locale = context.getBrowser().getLocale();
 		setLocale(locale);
-		LOGGER.info("Session Locale: " + locale.getDisplayName());
+		LOGGER.debug("Session Locale: " + locale.getDisplayName());
 		
 		//Add this as a listener to the context transaction event pump
 		context.addTransactionListener(this);
@@ -81,6 +81,30 @@ public class DifferApplication extends Application implements ApplicationContext
         return currentApplication.get ();
     }
 	
+    public static String getHomeDirectory(){
+    	if(differHome == null){
+    		differHome = System.getProperty("user.home");
+    		differHome += File.separatorChar + ".differ";
+    		LOGGER.trace("Differ Home Directory: " + differHome);
+    		
+    		//If the home directory doesnt exist create it
+    		File differHomeFile = new File(differHome);
+    		if(!differHomeFile.exists()){
+    			differHomeFile.mkdir();
+    		}
+    		
+    		//Same with the plugin subdirectory
+
+			File differHomeFilePluginDirectory = new File(differHomeFile,"plugins");
+			if(!differHomeFilePluginDirectory.exists()){
+				differHomeFilePluginDirectory.mkdir();
+    		}
+    	}
+    	return differHome;
+    }
+    
+    private static String differHome;
+    
 	/**
 	 * Global handle to allow any class to access the current Application by using the getter
 	 */

@@ -15,12 +15,12 @@ public class XYResolutionField extends CustomComponent{
 		Xres = new Select();
 		Xres.setNullSelectionAllowed(false);
 		Xres.setNewItemsAllowed(false);
-		Xres.setWidth(65f,UNITS_PIXELS);
+		Xres.setWidth(75,UNITS_PIXELS);
 		
 		Yres = new Select();
 		Yres.setNullSelectionAllowed(false);
 		Yres.setNewItemsAllowed(false);
-		Yres.setWidth(65f,UNITS_PIXELS);
+		Yres.setWidth(75,UNITS_PIXELS);
 				
 		setCompositionRoot(createXYResolutionField(name));
 	}
@@ -42,7 +42,7 @@ public class XYResolutionField extends CustomComponent{
 	private Layout createXYResolutionField(String name){
 		HorizontalLayout resolutionSelectorsLayout = new HorizontalLayout();
 		resolutionSelectorsLayout.addComponent(Xres);
-		resolutionSelectorsLayout.addComponent(new Label(" X "));
+		resolutionSelectorsLayout.addComponent(new Label("  X  "));
 		resolutionSelectorsLayout.addComponent(Yres);
 		resolutionSelectorsLayout.setSpacing(false);
 
@@ -53,6 +53,7 @@ public class XYResolutionField extends CustomComponent{
 		
 		return vertLayout;
 	}
+	
 	
 	public void setDefaultXValue(int value){
 		Xres.setValue(value);

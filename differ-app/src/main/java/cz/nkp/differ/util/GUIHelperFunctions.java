@@ -1,7 +1,11 @@
 package cz.nkp.differ.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -17,6 +21,7 @@ import cz.nkp.differ.DifferApplication;
  * Jun 12, 2012
  */
 public class GUIHelperFunctions {
+	static Logger LOGGER = Logger.getLogger(GUIHelperFunctions.class);
 	
 	/**
 	 * Returns a Button.ClickListener that will open the Window passed to the method whenever the component

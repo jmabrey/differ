@@ -5,11 +5,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 
+import cz.nkp.differ.DifferApplication;
 import cz.nkp.differ.plugins.DifferPluginInterface;
 import cz.nkp.differ.util.GeneralHelperFunctions;
 
@@ -23,7 +26,18 @@ public class PluginManager {
 	private static Logger LOGGER = Logger.getLogger(PluginManager.class);
 	private static PluginManager _instance;
 	
+
+	private static List<DifferPluginInterface> pluginClassesWrapped;
+	private static List<DifferPluginInterface> pluginClassesUnwrapped;
+	
+	private static Map<String,Integer> pluginVersionMap;
+	private static Map<String,DifferPluginInterface> pluginClassMap;
+	
 	private PluginManager(){
+		pluginClassesWrapped = new ArrayList<DifferPluginInterface>();
+		pluginClassesUnwrapped = new ArrayList<DifferPluginInterface>();
+		pluginVersionMap = new HashMap<String,Integer>();
+		pluginClassMap = new HashMap<String,DifferPluginInterface>();
 	}
 	
 	public static final PluginManager getInstance(){
@@ -36,29 +50,43 @@ public class PluginManager {
 	}
 	
 	public DifferPluginInterface[] getPlugins(){
-		return pluginClasses.toArray(new DifferPluginInterface[0]);
+		return pluginClassesWrapped.toArray(new DifferPluginInterface[0]);
 	}
 	
 	public void load(){
+		
+		List<File> pluginSearchLocations = new ArrayList<File>();
+		
 		String directory = System.getProperty("cz.differ.plugins.directory");
-		if(directory == null){
-			directory = "./plugins";//if the directory isn't manually specified then subdirectory plugins is default
+		if(directory != null){
+			//TODO:implement classpath style semicolon separation for multiple directories
+			pluginSearchLocations.add(new File(directory));
 		}
 		
-		File f = new File(directory);
+		File baseDirPlugins = new File(DifferApplication.getHomeDirectory() + File.separator + "plugins");
 		
-		LOGGER.trace("Attempting to load plugins from directory at: " + f.getAbsolutePath());
+		pluginSearchLocations.add(baseDirPlugins);
 		
-		if(!f.canRead()){
-			LOGGER.error("Unable to read from plugin directory!");
-			return;
+		for(File dir : pluginSearchLocations){
+			if(!dir.isDirectory()){
+				continue;//Only examine it if it is a directory
+			}
+			LOGGER.trace("Attempting to load plugins from directory at: " + dir.getAbsolutePath());
+			for(File file : dir.listFiles()){
+				if(!file.isDirectory() && file.canRead()){
+					LOGGER.trace("Found potential plugin at: " + file.getAbsolutePath());
+					addFile(file);//add every file that isn't a directory in the plugins folder
+				}
+			}
 		}
 		
-		for(File file : f.listFiles()){
-			if(!file.isDirectory())
-			LOGGER.trace("Found potential plugin at: " + file.getAbsolutePath());
-			addFile(file);//add every file that isn't a directory in the plugins folder
+		//Wrap all the plugins in security wrappers
+		for(Object o: pluginClassesUnwrapped){
+			pluginClassesWrapped.add((DifferPluginInterface) o);
 		}
+		//Now we get rid of the references to the insecure classes to prevent later access
+		pluginClassesUnwrapped.clear();
+		pluginClassesUnwrapped = null;
 	}
 	
 	private void addFile(File f){
@@ -88,7 +116,6 @@ public class PluginManager {
 		}
 	}
 	
-	private static List<DifferPluginInterface> pluginClasses = new ArrayList<DifferPluginInterface>();
 		
 	/**
 	 * Attempts to dynamically load a class from a plugin file. May fail for any number of reasons.
@@ -107,6 +134,30 @@ public class PluginManager {
 		Class<?> pluginDescriptorClass = Class.forName ("cz.nkp.differ.plugins.PluginDescriptor", true, child);
 
 		Class<?> pluginInterfaceImplementationClass = (Class<?>) pluginDescriptorClass.getField("PLUGIN_CLASS").get(new Object());
+		String pluginInterfaceImplementationClassName = pluginInterfaceImplementationClass.getName();
+		Integer pluginInterfaceImplementationVersion = (Integer) pluginDescriptorClass.getField("VERSION").get(new Object());
+		
+		//Version Check
+		if(pluginVersionMap.containsKey(pluginInterfaceImplementationClassName)){
+			int loadedVersion = pluginVersionMap.get(pluginInterfaceImplementationClassName);
+			if(loadedVersion < pluginInterfaceImplementationVersion){
+				
+				//we need to unload the current outdated version and load the new one
+				Object outdatedPlugin = pluginClassMap.get(pluginInterfaceImplementationClassName);
+				pluginClassesUnwrapped.remove(outdatedPlugin);
+				
+				//Updating the version number to the new version
+				pluginClassMap.remove(pluginInterfaceImplementationClassName);
+				pluginVersionMap.remove(pluginInterfaceImplementationClassName);
+				pluginVersionMap.put(pluginInterfaceImplementationClassName, pluginInterfaceImplementationVersion);
+			}
+			else{
+				LOGGER.info("Avoided loading outdated plugin from " + jarFile.getAbsolutePath());
+				return;//No need to load an outdated plugin
+			}
+		}else{//New plugin (by class name evaluation)
+			pluginVersionMap.put(pluginInterfaceImplementationClassName, pluginInterfaceImplementationVersion);
+		}
 		
 		Object pluginInterfaceImplObject;
 		
@@ -120,10 +171,9 @@ public class PluginManager {
 		if(!DifferPluginInterface.class.isInstance(pluginInterfaceImplObject)){
 			LOGGER.warn("Plugin " + jarFile.getAbsolutePath() + " does not point to a valid interface implementation! Loading Aborted.");
 		}
-		else{
-			DifferPluginInterface pluginInterfaceImpl = new PluginSecurityWrapper((DifferPluginInterface)pluginInterfaceImplObject);
-			pluginClasses.add(pluginInterfaceImpl);
-			LOGGER.trace(pluginInterfaceImpl.getName() + " loaded successfully from " +  jarFile.getAbsolutePath());
+		else{			
+			pluginClassesUnwrapped.add((DifferPluginInterface) pluginInterfaceImplObject);
+			pluginClassMap.put(pluginInterfaceImplementationClassName, (DifferPluginInterface) pluginInterfaceImplObject);
 		}
 		
 	}	

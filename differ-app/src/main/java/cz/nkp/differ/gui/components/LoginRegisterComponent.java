@@ -1,5 +1,6 @@
 package cz.nkp.differ.gui.components;
 
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Layout;
@@ -23,13 +24,15 @@ public class LoginRegisterComponent extends CustomComponent{
 	}
 	
 	private Layout createUserLoginForm(LoginListener parent){
-		VerticalLayout layout = new VerticalLayout();
+		AbsoluteLayout layout = new AbsoluteLayout();
+		layout.setWidth("400px");
+		layout.setHeight("200px");
 		LoginForm loginForm = new LoginForm();
 		loginForm.addListener(parent);
-		layout.addComponent(loginForm);
+		layout.addComponent(loginForm,"left: 0px; top: 0px;");
 		Button registerButton = new Button("Register");
 		registerButton.addListener(GUIHelperFunctions.createWindowOpenButtonListener(new RegisterUserWindow()));
-		layout.addComponent(registerButton);
+		layout.addComponent(registerButton,"left: 65px; top: 80px;");
 		return layout;
 	}
 }

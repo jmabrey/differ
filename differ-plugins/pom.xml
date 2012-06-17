@@ -56,7 +56,7 @@
 			<enabled>false</enabled>
 		  </releases>
 		</pluginRepository>
-	  </pluginRepositories>
+	</pluginRepositories>
 		
 	<modules>
 		<module>differ-plugins-root</module>

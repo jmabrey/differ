@@ -8,6 +8,7 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
+import cz.nkp.differ.DifferApplication;
 import cz.nkp.differ.util.GeneralHelperFunctions;
 
 public class DatabaseManager {
@@ -20,13 +21,18 @@ public class DatabaseManager {
 	private static final String DERBY_CONNECTION_CREATE_DB_URL = DERBY_CONNECTION_URL + "create=true";
 	private static final String DERBY_SHUTDOWN_URL = "jdbc:derby:differDB;shutdown=true";
 	
-	private static final String[] DATABASE_TABLE_NAMES = {"users"};//List of default table names
-	private static final String[] DATABASE_TABLE_PARAMETERS = {"username varchar(255) NOT NULL, password_hash varchar(255) NOT NULL,password_salt varchar(255) NOT NULL,UNIQUE(username)"};//List of default table rows in SQL format of (***) where *** is this variables content
+	private static final String[] DATABASE_TABLE_NAMES = {
+		"users"
+	};//List of default table names
+	private static final String[] DATABASE_TABLE_PARAMETERS = {
+		"username varchar(255) NOT NULL, password_hash varchar(255) NOT NULL,password_salt varchar(255) NOT NULL,UNIQUE(username)"
+	};//List of default table rows in SQL format of (***) where *** is this variables content
 	
 	static{//Checks to make sure the DATABASE_TABLE vars are same size, since they correspond
 		if(DATABASE_TABLE_NAMES.length != DATABASE_TABLE_PARAMETERS.length){
-			LOGGER.fatal("The DATABASE_TABLE_NAMES and DATABASE_TABLE_PAREMETERS arrays MUST be the same size!");
-			throw new RuntimeException("Invalid database manager variables have caused a fatal error.");
+			Exception e = new RuntimeException("Invalid database manager variables have caused a fatal error.");
+			LOGGER.fatal("The DATABASE_TABLE_NAMES and DATABASE_TABLE_PAREMETERS arrays MUST be the same size!",e);
+			System.exit(-1);//Very unusual, but the server cannot be allowed to run
 		}
 	}
 	
@@ -46,8 +52,14 @@ public class DatabaseManager {
 	
 	public void load(){
 		
+		//If the user hasn't preconfigured the derby location, set it to our default location
+		if(System.getProperty("derby.system.home") == null){
+			System.setProperty("derby.system.home", DifferApplication.getHomeDirectory());
+		}
+		
+		
 		try {
-			LOGGER.debug("Loading database.");
+			LOGGER.trace("Loading database.");
 			Class.forName(DERBY_EMBEDDED_DRIVER_NAME).newInstance();
 		} catch (InstantiationException e) {
 			LOGGER.error("Unable to get database driver by name: " + DERBY_EMBEDDED_DRIVER_NAME,e);
@@ -58,10 +70,10 @@ public class DatabaseManager {
 		}
 		
 		try {
-			LOGGER.debug("Connecting to database.");
+			LOGGER.trace("Connecting to database.");
 			dbConnection = DriverManager.getConnection(DERBY_CONNECTION_URL);
 		} catch (SQLException e) {
-			LOGGER.info("Unable to open database connection. Attempting to create database",e);
+			LOGGER.info("Unable to open database connection. Attempting to create database.");
 			dbConnection = createDefaultDatabase();
 		}
 	}
@@ -71,7 +83,14 @@ public class DatabaseManager {
 	 * @return
 	 */
 	public static final boolean isLoaded(){
-		return dbConnection != null;
+		if(dbConnection == null){
+			return false;
+		}
+		try {
+			return dbConnection.isValid(5);
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 	
 	private static final Connection createDefaultDatabase(){
@@ -79,8 +98,9 @@ public class DatabaseManager {
 		
 		try {
 			conn = DriverManager.getConnection(DERBY_CONNECTION_CREATE_DB_URL);
-		} catch (SQLException e1) {
-			LOGGER.fatal("Unable to load or create database! Now passing null Connection.");
+			LOGGER.info("Database created");
+		} catch (SQLException e) {
+			LOGGER.fatal("Unable to load or create database! Now passing null Connection.",e);
 			return null;
 		}
 
@@ -127,7 +147,7 @@ public class DatabaseManager {
 			return null;
 		}
 		try {
-			return dbConnection.prepareStatement(sql);
+				return dbConnection.prepareStatement(sql);
 		} catch (SQLException e) {
 			LOGGER.warn("Unable to create prepared statement. Statement sql: " + sql,e);
 			return null;

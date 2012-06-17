@@ -10,8 +10,9 @@
 	
 	    <vaadin.version>6.7.1</vaadin.version>
 		<gwt.version>2.3.0</gwt.version>
-		<gwt.plugin.version>2.2.0</gwt.plugin.version>
+		<derby.version>10.8.2.2</derby.version>
 		
+		<gwt.plugin.version>2.2.0</gwt.plugin.version>		
 		<maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
 		<maven.war.plugin.version>2.0</maven.war.plugin.version>
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version>
@@ -69,10 +70,10 @@
 				  <name>cz.differ.plugins.directory</name>
 				  <value>${differ.bin.dir}/plugins/</value>
 				</systemProperty>
-				<systemProperty>
+				<!--<systemProperty>
 				  <name>derby.system.home</name>
 				  <value>${differ.bin.dir}</value>
-				</systemProperty>
+				</systemProperty>-->
 			 </systemProperties>
 			</configuration>
 	    </plugin>
