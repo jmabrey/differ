@@ -24,7 +24,7 @@ public class UploadFilesWindow extends Window {
                 String msg = fileName + " uploaded. Saved to temp file "
                         + file.getAbsolutePath() + " (size " + length
                         + " bytes)";
-                DifferApplication.getInstance().getMainWindow().showNotification(msg);
+                DifferApplication.getCurrentApplication().getMainWindow().showNotification(msg);
             }
         };
 

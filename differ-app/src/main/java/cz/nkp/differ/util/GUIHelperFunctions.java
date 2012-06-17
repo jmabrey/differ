@@ -36,7 +36,7 @@ public class GUIHelperFunctions {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				GeneralHelperFunctions.errorIfContainsNull(target);
-				DifferApplication.getInstance().getMainWindow().addWindow(target);		
+				DifferApplication.getCurrentApplication().getMainWindow().addWindow(target);		
 			}
 		};
 	}

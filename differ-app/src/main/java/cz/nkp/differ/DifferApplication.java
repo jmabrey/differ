@@ -8,13 +8,12 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import com.vaadin.Application;
-import com.vaadin.service.ApplicationContext;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import cz.nkp.differ.gui.windows.MainDifferWindow;
 import cz.nkp.differ.io.DatabaseManager;
 import cz.nkp.differ.plugins.PluginManager;
+import eu.livotov.tpt.TPTApplication;
 
 /**
  * The main Application instance, responsible for setting global settings, such as locale, theme, and the root window for the GUI.
@@ -24,13 +23,13 @@ import cz.nkp.differ.plugins.PluginManager;
  */
 
 @SuppressWarnings("serial")
-public class DifferApplication extends Application implements ApplicationContext.TransactionListener{
+public class DifferApplication extends TPTApplication{
 	
 	/**
 	 * Called by the server to run the application and begin the session
 	 */
 	@Override
-	public void init() {
+	public void applicationInit() {
 		//Setup Apache Log4j Configuration
 		BasicConfigurator.configure();
 		
@@ -59,28 +58,12 @@ public class DifferApplication extends Application implements ApplicationContext
 		setMainWindow(mainWindow);
 	}
 	
-	public void transactionStart ( Application application, Object o )
-    {
-        if ( application == DifferApplication.this )
-        {
-            currentApplication.set ( this );
-        }
-    }
-
-    public void transactionEnd ( Application application, Object o )
-    {
-        if ( application == DifferApplication.this )
-        {
-            currentApplication.set ( null );
-            currentApplication.remove ();
-        }
-    }
-    
-    public static DifferApplication getInstance()
-    {
-        return currentApplication.get ();
-    }
-	
+	@Override
+	public void firstApplicationStartup() {
+		// TODO Auto-generated method stub
+		
+	}
+		
     public static String getHomeDirectory(){
     	if(differHome == null){
     		differHome = System.getProperty("user.home");

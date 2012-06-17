@@ -18,6 +18,8 @@ import cz.nkp.differ.user.UserDataController;
 import cz.nkp.differ.user.UserDataController.UserRegisterResult;
 import cz.nkp.differ.util.GUIHelperFunctions;
 
+import eu.livotov.tpt.gui.widgets.TPTCaptcha;
+
 @SuppressWarnings("serial")
 public class RegisterUserWindow extends Window implements ClickListener{
 	public RegisterUserWindow(){
@@ -44,8 +46,10 @@ public class RegisterUserWindow extends Window implements ClickListener{
 	}
 	
 	
-	TextField nameField;
+	TextField nameField,captchaField;
 	PasswordField passField;
+	TPTCaptcha captcha;
+	
 	/**
 	 * 
 	 * @return
@@ -60,11 +64,24 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		passField = new PasswordField("Password");
 		layout.addComponent(passField);
 		
+		captcha = new TPTCaptcha();
+		layout.addComponent(captcha);
+		
+		captchaField = new TextField("Verification");
+		layout.addComponent(captchaField);
+		
 		return layout;
 	}
 
 	@Override
 	public void buttonClick(ClickEvent event) {
+		
+		String captchaValue = (String) captchaField.getValue();
+		if(!captchaValue.equals(captcha.getCaptchaCode())){
+			DifferApplication.getCurrentApplication().getMainWindow().showNotification("Captcha Problem","<br/>You did not enter the correct captcha.",Window.Notification.TYPE_WARNING_MESSAGE);
+			return;
+		}
+		
 		String nameValue = (String) nameField.getValue();
 		String passValue = (String) passField.getValue();
 		if(nameValue != null && passValue != null){
@@ -74,11 +91,11 @@ public class RegisterUserWindow extends Window implements ClickListener{
 				this.close();
 				break;
 			case DATABASE_ERROR:
-				DifferApplication.getInstance().getMainWindow().showNotification("Database Error","<br/>The database encountered an error.",Window.Notification.TYPE_ERROR_MESSAGE);
+				DifferApplication.getCurrentApplication().getMainWindow().showNotification("Database Error","<br/>The database encountered an error.",Window.Notification.TYPE_ERROR_MESSAGE);
 				break;
 			case USER_ALREADY_EXISTS:
 			case USER_CREATION_FAIL:	
-				DifferApplication.getInstance().getMainWindow().showNotification("Registration Problem","<br/>The username or password is invalid.",Window.Notification.TYPE_WARNING_MESSAGE);
+				DifferApplication.getCurrentApplication().getMainWindow().showNotification("Registration Problem","<br/>The username or password is invalid.",Window.Notification.TYPE_WARNING_MESSAGE);
 				break;
 			default:
 				Logger.getLogger(DifferProgramTab.class).error("Need to add case to switch statement!");

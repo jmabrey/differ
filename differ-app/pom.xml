@@ -176,5 +176,12 @@
 	   <version>0.5.1</version>
 	</dependency>
 	
+	<!-- Captcha Widget -->
+	<dependency>
+	   <groupId>org.vaadin.addons</groupId>
+	   <artifactId>toolkit-productivity-tools</artifactId>
+	   <version>1.2.0</version>
+	</dependency>
+	
   </dependencies>
 </project>

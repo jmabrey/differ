@@ -43,11 +43,11 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 		}else{
 			switch(loginResult){
 				case DATABASE_ERROR:
-					DifferApplication.getInstance().getMainWindow().showNotification("Database Error","<br/>The database encountered an error.",Window.Notification.TYPE_ERROR_MESSAGE);
+					DifferApplication.getCurrentApplication().getMainWindow().showNotification("Database Error","<br/>The database encountered an error.",Window.Notification.TYPE_ERROR_MESSAGE);
 					break;
 				case USER_LOGIN_FAIL:
 				case USER_DOES_NOT_EXIST:	
-					DifferApplication.getInstance().getMainWindow().showNotification("Login Problem","<br/>The username or password is invalid.",Window.Notification.TYPE_WARNING_MESSAGE);
+					DifferApplication.getCurrentApplication().getMainWindow().showNotification("Login Problem","<br/>The username or password is invalid.",Window.Notification.TYPE_WARNING_MESSAGE);
 					break;
 				default:
 					Logger.getLogger(DifferProgramTab.class).error("Need to add case to switch statement!");
