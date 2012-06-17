@@ -51,6 +51,35 @@
 					<warName>differ</warName>
                 </configuration>
         </plugin>
+		
+		<!--Plugin to compile GWT widget set -->
+		<plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <version>${gwt-maven-plugin.version}</version>
+			<inherited>false</inherited>
+            <configuration>
+                <!-- if you don't specify any modules, the plugin will find them -->
+                <modules>
+                    <module>cz.nkp.differ.gwt.DifferWidgetSet</module>
+                </modules>
+                <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+                <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+                <runTarget>clean</runTarget>
+                <hostedWebapp>${differ.bin.dir}/differ.war</hostedWebapp>
+				<copyWebapp>true</copyWebapp>
+                <noServer>true</noServer>
+                <soyc>false</soyc>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>resources</goal>
+                        <goal>compile</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 
@@ -140,6 +169,12 @@
 		<version>140</version>
 	</dependency>
 	
+	<!-- Provides multi file upload widget -->
+	<dependency>
+	   <groupId>org.vaadin.addons</groupId>
+	   <artifactId>easyuploads</artifactId>
+	   <version>0.5.1</version>
+	</dependency>
 	
   </dependencies>
 </project>

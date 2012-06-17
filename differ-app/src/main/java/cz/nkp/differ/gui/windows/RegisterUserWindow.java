@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -29,14 +30,17 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		
 		addComponent(createRegisterUserWindow());
 		
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		
 		Button register = new Button("Register");
 		register.addListener(this);
-		addComponent(register);
+		buttonLayout.addComponent(register);
 		
 		Button close = new Button("Close");
 		close.addListener(GUIHelperFunctions.createWindowCloseButtonListener(this));
+		buttonLayout.addComponent(close);
 		
-        addComponent(close); 
+		addComponent(buttonLayout);
 	}
 	
 	

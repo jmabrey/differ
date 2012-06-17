@@ -27,15 +27,15 @@ public class ProfileCreationWindow extends Window{
 				
 		windowLayout.addComponent(createProfileCreationWindowForm());
 		
-		HorizontalLayout layout = new HorizontalLayout();
+		HorizontalLayout buttonLayout = new HorizontalLayout();
 		Button create = new Button("Create");
-		windowLayout.addComponent(create);
+		buttonLayout.addComponent(create);
 		
 		Button close = new Button("Close");
-		windowLayout.addComponent(close);
+		buttonLayout.addComponent(close);
 		close.addListener(GUIHelperFunctions.createWindowCloseButtonListener(this));
         
-		windowLayout.addComponent(layout);
+		windowLayout.addComponent(buttonLayout);
 		
         addComponent(windowLayout);
 	}

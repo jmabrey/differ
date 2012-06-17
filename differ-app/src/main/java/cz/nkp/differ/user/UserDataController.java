@@ -165,6 +165,7 @@ public class UserDataController{
 				//Duplicate unique key (aka duplicate username)
 				return UserRegisterResult.USER_ALREADY_EXISTS;
 			}
+			//We reach this it means the error is more deviant
 			LOGGER.error("Unable to create/execute the add user prepared statement.",e);
 			return UserRegisterResult.DATABASE_ERROR;
 		}		
