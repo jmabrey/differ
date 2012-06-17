@@ -1,5 +1,7 @@
 package cz.nkp.differ.gui.windows;
 
+import org.apache.log4j.Logger;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -9,7 +11,10 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import cz.nkp.differ.DifferApplication;
+import cz.nkp.differ.gui.tabs.DifferProgramTab;
 import cz.nkp.differ.user.UserDataController;
+import cz.nkp.differ.user.UserDataController.UserRegisterResult;
 import cz.nkp.differ.util.GUIHelperFunctions;
 
 @SuppressWarnings("serial")
@@ -59,7 +64,22 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		String nameValue = (String) nameField.getValue();
 		String passValue = (String) passField.getValue();
 		if(nameValue != null && passValue != null){
-			UserDataController.getInstance().addUser(nameValue, passValue);
+			UserRegisterResult registerResult = UserDataController.getInstance().addUser(nameValue, passValue);
+			switch(registerResult){
+			case USER_CREATION_SUCCESS:
+				this.close();
+				break;
+			case DATABASE_ERROR:
+				DifferApplication.getInstance().getMainWindow().showNotification("Database Error","<br/>The database encountered an error.",Window.Notification.TYPE_ERROR_MESSAGE);
+				break;
+			case USER_ALREADY_EXISTS:
+			case USER_CREATION_FAIL:	
+				DifferApplication.getInstance().getMainWindow().showNotification("Registration Problem","<br/>The username or password is invalid.",Window.Notification.TYPE_WARNING_MESSAGE);
+				break;
+			default:
+				Logger.getLogger(DifferProgramTab.class).error("Need to add case to switch statement!");
+				break;
+		}
 		}//TODO:password strength checking, closing dialog etc
 	}
 		

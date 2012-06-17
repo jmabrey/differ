@@ -1,6 +1,5 @@
 package cz.nkp.differ.user;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +31,6 @@ public class UserDataController{
 	private static UserDataController _instance = null;	
 	
 	private static final String PASSWORD_HASH_ALGORITHM_NAME = "SHA-1";
-	private static final int PASSWORD_HASH_ITERATIONS = 10000;
 		
 	/*
 	 * SQL Queries
@@ -45,7 +43,14 @@ public class UserDataController{
 		USER_DOES_NOT_EXIST,
 		USER_LOGIN_FAIL,
 		USER_LOGIN_SUCCESS
-	}
+	};
+	
+	public static enum UserRegisterResult{
+		DATABASE_ERROR,
+		USER_ALREADY_EXISTS,
+		USER_CREATION_SUCCESS,
+		USER_CREATION_FAIL
+	};
 	
 	private PreparedStatement queryUserInformationStatement;
 	private PreparedStatement addUserStatement;
@@ -128,16 +133,16 @@ public class UserDataController{
 		return UserLoginResult.USER_LOGIN_FAIL;//If all else fails, end the method fail-safe			
 	}
 	
-	public void addUser(String username, String passwordPlaintext){
+	public UserRegisterResult addUser(String username, String passwordPlaintext){
 		if(GeneralHelperFunctions.containsNull(username,passwordPlaintext)){
 			LOGGER.debug("Null username or password!");
-			return;
+			return UserRegisterResult.DATABASE_ERROR;
 		}
 		
 		if(GeneralHelperFunctions.containsNull(queryUserInformationStatement)){
 			addUserStatement = DatabaseManager.getInstance().getStatement(ADD_USER_INFORMATION);
 			if(GeneralHelperFunctions.containsNull(addUserStatement)){
-				return;
+				return UserRegisterResult.DATABASE_ERROR;
 			}
 		}//Prep statement loaded
 		
@@ -147,7 +152,7 @@ public class UserDataController{
 		
 		if(GeneralHelperFunctions.containsNull(salt,hashedPassword)){
 			LOGGER.debug("Null Salt or hashed password!");
-			return;
+			return UserRegisterResult.DATABASE_ERROR;
 		}
 		try {
 			addUserStatement.clearParameters();
@@ -156,8 +161,15 @@ public class UserDataController{
 			addUserStatement.setString(3, salt);
 			addUserStatement.executeUpdate();
 		} catch (SQLException e) {
+			if(e.getSQLState().equals("23505")){
+				//Duplicate unique key (aka duplicate username)
+				return UserRegisterResult.USER_ALREADY_EXISTS;
+			}
 			LOGGER.error("Unable to create/execute the add user prepared statement.",e);
+			return UserRegisterResult.DATABASE_ERROR;
 		}		
+		
+		return UserRegisterResult.USER_CREATION_SUCCESS;
 	}
 	
 	

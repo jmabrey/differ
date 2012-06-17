@@ -1,14 +1,12 @@
 package cz.nkp.differ.gui.tabs;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.LoginForm.LoginListener;
 import com.vaadin.ui.VerticalLayout;
@@ -21,7 +19,6 @@ import cz.nkp.differ.gui.components.LoginRegisterComponent;
 import cz.nkp.differ.gui.windows.ProfileCreationWindow;
 import cz.nkp.differ.gui.windows.UploadFilesWindow;
 import cz.nkp.differ.user.UserDataController;
-import cz.nkp.differ.user.UserDataController.UserLoginResult;
 import cz.nkp.differ.util.GUIHelperFunctions;
 
 /**
@@ -89,15 +86,7 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 		
 		logoutButton = new Button("Logout");
 		logoutButton.addStyleName(Runo.BUTTON_SMALL);
-		
-		final DifferProgramTab parent = this;
-		logoutButton.addListener(new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				parent.setLoggedOutView();				
-			}
-		});
+		logoutButton.addListener(logoutButtonClickListener);
 		
 		buttonPanelRoot.addComponent(uploadFilesButton);
 		buttonPanelRoot.addComponent(uploadButtonHelp);
@@ -107,6 +96,14 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 		
 		return buttonPanelRoot;
 	}
+	
+	private final Button.ClickListener logoutButtonClickListener = new Button.ClickListener() {
+		
+		@Override
+		public void buttonClick(ClickEvent event) {
+			setLoggedOutView();				
+		}
+	};
 	
 	CustomComponent loginPanel;
 	HelpTooltip uploadButtonHelp,createProfilesButtonHelp;
