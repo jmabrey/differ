@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cz.nkp</groupId>
   <artifactId>differ-plugins-root</artifactId>
   <version>1.0</version>
   <name>plugins-root</name>
@@ -8,9 +7,7 @@
   
   <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vaadin.version>6.7.1</vaadin.version>
-		<gwt.version>2.3.0</gwt.version>
-		<gwt.plugin.version>2.2.0</gwt.plugin.version>
+		<differ.bin.dir>../../bin</differ.bin.dir>
   </properties>
   
   <parent>
@@ -19,6 +16,20 @@
     <version>0.0.1-SNAPSHOT</version>
 	<relativePath>../../pom.xml</relativePath>
   </parent>
+  
+  <build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>${maven-compiler-plugin.version}</version>
+			<configuration>
+				<source>${java.source.version}</source>
+				<target>${java.source.target.version}</target>
+			</configuration>
+		</plugin>
+	</plugins>
+  </build>
   
   
   <dependencies>
@@ -32,64 +43,32 @@
 	
 		<!-- Vaadin dependencies-->
 		<dependency>
-		  <groupId>com.vaadin</groupId>
-		  <artifactId>vaadin</artifactId>
-		  <version>${vaadin.version}</version>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin</artifactId>
+			<version>${vaadin.version}</version>
 		</dependency>
+		
 		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
 		<dependency>
-		  <groupId>com.google.gwt</groupId>
-		  <artifactId>gwt-user</artifactId>
-		  <version>${gwt.version}</version>
-		  <scope>provided</scope>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
-		  <groupId>javax.validation</groupId>
-		  <artifactId>validation-api</artifactId>
-		  <version>1.0.0.GA</version>
-		  <scope>provided</scope>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
-		  <groupId>javax.validation</groupId>
-		  <artifactId>validation-api</artifactId>
-		  <version>1.0.0.GA</version>
-		  <classifier>sources</classifier>
-		  <scope>provided</scope>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+			<classifier>sources</classifier>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-  <build>
-  	<pluginManagement>
-  		<plugins>
-  			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-  			<plugin>
-  				<groupId>org.eclipse.m2e</groupId>
-  				<artifactId>lifecycle-mapping</artifactId>
-  				<version>1.0.0</version>
-  				<configuration>
-  					<lifecycleMappingMetadata>
-  						<pluginExecutions>
-  							<pluginExecution>
-  								<pluginExecutionFilter>
-  									<groupId>com.vaadin</groupId>
-  									<artifactId>
-  										vaadin-maven-plugin
-  									</artifactId>
-  									<versionRange>
-  										[1.0.2,)
-  									</versionRange>
-  									<goals>
-  										<goal>update-widgetset</goal>
-  									</goals>
-  								</pluginExecutionFilter>
-  								<action>
-  									<ignore></ignore>
-  								</action>
-  							</pluginExecution>
-  						</pluginExecutions>
-  					</lifecycleMappingMetadata>
-  				</configuration>
-  			</plugin>
-  		</plugins>
-  	</pluginManagement>
-  </build>
 </project>

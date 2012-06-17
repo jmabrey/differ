@@ -6,10 +6,22 @@
     <packaging>pom</packaging>
 		
 	<properties>
-		<vaadin.version>6.7.1</vaadin.version>
+		<differ.bin.dir>./bin</differ.bin.dir>
+	
+	    <vaadin.version>6.7.1</vaadin.version>
 		<gwt.version>2.3.0</gwt.version>
 		<gwt.plugin.version>2.2.0</gwt.plugin.version>
-		<differ.bin>./bin</differ.bin>
+		
+		<maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
+		<maven.war.plugin.version>2.0</maven.war.plugin.version>
+		<maven-clean-plugin.version>2.5</maven-clean-plugin.version>
+	    <vaadin-maven-plugin.version>1.0.2</vaadin-maven-plugin.version>
+		<gmaven-plugin.version>1.0</gmaven-plugin.version>
+		<jetty-maven-plugin.version>8.1.3.v20120416</jetty-maven-plugin.version>
+		<maven-compiler-plugin.version>2.4</maven-compiler-plugin.version>
+		
+		<java.source.version>1.6</java.source.version>
+		<java.source.target.version>1.6</java.source.target.version>
 	</properties>
 		
 	<modules>
@@ -18,52 +30,68 @@
 	</modules>
 	
 	<build>
-	<plugins>
-	<!-- A simple Jetty test server at http://localhost:8080/differ can be launched with the Maven goal jetty:run 
-        and stopped with jetty:stop -->
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-		<version>8.1.3.v20120416</version>
-        <configuration>
-          <stopPort>9966</stopPort>
-          <stopKey>differ</stopKey>
-          <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
-          <scanIntervalSeconds>15</scanIntervalSeconds>
-          <!-- make sure Jetty also finds the widgetset -->
-		  <war>${differ.bin}/differ.war</war>
-          <webAppConfig>
-            <contextPath>/differ</contextPath>
-          </webAppConfig>
-		  <systemProperties>
-		  <!-- Classpath workarounds because maven modifies working directory-->
-            <systemProperty>
-              <name>cz.differ.plugins.directory</name>
-              <value>${differ.bin}/plugins/</value>
-            </systemProperty>
-			<systemProperty>
-			  <name>derby.system.home</name>
-			  <value>${differ.bin}</value>
-			</systemProperty>
-         </systemProperties>
-        </configuration>
-      </plugin>
+	  <plugins>
+				
+		<!-- Tell the clean command to delete the bin directories contents -->
+		<plugin>
+			<artifactId>maven-clean-plugin</artifactId>
+			<version>${maven-clean-plugin.version}</version>
+			<configuration>
+			  <filesets>
+				<fileset>
+				  <directory>/bin/</directory>
+				  <includes>
+					<include>**/*</include>
+				  </includes>
+				</fileset>
+			  </filesets>
+			</configuration>
+		</plugin>
+	
+		<!-- A simple Jetty test server at http://localhost:8080/differ can be launched with the Maven goal jetty:run and stopped with jetty:stop -->
+	    <plugin>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-maven-plugin</artifactId>
+			<version>${jetty-maven-plugin.version}</version>
+			<configuration>
+			  <stopPort>9966</stopPort>
+			  <stopKey>differ</stopKey>
+			  <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
+			  <scanIntervalSeconds>15</scanIntervalSeconds>
+			  <!-- make sure Jetty also finds the widgetset -->
+			  <war>${differ.bin.dir}/differ.war</war>
+			  <webAppConfig>
+				<contextPath>/differ</contextPath>
+			  </webAppConfig>
+			  <systemProperties>
+			  <!-- Classpath workarounds because maven modifies working directory-->
+				<systemProperty>
+				  <name>cz.differ.plugins.directory</name>
+				  <value>${differ.bin.dir}/plugins/</value>
+				</systemProperty>
+				<systemProperty>
+				  <name>derby.system.home</name>
+				  <value>${differ.bin.dir}</value>
+				</systemProperty>
+			 </systemProperties>
+			</configuration>
+	    </plugin>
 	  
-	  <plugin>
-        <groupId>com.vaadin</groupId>
-        <artifactId>vaadin-maven-plugin</artifactId>
-        <version>1.0.2</version>
-        <executions>
-          <execution>
-            <configuration>
-              <!-- if you don't specify any modules, the plugin will find them -->
-            </configuration>
-            <goals>
-              <goal>update-widgetset</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+	    <plugin>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-maven-plugin</artifactId>
+			<version>${vaadin-maven-plugin.version}</version>
+			<executions>
+			  <execution>
+				<configuration>
+				  <!-- if you don't specify any modules, the plugin will find them -->
+				</configuration>
+				<goals>
+				  <goal>update-widgetset</goal>
+				</goals>
+			  </execution>
+			</executions>
+        </plugin>
 	  </plugins>
-	  </build>
+	</build>
 </project>

@@ -14,9 +14,8 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vaadin.version>6.7.1</vaadin.version>
-		<gwt.version>2.3.0</gwt.version>
-		<gwt.plugin.version>2.2.0</gwt.plugin.version>
+		<differ.bin.dir>../../bin</differ.bin.dir><!-- Do NOT use this in this actual pom. This value is only for children of this pom -->
+		<!-- The correct reference for this pom is ../bin/ -->
     </properties>
 	
 	<repositories>
@@ -58,7 +57,7 @@
 		  </releases>
 		</pluginRepository>
 	  </pluginRepositories>
-	
+		
 	<modules>
 		<module>differ-plugins-root</module>
 		<module>droid</module>

@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cz.nkp</groupId>
   <artifactId>differ-app</artifactId>
   <packaging>war</packaging>
   <name>Differ Web Application</name>
@@ -22,91 +21,37 @@
 	</parent>    
   
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <vaadin.version>6.7.1</vaadin.version>
-    <gwt.version>2.3.0</gwt.version>
-    <gwt.plugin.version>2.2.0</gwt.plugin.version>
-	<differ.bin>./bin</differ.bin>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<differ.bin.dir>./bin</differ.bin.dir>
   </properties>
   
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
+        <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>${maven-compiler-plugin.version}</version>
+			<configuration>
+				<source>${java.source.version}</source>
+				<target>${java.source.target.version}</target>
+			</configuration>
+        </plugin>
 	  
-      <plugin>
+        <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.0</version>
+                <version>${maven.war.plugin.version}</version>
                 <configuration>
 					<archive>
 					 <manifestEntries>
 						<Class-Path>plugins/*</Class-Path>
 					 </manifestEntries>
 				    </archive>
-					<outputDirectory>${differ.bin}</outputDirectory>
+					<outputDirectory>${differ.bin.dir}</outputDirectory>
 					<warName>differ</warName>
                 </configuration>
-      </plugin>
-
+        </plugin>
     </plugins>
-    <pluginManagement>
-    	<plugins>
-    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    		<plugin>
-    			<groupId>org.eclipse.m2e</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>1.0.0</version>
-    			<configuration>
-    				<lifecycleMappingMetadata>
-    					<pluginExecutions>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.codehaus.mojo</groupId>
-    								<artifactId>
-    									gwt-maven-plugin
-    								</artifactId>
-    								<versionRange>
-    									[2.2.0,)
-    								</versionRange>
-    								<goals>
-    									<goal>resources</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>com.vaadin</groupId>
-    								<artifactId>
-    									vaadin-maven-plugin
-    								</artifactId>
-    								<versionRange>
-    									[1.0.2,)
-    								</versionRange>
-    								<goals>
-    									<goal>update-widgetset</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    					</pluginExecutions>
-    				</lifecycleMappingMetadata>
-    			</configuration>
-    		</plugin>
-    	</plugins>
-    </pluginManagement>
   </build>
 
   <repositories>
