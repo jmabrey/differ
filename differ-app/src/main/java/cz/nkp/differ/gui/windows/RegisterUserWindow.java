@@ -13,6 +13,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import cz.nkp.differ.DifferApplication;
+import cz.nkp.differ.gui.components.CaptchaComponent;
 import cz.nkp.differ.gui.tabs.DifferProgramTab;
 import cz.nkp.differ.user.UserDataController;
 import cz.nkp.differ.user.UserDataController.UserRegisterResult;
@@ -48,7 +49,7 @@ public class RegisterUserWindow extends Window implements ClickListener{
 	
 	TextField nameField,captchaField;
 	PasswordField passField;
-	TPTCaptcha captcha;
+	CaptchaComponent captcha;
 	
 	/**
 	 * 
@@ -64,7 +65,7 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		passField = new PasswordField("Password");
 		layout.addComponent(passField);
 		
-		captcha = new TPTCaptcha();
+		captcha = new CaptchaComponent();
 		layout.addComponent(captcha);
 		
 		captchaField = new TextField("Verification");
