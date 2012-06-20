@@ -1,11 +1,15 @@
 package cz.nkp.differ.io;
 
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.derby.drda.NetworkServerControl;
 import org.apache.log4j.Logger;
 
 import cz.nkp.differ.DifferApplication;
@@ -15,11 +19,14 @@ public class DatabaseManager {
 	
 	private static Logger LOGGER = Logger.getLogger(DatabaseManager.class);
 	private static DatabaseManager _instance;
+	private static NetworkServerControl serverControl = null;
 	
-	private static final String DERBY_EMBEDDED_DRIVER_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
-	private static final String DERBY_CONNECTION_URL = "jdbc:derby:differDB;";
+	private static final String DERBY_EMBEDDED_DRIVER_NAME = "org.apache.derby.jdbc.ClientDriver";
+	private static final String DERBY_DATABASE_NAME = "differDB";
+	private static final String DERBY_CONNECTION_URL = "jdbc:derby://localhost:1527/"+ DERBY_DATABASE_NAME +";";
 	private static final String DERBY_CONNECTION_CREATE_DB_URL = DERBY_CONNECTION_URL + "create=true";
-	private static final String DERBY_SHUTDOWN_URL = "jdbc:derby:differDB;shutdown=true";
+	private static final String DERBY_SHUTDOWN_URL = DERBY_CONNECTION_URL + "shutdown=true";
+	private static final int DERBY_PORT = 1527;
 	
 	private static final String[] DATABASE_TABLE_NAMES = {
 		"users"
@@ -38,7 +45,15 @@ public class DatabaseManager {
 	
 	private static Connection dbConnection;
 	
-	private DatabaseManager(){}
+	private DatabaseManager(){
+		try {
+			serverControl = new NetworkServerControl(InetAddress.getByName("localhost"),DERBY_PORT);
+		} catch (UnknownHostException e) {
+			LOGGER.error("Unable to start derby network server!",e);
+		} catch (Exception e) {
+			LOGGER.error("Unable to start derby network server!",e);
+		}
+	}
 	
 	public static final DatabaseManager getInstance(){
 		if(_instance == null){
@@ -57,6 +72,7 @@ public class DatabaseManager {
 			System.setProperty("derby.system.home", DifferApplication.getHomeDirectory());
 		}
 		
+		startNetworkDatabase();
 		
 		try {
 			LOGGER.trace("Loading database.");
@@ -75,6 +91,24 @@ public class DatabaseManager {
 		} catch (SQLException e) {
 			LOGGER.info("Unable to open database connection. Attempting to create database.");
 			dbConnection = createDefaultDatabase();
+		}
+	}
+	
+	private static final void startNetworkDatabase(){
+		if(GeneralHelperFunctions.containsNull(serverControl)){
+			LOGGER.error("Unable to start network database because database handle is null");
+			return;
+		}
+		try {
+			serverControl.ping();
+			return;
+		} catch (Exception e) {
+			// This exception means the database isn't started
+			try {
+				serverControl.start(null);//started
+			} catch (Exception e1) {
+				LOGGER.error("Starting network database failed.",e);
+			}
 		}
 	}
 	

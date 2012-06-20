@@ -87,11 +87,6 @@ public class DifferApplication extends TPTApplication{
     }
     
     private static String differHome;
-    
-	/**
-	 * Global handle to allow any class to access the current Application by using the getter
-	 */
-	private static final ThreadLocal<DifferApplication> currentApplication = new ThreadLocal<DifferApplication>();
  
 	private static final String DIFFER_THEME_NAME = "differ";
 	

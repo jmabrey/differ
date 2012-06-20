@@ -2,6 +2,7 @@ package cz.nkp.differ.gui.windows;
 
 import org.apache.log4j.Logger;
 
+import com.vaadin.data.validator.NullValidator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -23,6 +24,9 @@ import eu.livotov.tpt.gui.widgets.TPTCaptcha;
 
 @SuppressWarnings("serial")
 public class RegisterUserWindow extends Window implements ClickListener{
+	
+	private static final int CAPTCHA_LENGTH = 5;
+	
 	public RegisterUserWindow(){
 		setCaption("Register User");
 		setModal(true);
@@ -60,15 +64,18 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		VerticalLayout layout = new VerticalLayout();
 		
 		nameField = new TextField("Username");
+		nameField.addValidator(new NullValidator("You must provide a username!",false));
 		layout.addComponent(nameField);
 		
 		passField = new PasswordField("Password");
+		passField.addValidator(new NullValidator("You must provide a password!",false));
 		layout.addComponent(passField);
 		
-		captcha = new CaptchaComponent();
+		captcha = new CaptchaComponent(CAPTCHA_LENGTH);
 		layout.addComponent(captcha);
 		
 		captchaField = new TextField("Verification");
+		captchaField.addValidator(new NullValidator("You must provide a response to the validation!",false));
 		layout.addComponent(captchaField);
 		
 		return layout;
@@ -90,19 +97,27 @@ public class RegisterUserWindow extends Window implements ClickListener{
 			switch(registerResult){
 			case USER_CREATION_SUCCESS:
 				this.close();
+				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
+				captchaField.setValue("");
 				break;
 			case DATABASE_ERROR:
 				DifferApplication.getCurrentApplication().getMainWindow().showNotification("Database Error","<br/>The database encountered an error.",Window.Notification.TYPE_ERROR_MESSAGE);
-				break;
+				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
+				captchaField.setValue("");
+				break;				
 			case USER_ALREADY_EXISTS:
 			case USER_CREATION_FAIL:	
 				DifferApplication.getCurrentApplication().getMainWindow().showNotification("Registration Problem","<br/>The username or password is invalid.",Window.Notification.TYPE_WARNING_MESSAGE);
+				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
+				captchaField.setValue("");
 				break;
 			default:
 				Logger.getLogger(DifferProgramTab.class).error("Need to add case to switch statement!");
+				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
+				captchaField.setValue("");
 				break;
 		}
-		}//TODO:password strength checking, closing dialog etc
+		}//TODO:password strength checking etc
 	}
 		
 }

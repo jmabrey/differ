@@ -130,9 +130,22 @@
       <artifactId>differ-plugins-root</artifactId>
       <version>1.0</version>
     </dependency>	
+    
     <dependency>
 		<groupId>org.apache.derby</groupId>
 		<artifactId>derby</artifactId>
+		<version>${derby.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.derby</groupId>
+		<artifactId>derbynet</artifactId>
+		<version>${derby.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.derby</groupId>
+		<artifactId>derbyclient</artifactId>
 		<version>${derby.version}</version>
 	</dependency>
 	
