@@ -7,11 +7,10 @@
 	<!-- Inherit DefaultWidgetSet -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" /> 
 	
-	<!-- Load Widgets only when needed, meaning short startup times, and 
-		 loading only loads what user actually uses
+	<!-- Widgets load when they specify
 	 -->
 	<generate-with
-		class="com.vaadin.terminal.gwt.widgetsetutils.LazyWidgetMapGenerator">
+		class="com.vaadin.terminal.gwt.widgetsetutils.WidgetMapGenerator">
 		<when-type-is class="com.vaadin.terminal.gwt.client.WidgetMap" />
 	</generate-with>
 	

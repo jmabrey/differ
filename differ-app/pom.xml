@@ -130,13 +130,7 @@
       <artifactId>differ-plugins-root</artifactId>
       <version>1.0</version>
     </dependency>	
-    
-    <dependency>
-		<groupId>org.apache.derby</groupId>
-		<artifactId>derby</artifactId>
-		<version>${derby.version}</version>
-	</dependency>
-	
+    	
 	<dependency>
 		<groupId>org.apache.derby</groupId>
 		<artifactId>derbynet</artifactId>
@@ -154,6 +148,7 @@
       <artifactId>vaadin</artifactId>
       <version>${vaadin.version}</version>
     </dependency>
+	
     <!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
     <dependency>
       <groupId>com.google.gwt</groupId>

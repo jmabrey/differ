@@ -5,6 +5,11 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 		
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
+	
+		
 	<properties>
 		<differ.bin.dir>./bin</differ.bin.dir>
 	
@@ -12,6 +17,7 @@
 		<gwt.version>2.4.0</gwt.version>
 		<derby.version>10.8.2.2</derby.version>
 		
+		<proguard-plugin.version>2.0.4</proguard-plugin.version>
 		<gwt-maven-plugin.version>2.4.0</gwt-maven-plugin.version>		
 		<maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
 		<maven.war.plugin.version>2.0</maven.war.plugin.version>
@@ -43,7 +49,7 @@
 			  <stopPort>9966</stopPort>
 			  <stopKey>differ</stopKey>
 			  <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
-			  <scanIntervalSeconds>15</scanIntervalSeconds>
+			  <scanIntervalSeconds>0</scanIntervalSeconds>
 			  <!-- make sure Jetty also finds the widgetset -->
 			  <war>${differ.bin.dir}/differ.war</war>
 			  <webAppConfig>

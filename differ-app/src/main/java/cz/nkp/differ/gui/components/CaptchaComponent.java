@@ -2,8 +2,14 @@ package cz.nkp.differ.gui.components;
 
 
 import com.vaadin.Application;
+import com.vaadin.data.validator.NullValidator;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+
 import eu.livotov.tpt.TPTApplication;
 import eu.livotov.tpt.util.RandomPasswordGenerator;
 
@@ -21,6 +27,43 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+
+public class CaptchaComponent extends CustomComponent{
+	private static final int CAPTCHA_LENGTH = 5;
+	
+	public CaptchaComponent(){
+		this.setCompositionRoot(createComponent());
+	}
+	
+	private Layout createComponent(){
+		VerticalLayout layout = new VerticalLayout();
+		embed = new CaptchaEmbeddedImage(CAPTCHA_LENGTH);
+		layout.addComponent(embed);
+		
+		captchaResponse = new TextField();
+		captchaResponse.addValidator(new NullValidator("You must provide a response to the validation!",false));
+		layout.addComponent(captchaResponse);
+		
+		return layout;
+	}
+	
+	public boolean passedValidation(){
+		if(embed.verifyCaptchaCode((String)captchaResponse.getValue())){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void reset(){
+		embed.generateCaptchaCode(CAPTCHA_LENGTH);
+		captchaResponse.setValue("");
+	}
+	
+	private CaptchaEmbeddedImage embed;
+	private TextField captchaResponse;
+}
+
 /**
  * This component represents a captcha image that can be displayed for some form validations. You
  * can provide your own text for captcha image or let the component to automatically generat it to
@@ -29,7 +72,7 @@ import javax.imageio.ImageIO;
  * This is an adapted form of the TPTCaptcha, which does not function correctly on 
  * non Oracle JVM.
  */
-public class CaptchaComponent extends Embedded implements StreamResource.StreamSource
+class CaptchaEmbeddedImage extends Embedded implements StreamResource.StreamSource
 {
 
     /**
@@ -45,7 +88,7 @@ public class CaptchaComponent extends Embedded implements StreamResource.StreamS
     /**
      * Creates a captcha component with random 5-letter code generated
      */
-    public CaptchaComponent ()
+    public CaptchaEmbeddedImage ()
     {
         super ();
         generateCaptchaCode ( 5 );
@@ -54,7 +97,7 @@ public class CaptchaComponent extends Embedded implements StreamResource.StreamS
     /**
      * Creates a captcha component with random n-letter code generated
      */
-    public CaptchaComponent (int length)
+    public CaptchaEmbeddedImage (int length)
     {
         super ();
         if(length < 6){
@@ -70,7 +113,7 @@ public class CaptchaComponent extends Embedded implements StreamResource.StreamS
      *
      * @param code captcha code
      */
-    public CaptchaComponent ( String code )
+    public CaptchaEmbeddedImage ( String code )
     {
         this ();
         setCaptchaCode ( code );
@@ -194,7 +237,7 @@ public class CaptchaComponent extends Embedded implements StreamResource.StreamS
         BufferedImage getCaptchaImage ( String text );
     }
 
-    private class DefaultCaptchaImageGenerator implements CaptchaComponent.CaptchaImageProvider
+    private class DefaultCaptchaImageGenerator implements CaptchaEmbeddedImage.CaptchaImageProvider
     {
 
         private static final int LETTER_WIDTH = 50;

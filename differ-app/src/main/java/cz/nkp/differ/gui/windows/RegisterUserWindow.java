@@ -25,7 +25,7 @@ import eu.livotov.tpt.gui.widgets.TPTCaptcha;
 @SuppressWarnings("serial")
 public class RegisterUserWindow extends Window implements ClickListener{
 	
-	private static final int CAPTCHA_LENGTH = 5;
+	
 	
 	public RegisterUserWindow(){
 		setCaption("Register User");
@@ -51,7 +51,7 @@ public class RegisterUserWindow extends Window implements ClickListener{
 	}
 	
 	
-	TextField nameField,captchaField;
+	TextField nameField;
 	PasswordField passField;
 	CaptchaComponent captcha;
 	
@@ -71,12 +71,8 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		passField.addValidator(new NullValidator("You must provide a password!",false));
 		layout.addComponent(passField);
 		
-		captcha = new CaptchaComponent(CAPTCHA_LENGTH);
+		captcha = new CaptchaComponent();
 		layout.addComponent(captcha);
-		
-		captchaField = new TextField("Verification");
-		captchaField.addValidator(new NullValidator("You must provide a response to the validation!",false));
-		layout.addComponent(captchaField);
 		
 		return layout;
 	}
@@ -84,8 +80,7 @@ public class RegisterUserWindow extends Window implements ClickListener{
 	@Override
 	public void buttonClick(ClickEvent event) {
 		
-		String captchaValue = (String) captchaField.getValue();
-		if(!captchaValue.equals(captcha.getCaptchaCode())){
+		if(!captcha.passedValidation()){
 			DifferApplication.getCurrentApplication().getMainWindow().showNotification("Captcha Problem","<br/>You did not enter the correct captcha.",Window.Notification.TYPE_WARNING_MESSAGE);
 			return;
 		}
@@ -97,24 +92,20 @@ public class RegisterUserWindow extends Window implements ClickListener{
 			switch(registerResult){
 			case USER_CREATION_SUCCESS:
 				this.close();
-				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
-				captchaField.setValue("");
+				captcha.reset();
 				break;
 			case DATABASE_ERROR:
 				DifferApplication.getCurrentApplication().getMainWindow().showNotification("Database Error","<br/>The database encountered an error.",Window.Notification.TYPE_ERROR_MESSAGE);
-				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
-				captchaField.setValue("");
+				captcha.reset();
 				break;				
 			case USER_ALREADY_EXISTS:
 			case USER_CREATION_FAIL:	
 				DifferApplication.getCurrentApplication().getMainWindow().showNotification("Registration Problem","<br/>The username or password is invalid.",Window.Notification.TYPE_WARNING_MESSAGE);
-				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
-				captchaField.setValue("");
+				captcha.reset();
 				break;
 			default:
 				Logger.getLogger(DifferProgramTab.class).error("Need to add case to switch statement!");
-				captcha.generateCaptchaCode(CAPTCHA_LENGTH);
-				captchaField.setValue("");
+				captcha.reset();
 				break;
 		}
 		}//TODO:password strength checking etc
