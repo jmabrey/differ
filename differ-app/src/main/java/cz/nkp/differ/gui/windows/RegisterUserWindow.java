@@ -88,7 +88,7 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		String nameValue = (String) nameField.getValue();
 		String passValue = (String) passField.getValue();
 		if(nameValue != null && passValue != null){
-			UserRegisterResult registerResult = UserDataController.getInstance().addUser(nameValue, passValue);
+			UserRegisterResult registerResult = UserDataController.getInstance().registerUser(nameValue, passValue);
 			switch(registerResult){
 			case USER_CREATION_SUCCESS:
 				this.close();

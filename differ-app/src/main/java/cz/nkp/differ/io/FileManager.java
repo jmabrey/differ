@@ -3,10 +3,12 @@ package cz.nkp.differ.io;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import cz.nkp.differ.DifferApplication;
+import cz.nkp.differ.user.UserDataController;
 import cz.nkp.differ.util.GeneralMacros;
 
 public class FileManager {
@@ -82,15 +84,13 @@ public class FileManager {
 	}
 	
 	private static final File getUserDirectory(String username){
-		String usernameStripped = username.replaceAll("[^A-Za-z0-9]", "");//strip all non alphanumeric chars
-		
-		if(!usernameStripped.equals(username)){
-			//We found invalid username characters
-			LOGGER.warn("An invalid username was found: " + username);
-			return null;//Not safe to use the username because of stripped username collisions (eg. user$$% = user$$$)
+		if(GeneralMacros.containsNull(username)){
+			return null;
 		}
 		
-		File userDir = new File(getUsersDirectory(),username);
+		String usernameHash = DigestUtils.md5Hex(username);
+		
+		File userDir = new File(getUsersDirectory(),usernameHash);
 		
 		if(!userDir.exists()){
 			userDir.mkdir();

@@ -1,6 +1,5 @@
 package cz.nkp.differ.io;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Connection;
@@ -23,14 +22,15 @@ public class DatabaseManager {
 	
 	private static final String DERBY_EMBEDDED_DRIVER_NAME = "org.apache.derby.jdbc.ClientDriver";
 	private static final String DERBY_DATABASE_NAME = "differDB";
-	private static final String DERBY_CONNECTION_URL = "jdbc:derby://localhost:1527/"+ DERBY_DATABASE_NAME +";";
+	private static final int DERBY_PORT = 1527;
+	private static final String DERBY_CONNECTION_URL = "jdbc:derby://localhost:" + DERBY_PORT + "/"+ DERBY_DATABASE_NAME +";";
 	private static final String DERBY_CONNECTION_CREATE_DB_URL = DERBY_CONNECTION_URL + "create=true";
 	private static final String DERBY_SHUTDOWN_URL = DERBY_CONNECTION_URL + "shutdown=true";
-	private static final int DERBY_PORT = 1527;
 	
 	private static final String[] DATABASE_TABLE_NAMES = {
 		"users"
 	};//List of default table names
+	
 	private static final String[] DATABASE_TABLE_PARAMETERS = {
 		"username varchar(255) NOT NULL, password_hash varchar(255) NOT NULL,password_salt varchar(255) NOT NULL,UNIQUE(username)"
 	};//List of default table rows in SQL format of (***) where *** is this variables content
@@ -64,14 +64,20 @@ public class DatabaseManager {
 		return _instance;
 	}
 	
+	/**
+	 * Syntatic Sugar
+	 */
+	public static final void loadDatabase(){
+		getInstance();
+	}
 	
-	public void load(){
+	
+	private void load(){
 		
 		//If the user hasn't preconfigured the derby location, set it to our default location
 		if(System.getProperty("derby.system.home") == null){
 			System.setProperty("derby.system.home", DifferApplication.getHomeDirectory().getAbsolutePath());
-		}
-		
+		}	
 		startNetworkDatabase();
 		
 		try {
@@ -126,7 +132,7 @@ public class DatabaseManager {
 			return false;
 		}
 	}
-	
+		
 	private static final Connection createDefaultDatabase(){
 		Connection conn;
 		
@@ -139,7 +145,7 @@ public class DatabaseManager {
 		}
 
 		createDefaultDatabaseDefaultTables(conn);
-
+		
 		return conn;
 		
 	}
@@ -162,7 +168,7 @@ public class DatabaseManager {
 	}
 	
 	public void shutdown(){
-		if(dbConnection == null){
+		if(!isLoaded()){
 			LOGGER.warn("Ignored shutdown request on database because it is not loaded.");
 			return;
 		}

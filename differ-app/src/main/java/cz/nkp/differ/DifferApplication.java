@@ -45,24 +45,20 @@ public class DifferApplication extends TPTApplication{
 		//Set Context Locale to Browser Locale
 		Locale locale = context.getBrowser().getLocale();
 		setLocale(locale);
-		LOGGER.debug("Session Locale: " + locale.getDisplayName());
+		LOGGER.trace("Session Locale: " + locale.getDisplayName());
 		
 		//Add this as a listener to the context transaction event pump
 		context.addTransactionListener(this);
 		
-		DatabaseManager.getInstance();//Attempts to load/create an embedded database
-		
-		PluginManager.getInstance();//Attempts to find and dynamically load all plugins
+		PluginManager.loadPlugins();//Attempts to find and dynamically load all plugins
+		DatabaseManager.loadDatabase();
 		
 		MainDifferWindow mainWindow = new MainDifferWindow();
 		setMainWindow(mainWindow);
 	}
 	
 	@Override
-	public void firstApplicationStartup() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void firstApplicationStartup() {}
 		
     public static File getHomeDirectory(){
     	if(differHome == null){
@@ -77,11 +73,17 @@ public class DifferApplication extends TPTApplication{
     		}
     		
     		//Same with the plugin subdirectory
-
 			File differHomeFilePluginDirectory = new File(differHomeFile,"plugins");
 			if(!differHomeFilePluginDirectory.exists()){
 				differHomeFilePluginDirectory.mkdir();
     		}
+			
+			//Same with users subdirectory
+			File differHomeFileUsersDirectory = new File(differHomeFile,"users");
+			if(!differHomeFileUsersDirectory.exists()){
+				differHomeFileUsersDirectory.mkdir();
+    		}
+			
     	}
     	
     	File homeDir = new File(differHome);

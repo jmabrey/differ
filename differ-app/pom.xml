@@ -143,10 +143,18 @@
 		<version>${derby.version}</version>
 	</dependency>
 	
+	
+	
 	<dependency>
 		<groupId>commons-io</groupId>
 		<artifactId>commons-io</artifactId>
 		<version>${apache.commons-io.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<version>${apache.commons-codec.version}</version>
 	</dependency>
             
 	

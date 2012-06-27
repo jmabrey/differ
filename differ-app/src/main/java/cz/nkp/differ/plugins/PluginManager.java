@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +12,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-
 import cz.nkp.differ.DifferApplication;
-import cz.nkp.differ.plugins.DifferPluginInterface;
 import cz.nkp.differ.util.GeneralMacros;
 
 /**
@@ -46,10 +43,17 @@ public class PluginManager {
 	public static final PluginManager getInstance(){
 		if(_instance == null){
 			_instance = new PluginManager();
-			_instance.load();
+		 	_instance.load();
 		}
 		
 		return _instance;
+	}
+	
+	/**
+	 * Syntatic sugar for loading plugins
+	 */	
+	public static final void loadPlugins(){
+		getInstance();
 	}
 	
 	public DifferPluginInterface[] getPlugins(){

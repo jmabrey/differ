@@ -1,6 +1,5 @@
 package cz.nkp.differ.user;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -14,6 +13,8 @@ import java.util.Arrays;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
 import cz.nkp.differ.io.DatabaseManager;
@@ -113,23 +114,24 @@ public class UserDataController{
 		
 		if(!hasResult){
 			//No results, meaning no users with that username. verify failed.
-			LOGGER.info("No users were found for username: " + username);
+			LOGGER.trace("No users were found for username: " + username);
 			return UserLoginResult.USER_DOES_NOT_EXIST;
 		}
 		
 		//At least one result was returned! Excellent!
-		String dbSuppliedSalt, dbSuppliedPassword;
+		String dbSuppliedSalt, dbSuppliedPasswordHash;
 		try {
-			dbSuppliedPassword = userInfo.getString(1);//Col 1 is password_hash
+			dbSuppliedPasswordHash = userInfo.getString(1);//Col 1 is password_hash
 			dbSuppliedSalt = userInfo.getString(2);//Col 2 is password_salt		
 		} catch (SQLException e) {
 			LOGGER.error("Unable to extract result String from password hash in ResultSet. User verification failed.");
 			return UserLoginResult.DATABASE_ERROR;
 		}
 		
-		if(Arrays.equals(new BigInteger(dbSuppliedPassword).toByteArray(),getHashedPassword(userSuppliedPassword.toCharArray(), dbSuppliedSalt.getBytes())) && dbSuppliedPassword != null){
-			//Valid user
-			
+		String userSuppliedPasswordHash = getHashedPassword(userSuppliedPassword.toCharArray(), dbSuppliedSalt.getBytes());
+		
+		if(dbSuppliedPasswordHash.equals(userSuppliedPasswordHash)){
+			//Valid user			
 			currentUser = username;
 			return UserLoginResult.USER_LOGIN_SUCCESS;
 		}
@@ -141,13 +143,13 @@ public class UserDataController{
 		return currentUser;
 	}
 	
-	public UserRegisterResult addUser(String username, String passwordPlaintext){
+	public UserRegisterResult registerUser(String username, String passwordPlaintext){
 		if(GeneralMacros.containsNull(username,passwordPlaintext)){
 			LOGGER.debug("Null username or password!");
 			return UserRegisterResult.DATABASE_ERROR;
 		}
 		
-		if(GeneralMacros.containsNull(queryUserInformationStatement)){
+		if(GeneralMacros.containsNull(addUserStatement)){
 			addUserStatement = DatabaseManager.getInstance().getStatement(ADD_USER_INFORMATION);
 			if(GeneralMacros.containsNull(addUserStatement)){
 				return UserRegisterResult.DATABASE_ERROR;
@@ -156,7 +158,7 @@ public class UserDataController{
 		
 		
 		String salt = getPasswordSalt();
-		String hashedPassword = new BigInteger(getHashedPassword(passwordPlaintext.toCharArray(),salt.getBytes())).toString();
+		String hashedPassword = getHashedPassword(passwordPlaintext.toCharArray(),salt.getBytes());
 		
 		if(GeneralMacros.containsNull(salt,hashedPassword)){
 			LOGGER.debug("Null Salt or hashed password!");
@@ -187,7 +189,7 @@ public class UserDataController{
 			SecureRandom saltGen = SecureRandom.getInstance("SHA1PRNG");
 			byte[] salt = new byte[64];
 			saltGen.nextBytes(salt);
-			return new BigInteger(salt).toString();
+			return StringUtils.newStringUtf8(salt);
 		} catch (NoSuchAlgorithmException e) {
 			LOGGER.error("Unable to find SHA1PRNG provider to generate salts.");
 			//TODO:Implement fallback
@@ -200,7 +202,7 @@ public class UserDataController{
 	 * @param saltedPassword
 	 * @return
 	 */
-	private static final byte[] getHashedPassword(char[] plaintextPassword, byte[] salt){
+	private static final String getHashedPassword(char[] plaintextPassword, byte[] salt){
 		if(GeneralMacros.containsNull(passwordHashDigest,salt,plaintextPassword)){
 			LOGGER.warn("Failed to hash password becuase of null arguments.");
 			return null;//No way to create password, so give them nothing.
@@ -209,7 +211,8 @@ public class UserDataController{
 		try {
 			KeySpec spec = new PBEKeySpec(plaintextPassword, salt, 2048, 160);
 			SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			return f.generateSecret(spec).getEncoded();
+			byte[] bytes = f.generateSecret(spec).getEncoded();
+			return StringUtils.newStringUtf8(bytes);
 		} catch (NoSuchAlgorithmException e) {
 			LOGGER.error("Unable to perform hash because algorithm is missing.",e);
 		} catch (InvalidKeySpecException e) {
