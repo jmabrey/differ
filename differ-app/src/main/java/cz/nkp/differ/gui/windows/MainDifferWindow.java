@@ -10,7 +10,7 @@ import com.vaadin.ui.Window;
 import cz.nkp.differ.gui.components.ProjectHeaderPanel;
 import cz.nkp.differ.gui.tabs.DifferProgramTab;
 import cz.nkp.differ.gui.tabs.TabLoader;
-import cz.nkp.differ.util.GeneralHelperFunctions;
+import cz.nkp.differ.util.GeneralMacros;
 
 /**
  * 
@@ -54,7 +54,7 @@ public class MainDifferWindow extends Window{
 	 */
 	private static void createStaticContentTab(String source, String caption,TabSheet parent){
 		
-		GeneralHelperFunctions.errorIfContainsNull(source,caption,parent);//Check for null arguments
+		GeneralMacros.errorIfContainsNull(source,caption,parent);//Check for null arguments
 		
 		try {
 		    VerticalLayout tab = new TabLoader(source);
@@ -76,7 +76,7 @@ public class MainDifferWindow extends Window{
 	 */
 	private static void createDynamicContentTab(Layout source, String caption,TabSheet parent){
 		
-		GeneralHelperFunctions.errorIfContainsNull(source,caption,parent);//Check for null arguments
+		GeneralMacros.errorIfContainsNull(source,caption,parent);//Check for null arguments
 				
 		source.setCaption(caption);
 		source.setMargin(true);

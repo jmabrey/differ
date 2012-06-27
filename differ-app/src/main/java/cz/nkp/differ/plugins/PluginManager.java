@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import cz.nkp.differ.DifferApplication;
 import cz.nkp.differ.plugins.DifferPluginInterface;
-import cz.nkp.differ.util.GeneralHelperFunctions;
+import cz.nkp.differ.util.GeneralMacros;
 
 /**
  * Finds loads and maintains plugins throughout the session lifecycle.
@@ -24,17 +26,18 @@ import cz.nkp.differ.util.GeneralHelperFunctions;
 public class PluginManager {
 	
 	private static Logger LOGGER = Logger.getLogger(PluginManager.class);
+	private static Logger PLUGIN_LOGGER = Logger.getLogger("Plugin Logger");
 	private static PluginManager _instance;
 	
 
-	private static List<DifferPluginInterface> pluginClassesWrapped;
+	private static List<PluginSecurityWrapper> pluginClassesWrapped;
 	private static List<DifferPluginInterface> pluginClassesUnwrapped;
 	
 	private static Map<String,Integer> pluginVersionMap;
 	private static Map<String,DifferPluginInterface> pluginClassMap;
 	
 	private PluginManager(){
-		pluginClassesWrapped = new ArrayList<DifferPluginInterface>();
+		pluginClassesWrapped = new ArrayList<PluginSecurityWrapper>();
 		pluginClassesUnwrapped = new ArrayList<DifferPluginInterface>();
 		pluginVersionMap = new HashMap<String,Integer>();
 		pluginClassMap = new HashMap<String,DifferPluginInterface>();
@@ -50,24 +53,12 @@ public class PluginManager {
 	}
 	
 	public DifferPluginInterface[] getPlugins(){
+		//Collections.sort(pluginClassesWrapped, new DifferPluginInterfaceComparator());
 		return pluginClassesWrapped.toArray(new DifferPluginInterface[0]);
 	}
 	
-	public void load(){
-		
-		List<File> pluginSearchLocations = new ArrayList<File>();
-		
-		String directory = System.getProperty("cz.differ.plugins.directory");
-		if(directory != null){
-			//TODO:implement classpath style semicolon separation for multiple directories
-			pluginSearchLocations.add(new File(directory));
-		}
-		
-		File baseDirPlugins = new File(DifferApplication.getHomeDirectory() + File.separator + "plugins");
-		
-		pluginSearchLocations.add(baseDirPlugins);
-		
-		for(File dir : pluginSearchLocations){
+	private void load(){		
+		for(File dir : getPluginSearchLocations()){
 			if(!dir.isDirectory()){
 				continue;//Only examine it if it is a directory
 			}
@@ -82,11 +73,30 @@ public class PluginManager {
 		
 		//Wrap all the plugins in security wrappers
 		for(Object o: pluginClassesUnwrapped){
-			pluginClassesWrapped.add((DifferPluginInterface) o);
+			pluginClassesWrapped.add(new PluginSecurityWrapper((DifferPluginInterface) o));
 		}
+		
 		//Now we get rid of the references to the insecure classes to prevent later access
 		pluginClassesUnwrapped.clear();
 		pluginClassesUnwrapped = null;
+		
+		setLoggers();
+	}
+	
+	private static final File[] getPluginSearchLocations(){
+		List<File> pluginSearchLocations = new ArrayList<File>();
+		
+		String directory = System.getProperty("cz.differ.plugins.directory");
+		if(directory != null){
+			//TODO:implement classpath style semicolon separation for multiple directories
+			pluginSearchLocations.add(new File(directory));
+		}
+		
+		File baseDirPlugins = new File(DifferApplication.getHomeDirectory() + File.separator + "plugins");
+		
+		pluginSearchLocations.add(baseDirPlugins);
+		
+		return pluginSearchLocations.toArray(new File[0]);
 	}
 	
 	private void addFile(File f){
@@ -128,7 +138,7 @@ public class PluginManager {
 	 * @throws SecurityException
 	 */
 	private void loadPluginClassFromFile(File jarFile) throws MalformedURLException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
-		GeneralHelperFunctions.errorIfContainsNull(jarFile);
+		GeneralMacros.errorIfContainsNull(jarFile);
 		URLClassLoader child = new URLClassLoader (new URL[]{jarFile.toURI().toURL()}, this.getClass().getClassLoader());
 		//TODO:comment this method
 		Class<?> pluginDescriptorClass = Class.forName ("cz.nkp.differ.plugins.PluginDescriptor", true, child);
@@ -155,8 +165,6 @@ public class PluginManager {
 				LOGGER.info("Avoided loading outdated plugin from " + jarFile.getAbsolutePath());
 				return;//No need to load an outdated plugin
 			}
-		}else{//New plugin (by class name evaluation)
-			pluginVersionMap.put(pluginInterfaceImplementationClassName, pluginInterfaceImplementationVersion);
 		}
 		
 		Object pluginInterfaceImplObject;
@@ -173,8 +181,37 @@ public class PluginManager {
 		}
 		else{			
 			pluginClassesUnwrapped.add((DifferPluginInterface) pluginInterfaceImplObject);
+			pluginVersionMap.put(pluginInterfaceImplementationClassName, pluginInterfaceImplementationVersion);
 			pluginClassMap.put(pluginInterfaceImplementationClassName, (DifferPluginInterface) pluginInterfaceImplObject);
 		}
-		
 	}	
+	
+	@SuppressWarnings("static-access")
+	/**
+	 * Sets the plugin loggers. Static Access suppressed to inherit logger from Plugin Logger root.
+	 */
+	private static void setLoggers(){
+		
+		for(DifferPluginInterface dfi : pluginClassesWrapped){
+			dfi.setLogger(PLUGIN_LOGGER.getLogger(dfi.getName()));
+		}
+	}
+}
+
+class DifferPluginInterfaceComparator implements Comparator<DifferPluginInterface>{
+
+	@Override
+	public int compare(DifferPluginInterface d1, DifferPluginInterface d2) {
+				
+		if(d1.getDesiredPosition() < d2.getDesiredPosition()){
+			//d1 comes first
+			return 1;
+		}
+		else if(d2.getDesiredPosition() < d1.getDesiredPosition()){
+			//d2 comes first
+			return -1;
+		}
+		else return 0;//equal
+	}
+	
 }

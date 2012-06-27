@@ -7,6 +7,8 @@ import org.vaadin.easyuploads.MultiFileUpload;
 import com.vaadin.ui.Window;
 
 import cz.nkp.differ.DifferApplication;
+import cz.nkp.differ.io.FileManager;
+import cz.nkp.differ.user.UserDataController;
 
 @SuppressWarnings("serial")
 public class UploadFilesWindow extends Window {
@@ -21,10 +23,7 @@ public class UploadFilesWindow extends Window {
             @Override
             protected void handleFile(File file, String fileName,
                     String mimeType, long length) {
-                String msg = fileName + " uploaded. Saved to temp file "
-                        + file.getAbsolutePath() + " (size " + length
-                        + " bytes)";
-                DifferApplication.getCurrentApplication().getMainWindow().showNotification(msg);
+                FileManager.addFile(UserDataController.getInstance().getLoggedInUser(), file, fileName);
             }
         };
 

@@ -5,8 +5,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import com.sun.jna.Native;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Form;
+import com.vaadin.ui.Component;
 
 import cz.nkp.differ.JNAPluginExample.Kernel32;
 
@@ -30,25 +29,13 @@ public class JNAPluginExamplePluginInterface implements DifferPluginInterface{
 	}
 
 	@Override
-	public int getMinimumNumberOfImagesRequired() {
+	public int getDesiredPosition() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public Form getPluginSettingsFormBean() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setPluginSettingsFormItem(Item i) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Throwable getErrorState() {
+	public Component getPluginDisplayComponent() {
 		// TODO Auto-generated method stub
 		return null;
 	}

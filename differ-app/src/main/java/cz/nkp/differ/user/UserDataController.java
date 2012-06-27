@@ -17,7 +17,7 @@ import javax.crypto.spec.PBEKeySpec;
 import org.apache.log4j.Logger;
 
 import cz.nkp.differ.io.DatabaseManager;
-import cz.nkp.differ.util.GeneralHelperFunctions;
+import cz.nkp.differ.util.GeneralMacros;
 
 /**
  * Class for application wide user authentication.
@@ -57,6 +57,8 @@ public class UserDataController{
 	
 	private static MessageDigest passwordHashDigest;
 	
+	private static String currentUser = null;
+	
 	private UserDataController(){
 		try {
 			passwordHashDigest = MessageDigest.getInstance(PASSWORD_HASH_ALGORITHM_NAME);
@@ -81,7 +83,7 @@ public class UserDataController{
 	 * @param userSuppliedPassword
 	 * @return
 	 */
-	public UserLoginResult isValidUserInfo(String username, String userSuppliedPassword){
+	public UserLoginResult attemptLogin(String username, String userSuppliedPassword){
 		
 		if(!DatabaseManager.isLoaded()){
 			LOGGER.error("Database is unloaded. User verification failed.");
@@ -89,15 +91,16 @@ public class UserDataController{
 		}//Database loaded
 		
 		
-		if(GeneralHelperFunctions.containsNull(queryUserInformationStatement)){
+		if(GeneralMacros.containsNull(queryUserInformationStatement)){
 			queryUserInformationStatement = DatabaseManager.getInstance().getStatement(QUERY_USER_INFORMATION);
-			if(GeneralHelperFunctions.containsNull(queryUserInformationStatement)){
+			if(GeneralMacros.containsNull(queryUserInformationStatement)){
 				return UserLoginResult.DATABASE_ERROR;//We can't determine validity without a database query!
 			}
 		}//Prep statement loaded
 		
 		ResultSet userInfo;
 		boolean hasResult = false;//fail on error
+		
 		try {
 			queryUserInformationStatement.clearParameters();
 			queryUserInformationStatement.setString(1, username);
@@ -118,8 +121,7 @@ public class UserDataController{
 		String dbSuppliedSalt, dbSuppliedPassword;
 		try {
 			dbSuppliedPassword = userInfo.getString(1);//Col 1 is password_hash
-			dbSuppliedSalt = userInfo.getString(2);//Col 2 is password_salt
-					
+			dbSuppliedSalt = userInfo.getString(2);//Col 2 is password_salt		
 		} catch (SQLException e) {
 			LOGGER.error("Unable to extract result String from password hash in ResultSet. User verification failed.");
 			return UserLoginResult.DATABASE_ERROR;
@@ -127,21 +129,27 @@ public class UserDataController{
 		
 		if(Arrays.equals(new BigInteger(dbSuppliedPassword).toByteArray(),getHashedPassword(userSuppliedPassword.toCharArray(), dbSuppliedSalt.getBytes())) && dbSuppliedPassword != null){
 			//Valid user
+			
+			currentUser = username;
 			return UserLoginResult.USER_LOGIN_SUCCESS;
 		}
 		
 		return UserLoginResult.USER_LOGIN_FAIL;//If all else fails, end the method fail-safe			
 	}
 	
+	public String getLoggedInUser(){
+		return currentUser;
+	}
+	
 	public UserRegisterResult addUser(String username, String passwordPlaintext){
-		if(GeneralHelperFunctions.containsNull(username,passwordPlaintext)){
+		if(GeneralMacros.containsNull(username,passwordPlaintext)){
 			LOGGER.debug("Null username or password!");
 			return UserRegisterResult.DATABASE_ERROR;
 		}
 		
-		if(GeneralHelperFunctions.containsNull(queryUserInformationStatement)){
+		if(GeneralMacros.containsNull(queryUserInformationStatement)){
 			addUserStatement = DatabaseManager.getInstance().getStatement(ADD_USER_INFORMATION);
-			if(GeneralHelperFunctions.containsNull(addUserStatement)){
+			if(GeneralMacros.containsNull(addUserStatement)){
 				return UserRegisterResult.DATABASE_ERROR;
 			}
 		}//Prep statement loaded
@@ -150,7 +158,7 @@ public class UserDataController{
 		String salt = getPasswordSalt();
 		String hashedPassword = new BigInteger(getHashedPassword(passwordPlaintext.toCharArray(),salt.getBytes())).toString();
 		
-		if(GeneralHelperFunctions.containsNull(salt,hashedPassword)){
+		if(GeneralMacros.containsNull(salt,hashedPassword)){
 			LOGGER.debug("Null Salt or hashed password!");
 			return UserRegisterResult.DATABASE_ERROR;
 		}
@@ -184,9 +192,7 @@ public class UserDataController{
 			LOGGER.error("Unable to find SHA1PRNG provider to generate salts.");
 			//TODO:Implement fallback
 		}
-		
 		return null;
-		
 	}
 	
 	/**
@@ -195,7 +201,7 @@ public class UserDataController{
 	 * @return
 	 */
 	private static final byte[] getHashedPassword(char[] plaintextPassword, byte[] salt){
-		if(GeneralHelperFunctions.containsNull(passwordHashDigest,salt,plaintextPassword)){
+		if(GeneralMacros.containsNull(passwordHashDigest,salt,plaintextPassword)){
 			LOGGER.warn("Failed to hash password becuase of null arguments.");
 			return null;//No way to create password, so give them nothing.
 		}

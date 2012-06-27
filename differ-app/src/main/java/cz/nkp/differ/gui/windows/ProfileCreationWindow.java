@@ -10,7 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import cz.nkp.differ.gui.components.XYResolutionField;
-import cz.nkp.differ.util.GUIHelperFunctions;
+import cz.nkp.differ.util.GUIMacros;
 
 @SuppressWarnings("serial")
 public class ProfileCreationWindow extends Window{
@@ -33,7 +33,7 @@ public class ProfileCreationWindow extends Window{
 		
 		Button close = new Button("Close");
 		buttonLayout.addComponent(close);
-		close.addListener(GUIHelperFunctions.createWindowCloseButtonListener(this));
+		close.addListener(GUIMacros.createWindowCloseButtonListener(this));
         
 		windowLayout.addComponent(buttonLayout);
 		

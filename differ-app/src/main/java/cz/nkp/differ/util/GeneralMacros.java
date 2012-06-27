@@ -1,6 +1,6 @@
 package cz.nkp.differ.util;
 
-public class GeneralHelperFunctions {
+public class GeneralMacros {
 	
 	/**
 	 * Used to check for null values in a given set of <code>Object</code>s. Useful for safely validating
@@ -8,7 +8,7 @@ public class GeneralHelperFunctions {
 	 * @param objects
 	 * @return
 	 */
-	public static boolean containsNull(Object...objects){
+	public static final boolean containsNull(Object...objects){
 		for(Object o : objects){
 			if(o == null){
 				return true;
@@ -21,8 +21,8 @@ public class GeneralHelperFunctions {
 	 * Checks the objects list for null values, and throws an IllegalArgumentException if a null is present.
 	 * @param objects
 	 */
-	public static void errorIfContainsNull(Object... objects){
-		if(GeneralHelperFunctions.containsNull(objects)){
+	public static final void errorIfContainsNull(Object... objects){
+		if(GeneralMacros.containsNull(objects)){
 			throw new IllegalArgumentException("Arguments given to a method were null when that method disallows null arguements");
 		}
 	}

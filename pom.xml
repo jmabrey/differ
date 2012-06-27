@@ -16,6 +16,7 @@
 	    <vaadin.version>6.8.0</vaadin.version>
 		<gwt.version>2.4.0</gwt.version>
 		<derby.version>10.8.2.2</derby.version>
+		<apache.commons-io.version>2.3</apache.commons-io.version>
 		
 		<proguard-plugin.version>2.0.4</proguard-plugin.version>
 		<gwt-maven-plugin.version>2.4.0</gwt-maven-plugin.version>		

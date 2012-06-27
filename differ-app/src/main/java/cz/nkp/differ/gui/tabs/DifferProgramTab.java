@@ -1,5 +1,7 @@
 package cz.nkp.differ.gui.tabs;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 
 import com.vaadin.ui.Button;
@@ -16,10 +18,12 @@ import com.vaadin.ui.themes.Runo;
 import cz.nkp.differ.DifferApplication;
 import cz.nkp.differ.gui.components.HelpTooltip;
 import cz.nkp.differ.gui.components.LoginRegisterComponent;
+import cz.nkp.differ.gui.components.PluginCompareComponent;
 import cz.nkp.differ.gui.windows.ProfileCreationWindow;
 import cz.nkp.differ.gui.windows.UploadFilesWindow;
+import cz.nkp.differ.io.FileManager;
 import cz.nkp.differ.user.UserDataController;
-import cz.nkp.differ.util.GUIHelperFunctions;
+import cz.nkp.differ.util.GUIMacros;
 
 /**
  * The main application view.
@@ -29,6 +33,30 @@ import cz.nkp.differ.util.GUIHelperFunctions;
 @SuppressWarnings("serial")
 public class DifferProgramTab extends VerticalLayout implements LoginListener{
 	
+	CustomComponent loginPanel;
+	HelpTooltip uploadButtonHelp,createProfilesButtonHelp;
+	Button uploadFilesButton, createProfilesButton, logoutButton, compareButton;
+	
+	private final Button.ClickListener logoutButtonClickListener = new Button.ClickListener() {
+		
+		@Override
+		public void buttonClick(ClickEvent event) {
+			setLoggedOutView();				
+		}
+	};
+	
+	private final Button.ClickListener compareButtonClickListener = new Button.ClickListener() {
+		
+		@Override
+		public void buttonClick(ClickEvent event) {
+			File[] files = FileManager.getUserFiles(
+					UserDataController.getInstance().getLoggedInUser());
+			if(files.length > 1){
+				addComponent(new PluginCompareComponent(files[0], files[1]));			
+			}
+		}
+	};
+	
 	public DifferProgramTab(){
 		setLoggedOutView();//Start the program logged out
 	}
@@ -36,7 +64,8 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 	@Override
 	public void onLogin(LoginEvent event) { 
 		UserDataController.UserLoginResult loginResult = UserDataController.UserLoginResult.DATABASE_ERROR;
-		loginResult = UserDataController.getInstance().isValidUserInfo(event.getLoginParameter("username"), event.getLoginParameter("password"));
+		
+		loginResult = UserDataController.getInstance().attemptLogin(event.getLoginParameter("username"), event.getLoginParameter("password"));
 		
 		if(loginResult == UserDataController.UserLoginResult.USER_LOGIN_SUCCESS){
 			setLoggedInView();	
@@ -74,15 +103,19 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 		
 		uploadFilesButton = new Button("Upload Files");
 		uploadFilesButton.addStyleName(Runo.BUTTON_SMALL);
-		uploadFilesButton.addListener(GUIHelperFunctions.createWindowOpenButtonListener(new UploadFilesWindow()));
+		uploadFilesButton.addListener(GUIMacros.createWindowOpenButtonListener(new UploadFilesWindow()));
 		
-		uploadButtonHelp = new HelpTooltip("This is an example!");
+		uploadButtonHelp = new HelpTooltip("Test & title", "This is an example!");
 		
 		createProfilesButton = new Button("Create New Profile");
 		createProfilesButton.addStyleName(Runo.BUTTON_SMALL);		
-		createProfilesButton.addListener(GUIHelperFunctions.createWindowOpenButtonListener(new ProfileCreationWindow()));
+		createProfilesButton.addListener(GUIMacros.createWindowOpenButtonListener(new ProfileCreationWindow()));
 		
-		createProfilesButtonHelp = new HelpTooltip("This is an example!");
+		createProfilesButtonHelp = new HelpTooltip("Test & title", "This is an example!");
+		
+		compareButton = new Button("Compare");
+		compareButton.addStyleName(Runo.BUTTON_SMALL);
+		compareButton.addListener(compareButtonClickListener);
 		
 		logoutButton = new Button("Logout");
 		logoutButton.addStyleName(Runo.BUTTON_SMALL);
@@ -92,20 +125,11 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 		buttonPanelRoot.addComponent(uploadButtonHelp);
 		buttonPanelRoot.addComponent(createProfilesButton);
 		buttonPanelRoot.addComponent(createProfilesButtonHelp);
+		buttonPanelRoot.addComponent(compareButton);
 		buttonPanelRoot.addComponent(logoutButton);
 		
 		return buttonPanelRoot;
 	}
 	
-	private final Button.ClickListener logoutButtonClickListener = new Button.ClickListener() {
-		
-		@Override
-		public void buttonClick(ClickEvent event) {
-			setLoggedOutView();				
-		}
-	};
 	
-	CustomComponent loginPanel;
-	HelpTooltip uploadButtonHelp,createProfilesButtonHelp;
-	Button uploadFilesButton, createProfilesButton, logoutButton;
 }

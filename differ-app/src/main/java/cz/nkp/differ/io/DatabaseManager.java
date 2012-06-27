@@ -13,7 +13,7 @@ import org.apache.derby.drda.NetworkServerControl;
 import org.apache.log4j.Logger;
 
 import cz.nkp.differ.DifferApplication;
-import cz.nkp.differ.util.GeneralHelperFunctions;
+import cz.nkp.differ.util.GeneralMacros;
 
 public class DatabaseManager {
 	
@@ -69,7 +69,7 @@ public class DatabaseManager {
 		
 		//If the user hasn't preconfigured the derby location, set it to our default location
 		if(System.getProperty("derby.system.home") == null){
-			System.setProperty("derby.system.home", DifferApplication.getHomeDirectory());
+			System.setProperty("derby.system.home", DifferApplication.getHomeDirectory().getAbsolutePath());
 		}
 		
 		startNetworkDatabase();
@@ -95,7 +95,7 @@ public class DatabaseManager {
 	}
 	
 	private static final void startNetworkDatabase(){
-		if(GeneralHelperFunctions.containsNull(serverControl)){
+		if(GeneralMacros.containsNull(serverControl)){
 			LOGGER.error("Unable to start network database because database handle is null");
 			return;
 		}
@@ -145,7 +145,7 @@ public class DatabaseManager {
 	}
 	
 	private static final void createDefaultDatabaseDefaultTables(Connection conn){
-		GeneralHelperFunctions.errorIfContainsNull(conn);//What can we do if we get nothing?
+		GeneralMacros.errorIfContainsNull(conn);//What can we do if we get nothing?
 		
 		for(int pos = 0; pos < DATABASE_TABLE_NAMES.length &&
 				DATABASE_TABLE_NAMES.length == DATABASE_TABLE_PARAMETERS.length;pos++){

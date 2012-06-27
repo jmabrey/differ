@@ -64,7 +64,7 @@ public class DifferApplication extends TPTApplication{
 		
 	}
 		
-    public static String getHomeDirectory(){
+    public static File getHomeDirectory(){
     	if(differHome == null){
     		differHome = System.getProperty("user.home");
     		differHome += File.separatorChar + ".differ";
@@ -83,7 +83,14 @@ public class DifferApplication extends TPTApplication{
 				differHomeFilePluginDirectory.mkdir();
     		}
     	}
-    	return differHome;
+    	
+    	File homeDir = new File(differHome);
+    	
+    	if(!homeDir.exists()){
+    		LOGGER.error("Differ home directory unable to be created at " + homeDir.getAbsolutePath());
+    	}
+    	
+    	return homeDir;
     }
     
     private static String differHome;

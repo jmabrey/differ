@@ -143,6 +143,13 @@
 		<version>${derby.version}</version>
 	</dependency>
 	
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>${apache.commons-io.version}</version>
+	</dependency>
+            
+	
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>

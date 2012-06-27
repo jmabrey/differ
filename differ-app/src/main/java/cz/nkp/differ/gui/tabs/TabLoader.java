@@ -7,7 +7,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Runo;
 
-import cz.nkp.differ.util.GeneralHelperFunctions;
+import cz.nkp.differ.util.GeneralMacros;
 
 /**
  * This is a static stub class that allows the rest of the application to easily access the differ custom
@@ -32,7 +32,7 @@ public class TabLoader extends VerticalLayout{
 	public TabLoader(String resource) throws IOException{
 		super();//Create this as a VerticalLayout
 		
-		GeneralHelperFunctions.errorIfContainsNull(resource);
+		GeneralMacros.errorIfContainsNull(resource);
 		
 		/*
 		 * Load the content of the static html into a custom layout which is placed in a panel and 

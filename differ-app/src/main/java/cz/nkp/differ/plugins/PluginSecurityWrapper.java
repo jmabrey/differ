@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Form;
 
 import cz.nkp.differ.plugins.DifferPluginInterface;
@@ -68,11 +69,11 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 	}
 
 	@Override
-	public int getMinimumNumberOfImagesRequired() {
+	public int getDesiredPosition() {
 		setSecurityMode(true);
 		int child_response = 0;
 		try{
-			child_response = child.getMinimumNumberOfImagesRequired();
+			child_response = child.getDesiredPosition();
 		}catch(SecurityException se){
 			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}
@@ -82,35 +83,11 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 	}
 
 	@Override
-	public Form getPluginSettingsFormBean() {
+	public Component getPluginDisplayComponent() {
 		setSecurityMode(true);
-		Form child_response = null;
+		Component child_response = null;
 		try{
-			child_response = child.getPluginSettingsFormBean();
-		}catch(SecurityException se){
-			LOGGER.warn(child.getName() + " executed disallowed code",se);
-		}
-		setSecurityMode(false);
-		return child_response;
-	}
-
-	@Override
-	public void setPluginSettingsFormItem(Item i) {
-		setSecurityMode(true);
-		try{
-			child.setPluginSettingsFormItem(i);
-		}catch(SecurityException se){
-			LOGGER.warn(child.getName() + " executed disallowed code",se);
-		}
-		setSecurityMode(false);	
-	}
-
-	@Override
-	public Throwable getErrorState() {
-		setSecurityMode(true);
-		Throwable child_response = null;
-		try{
-			child_response = child.getErrorState();
+			child_response = child.getPluginDisplayComponent();
 		}catch(SecurityException se){
 			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}

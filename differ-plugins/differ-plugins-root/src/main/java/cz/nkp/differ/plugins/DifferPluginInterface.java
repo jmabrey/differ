@@ -3,7 +3,8 @@ package cz.nkp.differ.plugins;
 import java.io.File;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Form;
+import com.vaadin.ui.Component;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
  * @author Joshua Mabrey
  * Jun 7, 2012
  */
-public interface DifferPluginInterface {
+public interface DifferPluginInterface{
 	
 	/**
 	 * Return the name of the plugin.
@@ -21,44 +22,27 @@ public interface DifferPluginInterface {
 	String getName();
 	
 	/**
-	 * Add any number of files. Will set ErrorState if invalid or null files are given.
+	 * Add any number of files. These method must erase all previous file handles from memory.
 	 * @return
 	 */
 	void addFiles(File... file);
 	
 	/**
-	 * Return the minimum number of images required for this plugin. A comparison plugin for instance, might require
-	 * a minimum of two images.
+	 * Return the plugins desired display positioning as a non-negative integer. Larger numbers are positioned further down the queue of plugins
+	 * when the application prepares them for display.  If the response is negative then the positioning is Integer.MAX_VALE;
 	 * @return
 	 */
-	int getMinimumNumberOfImagesRequired();
+	int getDesiredPosition();
 	
 	/**
-	 * Return a Form that will be bound by the differ runtime into a plugin settings dialog.
+	 * Return a Component that will be bound by the differ runtime into the application.
 	 * @return
 	 */
-	Form getPluginSettingsFormBean();
-	
-	/**
-	 * The callback implementation of the plugin settings dialog
-	 * @param i
-	 */
-	void setPluginSettingsFormItem(Item i);
-	
-	
-	/**
-	 * Should return null if no errors occur. The plugin should swallow all errors to a log obtained by the runtime
-	 * call of setLogger(). The Differ runtime will call this method after fetching the service and after calling
-	 * getDataRepresentation(). If an error occurs the Differ runtime will handle the error without any
-	 * guarantees. Under NO CIRCUMSTANCE should a plugin attempt to close the current runtime.
-	 * 
-	 * @return
-	 */
-	Throwable getErrorState();
+	Component getPluginDisplayComponent();
 	
 	/**
 	 * Called by the Differ runtime to set the plugins logger instance. The plugin SHOULD ONLY use this logger
-	 * to log any output data, and the plugin's code should be modified if needed to make this possible.
+	 * to log any output data.
 	 * @param logger
 	 */
 	void setLogger(Logger logger);

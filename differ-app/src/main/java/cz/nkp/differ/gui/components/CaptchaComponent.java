@@ -1,6 +1,5 @@
 package cz.nkp.differ.gui.components;
 
-
 import com.vaadin.Application;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.terminal.StreamResource;

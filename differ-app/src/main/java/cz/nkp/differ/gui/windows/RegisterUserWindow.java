@@ -18,7 +18,7 @@ import cz.nkp.differ.gui.components.CaptchaComponent;
 import cz.nkp.differ.gui.tabs.DifferProgramTab;
 import cz.nkp.differ.user.UserDataController;
 import cz.nkp.differ.user.UserDataController.UserRegisterResult;
-import cz.nkp.differ.util.GUIHelperFunctions;
+import cz.nkp.differ.util.GUIMacros;
 
 import eu.livotov.tpt.gui.widgets.TPTCaptcha;
 
@@ -44,7 +44,7 @@ public class RegisterUserWindow extends Window implements ClickListener{
 		buttonLayout.addComponent(register);
 		
 		Button close = new Button("Close");
-		close.addListener(GUIHelperFunctions.createWindowCloseButtonListener(this));
+		close.addListener(GUIMacros.createWindowCloseButtonListener(this));
 		buttonLayout.addComponent(close);
 		
 		addComponent(buttonLayout);
