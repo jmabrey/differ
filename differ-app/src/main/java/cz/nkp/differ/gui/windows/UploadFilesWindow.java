@@ -6,7 +6,6 @@ import org.vaadin.easyuploads.MultiFileUpload;
 
 import com.vaadin.ui.Window;
 
-import cz.nkp.differ.DifferApplication;
 import cz.nkp.differ.io.FileManager;
 import cz.nkp.differ.user.UserDataController;
 

@@ -7,8 +7,7 @@
 	<!-- Inherit DefaultWidgetSet -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" /> 
 	
-	<!-- Widgets load when they specify
-	 -->
+	<!-- Widgets load when they specify -->
 	<generate-with
 		class="com.vaadin.terminal.gwt.widgetsetutils.WidgetMapGenerator">
 		<when-type-is class="com.vaadin.terminal.gwt.client.WidgetMap" />

@@ -7,9 +7,12 @@ import org.apache.log4j.Logger;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
 
 import cz.nkp.differ.DifferApplication;
+import cz.nkp.differ.gui.components.HelpTooltip;
 
 /**
  * Contains GUI Macros to simplify both code readability and future code modifications. These methods are
@@ -65,5 +68,23 @@ public class GUIMacros {
 				//this map insertion is the same way currently used by the window to close itself. 
 			}
 		};
+	}
+	
+	/**
+	 * Returns a HorizontalLayout with the tooltip positioned after the component.
+	 * @param c
+	 * @param h
+	 * @return
+	 */
+	public static final HorizontalLayout bindTooltipToComponent(Component c, String title, String helpText){
+		if(GeneralMacros.containsNull(c,title,helpText)){
+			return null;
+		}
+		
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.addComponent(c);
+		layout.addComponent(new HelpTooltip(title,helpText));
+		
+		return layout;
 	}
 }

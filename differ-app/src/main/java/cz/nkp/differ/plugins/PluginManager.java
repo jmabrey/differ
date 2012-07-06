@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,7 @@ public class PluginManager {
 	}
 	
 	public DifferPluginInterface[] getPlugins(){
-		//Collections.sort(pluginClassesWrapped, new DifferPluginInterfaceComparator());
+		Collections.sort(pluginClassesWrapped, new DifferPluginInterfaceComparator());
 		return pluginClassesWrapped.toArray(new DifferPluginInterface[0]);
 	}
 	

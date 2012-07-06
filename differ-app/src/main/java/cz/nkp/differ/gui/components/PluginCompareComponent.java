@@ -1,8 +1,6 @@
 package cz.nkp.differ.gui.components;
 
 import java.io.File;
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
 
 import com.vaadin.ui.Component;
@@ -48,6 +46,7 @@ public class PluginCompareComponent extends CustomComponent{
 
 class PluginComparePanel extends CustomComponent{
 	static Logger LOGGER = Logger.getLogger(PluginComparePanel.class);
+	
 	private static final Component GENERIC_FAILURE_COMPONENT = new Label("Error Retrieving Component");
 	
 	public PluginComparePanel(DifferPluginInterface[] dfi, File[] files){
@@ -60,7 +59,7 @@ class PluginComparePanel extends CustomComponent{
 				components[i] = GENERIC_FAILURE_COMPONENT;
 			}else{
 				d.addFiles(files);
-				components[i] = d.getPluginDisplayComponent();
+				components[i] = getPluginComponent(d);
 			}
 		}
 		
@@ -70,7 +69,7 @@ class PluginComparePanel extends CustomComponent{
 	private Layout createPluginComparePanel(Component[] pluginComponents){
 		VerticalLayout layout = new VerticalLayout();
 		
-		if(GeneralMacros.containsNull((Object[])pluginComponents)){
+		if(GeneralMacros.containsNull((Object)pluginComponents)){
 			LOGGER.error("Component list is null.");
 			layout.addComponent(GENERIC_FAILURE_COMPONENT);
 			return layout;

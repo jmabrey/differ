@@ -78,6 +78,7 @@ public class DatabaseManager {
 		if(System.getProperty("derby.system.home") == null){
 			System.setProperty("derby.system.home", DifferApplication.getHomeDirectory().getAbsolutePath());
 		}	
+		
 		startNetworkDatabase();
 		
 		try {

@@ -6,8 +6,6 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.LoginForm.LoginListener;
-import com.vaadin.ui.VerticalLayout;
-
 import cz.nkp.differ.gui.windows.RegisterUserWindow;
 import cz.nkp.differ.util.GUIMacros;
 

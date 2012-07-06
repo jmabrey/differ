@@ -4,10 +4,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Form;
-
 import cz.nkp.differ.plugins.DifferPluginInterface;
 
 /**

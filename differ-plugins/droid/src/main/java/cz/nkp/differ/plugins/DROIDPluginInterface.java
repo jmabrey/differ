@@ -3,7 +3,6 @@ package cz.nkp.differ.plugins;
 import java.io.File;
 
 import org.apache.log4j.Logger;
-import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
 public class DROIDPluginInterface implements DifferPluginInterface{

@@ -8,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import cz.nkp.differ.DifferApplication;
-import cz.nkp.differ.user.UserDataController;
 import cz.nkp.differ.util.GeneralMacros;
 
 public class FileManager {
@@ -69,7 +68,7 @@ public class FileManager {
 		}
 	}
 	
-	private static final File getUsersDirectory(){
+	public static final File getUsersDirectory(){
 		if(GeneralMacros.containsNull(homeDir)){
 			homeDir = DifferApplication.getHomeDirectory();
 		}

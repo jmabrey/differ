@@ -20,8 +20,6 @@ import cz.nkp.differ.user.UserDataController;
 import cz.nkp.differ.user.UserDataController.UserRegisterResult;
 import cz.nkp.differ.util.GUIMacros;
 
-import eu.livotov.tpt.gui.widgets.TPTCaptcha;
-
 @SuppressWarnings("serial")
 public class RegisterUserWindow extends Window implements ClickListener{
 	

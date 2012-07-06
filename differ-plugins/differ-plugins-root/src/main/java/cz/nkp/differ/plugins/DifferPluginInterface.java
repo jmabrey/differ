@@ -2,7 +2,6 @@ package cz.nkp.differ.plugins;
 
 import java.io.File;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
 import org.apache.log4j.Logger;

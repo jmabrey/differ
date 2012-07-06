@@ -4,26 +4,17 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.LoginForm.LoginListener;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Runo;
 
 import cz.nkp.differ.DifferApplication;
-import cz.nkp.differ.gui.components.HelpTooltip;
+import cz.nkp.differ.gui.components.DifferProgramTabButtonPanel;
 import cz.nkp.differ.gui.components.LoginRegisterComponent;
-import cz.nkp.differ.gui.components.PluginCompareComponent;
-import cz.nkp.differ.gui.windows.ProfileCreationWindow;
-import cz.nkp.differ.gui.windows.UploadFilesWindow;
-import cz.nkp.differ.io.FileManager;
+import cz.nkp.differ.gui.components.UserFilesWidget;
 import cz.nkp.differ.user.UserDataController;
-import cz.nkp.differ.util.GUIMacros;
 
 /**
  * The main application view.
@@ -31,34 +22,16 @@ import cz.nkp.differ.util.GUIMacros;
  * Mar 30, 2012
  */
 @SuppressWarnings("serial")
-public class DifferProgramTab extends VerticalLayout implements LoginListener{
+public class DifferProgramTab extends HorizontalLayout implements LoginListener{
 	
 	CustomComponent loginPanel;
-	HelpTooltip uploadButtonHelp,createProfilesButtonHelp;
-	Button uploadFilesButton, createProfilesButton, logoutButton, compareButton;
-	
-	private final Button.ClickListener logoutButtonClickListener = new Button.ClickListener() {
-		
-		@Override
-		public void buttonClick(ClickEvent event) {
-			setLoggedOutView();				
-		}
-	};
-	
-	private final Button.ClickListener compareButtonClickListener = new Button.ClickListener() {
-		
-		@Override
-		public void buttonClick(ClickEvent event) {
-			File[] files = FileManager.getUserFiles(
-					UserDataController.getInstance().getLoggedInUser());
-			if(files.length > 1){
-				addComponent(new PluginCompareComponent(files[0], files[1]));			
-			}
-		}
-	};
+	UserFilesWidget[] widgets;
 	
 	public DifferProgramTab(){
 		setLoggedOutView();//Start the program logged out
+		widgets = new UserFilesWidget[2];
+		widgets[0] = new UserFilesWidget(); 
+		widgets[1] = new UserFilesWidget(); 
 	}
 	
 	@Override
@@ -87,49 +60,27 @@ public class DifferProgramTab extends VerticalLayout implements LoginListener{
 	
 	private void setLoggedInView(){
 		this.removeAllComponents();
-		addComponent(getButtonPanel());
+		addComponent(widgets[0]);
+		addComponent(widgets[1]);
+		addComponent(new DifferProgramTabButtonPanel(this));
+		this.setSizeUndefined();
 	}
 	
-	private void setLoggedOutView(){
+	public void setLoggedOutView(){
 		this.removeAllComponents();
 		if(loginPanel == null){
 			loginPanel = new LoginRegisterComponent(this);
 		}
 		addComponent(loginPanel);
+		this.setSizeUndefined();
 	}
 	
-	private Layout getButtonPanel(){
-		HorizontalLayout buttonPanelRoot = new HorizontalLayout();
+	public File[] getSelectedFiles(){
+		File[] files = new File[2];
 		
-		uploadFilesButton = new Button("Upload Files");
-		uploadFilesButton.addStyleName(Runo.BUTTON_SMALL);
-		uploadFilesButton.addListener(GUIMacros.createWindowOpenButtonListener(new UploadFilesWindow()));
+		files[0] = widgets[0].getSelectedFile();
+		files[1] = widgets[1].getSelectedFile();
 		
-		uploadButtonHelp = new HelpTooltip("Test & title", "This is an example!");
-		
-		createProfilesButton = new Button("Create New Profile");
-		createProfilesButton.addStyleName(Runo.BUTTON_SMALL);		
-		createProfilesButton.addListener(GUIMacros.createWindowOpenButtonListener(new ProfileCreationWindow()));
-		
-		createProfilesButtonHelp = new HelpTooltip("Test & title", "This is an example!");
-		
-		compareButton = new Button("Compare");
-		compareButton.addStyleName(Runo.BUTTON_SMALL);
-		compareButton.addListener(compareButtonClickListener);
-		
-		logoutButton = new Button("Logout");
-		logoutButton.addStyleName(Runo.BUTTON_SMALL);
-		logoutButton.addListener(logoutButtonClickListener);
-		
-		buttonPanelRoot.addComponent(uploadFilesButton);
-		buttonPanelRoot.addComponent(uploadButtonHelp);
-		buttonPanelRoot.addComponent(createProfilesButton);
-		buttonPanelRoot.addComponent(createProfilesButtonHelp);
-		buttonPanelRoot.addComponent(compareButton);
-		buttonPanelRoot.addComponent(logoutButton);
-		
-		return buttonPanelRoot;
+		return files;
 	}
-	
-	
 }
