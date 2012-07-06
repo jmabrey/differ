@@ -1,12 +1,24 @@
-Developing preservation processes for a trusted digital repository requires the utilization of new methods and technologies, which have helped to accelerate the whole process of control. The current approach at the Digital Preservation Standards Department at The National Library of the Czech Republic is to develop a quality control application for still image file formats capable of performing identification, characterization, validation and visual/mathematical comparison integrated into an operational digital preservation framework. The online application DIFFER is utilizing existing tools (JHOVE, FITS, ExifTool, KDU_expand, DJVUDUMP, Jpylyzer, etc.), which are mainly used separately across a whole spectrum of existing projects. This open source application comes with a well-structured and uniform GUI, which helps the user to understand the relationships between various file format properties, detect visual and non-visual errors and simplifies decision-making. An additional feature called compliance-check is designed to help us check the required specifications of the JPEG2000 file format.
+Developing preservation processes for a trusted digital repository requires the utilization of 
+new methods and technologies, which have helped to accelerate the whole process of control. 
+The current approach at the Digital Preservation Standards Department at The National Library 
+of the Czech Republic is to develop a quality control application for still image file formats 
+capable of performing identification, characterization, validation and visual/mathematical 
+comparison integrated into an operational digital preservation framework. The online application 
+DIFFER is utilizing existing tools (JHOVE, FITS, ExifTool, KDU_expand, DJVUDUMP, Jpylyzer, etc.), 
+which are mainly used separately across a whole spectrum of existing projects. This open source 
+application comes with a well-structured and uniform GUI, which helps the user to understand 
+the relationships between various file format properties, detect visual and non-visual errors 
+and simplifies decision-making. An additional feature called compliance-check is designed to 
+help us check the required specifications of the JPEG2000 file format.
 
 Compilation Information:
  
  You must have Maven installed.
  
-The following commands should be run from the differ root directory:
+The following commands should be run from the differ root directory.
  
-To package the Differ application into a .war and compile all plugins simply instruct Maven to target the package goal
+To package the Differ application into a .war (which is by default placed in ./bin) 
+and compile all plugins simply instruct Maven to target the package goal
  
 	mvn package
 	
@@ -14,7 +26,7 @@ To compile the Differ application without packaging
 
 	mvn compile
 	
-To update the widgetsets without running a full compile (requires you to update root pom to point to custom widgetset)
+To update the widgetsets without running a full compile
 
 	mvn vaadin:update-widgetset
 	
@@ -22,11 +34,5 @@ To compile as needed and run on a local Jetty server first run mvn:package and t
 	
 	mvn jetty:run-war
 	
-If you run the Jetty server and want to update the server's war file, run mvn package and it will autodetect and redeploy
-	
-To stop that server once it is started
-
-	mvn jetty:stop
-	
-(Alternatively simply pass a terminator character to the console you initiated jetty:run on, such as Ctrl-C or Ctrl-Z)
-If you get bind errors when running the Jetty server make sure that no other application is bound to port 8080.
+Passing a terminator control character to the console you iniated the server from shutsdown the server. 
+[Ctrl-C or Ctrl-Z on most platforms]
