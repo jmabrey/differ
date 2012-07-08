@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 public class DROIDPluginInterface implements DifferPluginInterface{
 
@@ -15,7 +16,7 @@ public class DROIDPluginInterface implements DifferPluginInterface{
 	@Override
 	public void addFiles(File... file) {
 		// TODO Auto-generated method stub
-		
+		files = file.length;
 	}
 
 	@Override
@@ -27,7 +28,7 @@ public class DROIDPluginInterface implements DifferPluginInterface{
 	@Override
 	public Component getPluginDisplayComponent() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Label(getName() + "Size: " + files);
 	}
 
 	@Override
@@ -35,5 +36,7 @@ public class DROIDPluginInterface implements DifferPluginInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private int files = -1;
 	
 }

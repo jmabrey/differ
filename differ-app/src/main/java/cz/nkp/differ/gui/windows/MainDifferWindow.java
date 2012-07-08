@@ -28,7 +28,7 @@ public class MainDifferWindow extends Window{
 		/*
 		 * Adding the dynamic content tabs
 		 */
-		MainDifferWindow.createDynamicContentTab(new DifferProgramTab(),"DIFFER App", menuTabs);
+		MainDifferWindow.createDynamicContentTab(new DifferProgramTab(),"DIFFER", menuTabs);
 		/*
 		 * Adding the static content tabs
 		 */

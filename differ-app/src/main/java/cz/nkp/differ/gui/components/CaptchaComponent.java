@@ -26,8 +26,11 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
+
 
 public class CaptchaComponent extends CustomComponent{
+	private static final long serialVersionUID = -1189704707163658035L;
 	private static final int CAPTCHA_LENGTH = 5;
 	
 	public CaptchaComponent(){
@@ -65,7 +68,7 @@ public class CaptchaComponent extends CustomComponent{
 
 /**
  * This component represents a captcha image that can be displayed for some form validations. You
- * can provide your own text for captcha image or let the component to automatically generat it to
+ * can provide your own text for captcha image or let the component to automatically generate it for
  * you.
  * 
  * This is an adapted form of the TPTCaptcha, which does not function correctly on 
@@ -75,6 +78,11 @@ class CaptchaEmbeddedImage extends Embedded implements StreamResource.StreamSour
 {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 220231548210606723L;
+
+	/**
      * Image provider for captcha
      */
     private CaptchaImageProvider imageProvider = new DefaultCaptchaImageGenerator ();
@@ -209,7 +217,7 @@ class CaptchaEmbeddedImage extends Embedded implements StreamResource.StreamSour
         try {
 			ImageIO.write(image, "jpg", bos);
 		} catch (IOException e) {
-			
+			Logger.getLogger(getClass()).error("Captcha IO write from bytestream produced an error",e);
 		}
         return new ByteArrayInputStream ( bos.toByteArray () );
     }
@@ -228,7 +236,7 @@ class CaptchaEmbeddedImage extends Embedded implements StreamResource.StreamSour
     {
 
         /**
-         * Should provide a BufferedImage that represens the capctha code.
+         * Should provide a BufferedImage that represents the capctha code.
          *
          * @param text text to encode in the image
          * @return encoded captcha image to be displayed

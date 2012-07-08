@@ -22,9 +22,12 @@ public class UploadFilesWindow extends Window {
             @Override
             protected void handleFile(File file, String fileName,
                     String mimeType, long length) {
-                FileManager.addFile(UserDataController.getInstance().getLoggedInUser(), file, fileName);
+            	if(FileManager.isValidFileLength(length)){
+            		FileManager.addFile(UserDataController.getInstance().getLoggedInUser(), file, fileName);
+            	}
             }
         };
+        
 
 
 		addComponent(upload);

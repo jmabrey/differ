@@ -4,10 +4,14 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.LoginForm.LoginEvent;
 import com.vaadin.ui.LoginForm.LoginListener;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import cz.nkp.differ.DifferApplication;
@@ -15,6 +19,7 @@ import cz.nkp.differ.gui.components.DifferProgramTabButtonPanel;
 import cz.nkp.differ.gui.components.LoginRegisterComponent;
 import cz.nkp.differ.gui.components.UserFilesWidget;
 import cz.nkp.differ.user.UserDataController;
+import cz.nkp.differ.util.GeneralMacros;
 
 /**
  * The main application view.
@@ -24,14 +29,17 @@ import cz.nkp.differ.user.UserDataController;
 @SuppressWarnings("serial")
 public class DifferProgramTab extends HorizontalLayout implements LoginListener{
 	
-	CustomComponent loginPanel;
-	UserFilesWidget[] widgets;
+	private CustomComponent loginPanel;	
+	private Layout loggedInView,loggedOutView,customViewWrapper;
+	private Button customLayoutBackButton;
+	private UserFilesWidget fileSelector1,fileSelector2;
+	
+	private final DifferProgramTab this_internal = this;
+	//Used by button listener to reference DifferProgramTab object indirectly
+	
 	
 	public DifferProgramTab(){
 		setLoggedOutView();//Start the program logged out
-		widgets = new UserFilesWidget[2];
-		widgets[0] = new UserFilesWidget(); 
-		widgets[1] = new UserFilesWidget(); 
 	}
 	
 	@Override
@@ -59,28 +67,65 @@ public class DifferProgramTab extends HorizontalLayout implements LoginListener{
 	}
 	
 	private void setLoggedInView(){
+		
+		if(loggedInView == null){
+			loggedInView = new HorizontalLayout();
+			fileSelector1 = new UserFilesWidget(); 
+			fileSelector2 = new UserFilesWidget(); 
+			loggedInView.addComponent(fileSelector1);
+			loggedInView.addComponent(fileSelector2);
+			loggedInView.addComponent(new DifferProgramTabButtonPanel(this));
+			loggedInView.setSizeUndefined();
+		}
+		
 		this.removeAllComponents();
-		addComponent(widgets[0]);
-		addComponent(widgets[1]);
-		addComponent(new DifferProgramTabButtonPanel(this));
+		this.addComponent(loggedInView);
 		this.setSizeUndefined();
 	}
 	
 	public void setLoggedOutView(){
-		this.removeAllComponents();
-		if(loginPanel == null){
+		
+		if(loggedOutView == null){
+			loggedOutView = new HorizontalLayout();
 			loginPanel = new LoginRegisterComponent(this);
+			loggedOutView.addComponent(loginPanel);
 		}
-		addComponent(loginPanel);
+
+		this.removeAllComponents();
+		this.addComponent(loggedOutView);
+		this.setSizeUndefined();
+	}
+	
+	public void setCustomView(Layout layout){
+		if(customViewWrapper == null){
+			customViewWrapper = new VerticalLayout();
+			customLayoutBackButton = new Button("Back");
+			customLayoutBackButton.addListener(customViewWrapperBackButtonListener);
+		}
+		
+		customViewWrapper.removeAllComponents();
+		customViewWrapper.addComponent(customLayoutBackButton);
+		customViewWrapper.addComponent(layout);
+		customViewWrapper.setSizeUndefined();
+		
+		this.removeAllComponents();
+		this.addComponent(customViewWrapper);
 		this.setSizeUndefined();
 	}
 	
 	public File[] getSelectedFiles(){
-		File[] files = new File[2];
-		
-		files[0] = widgets[0].getSelectedFile();
-		files[1] = widgets[1].getSelectedFile();
-		
-		return files;
+		if(GeneralMacros.containsNull(fileSelector1,fileSelector2)){
+			return null;
+		}
+		return new File[]{fileSelector1.getSelectedFile(),fileSelector2.getSelectedFile()};
 	}
+	
+	private Button.ClickListener customViewWrapperBackButtonListener = new Button.ClickListener() {
+		
+		@Override
+		public void buttonClick(ClickEvent event) {
+			this_internal.removeAllComponents();
+			this_internal.setLoggedInView();
+		}
+	};
 }

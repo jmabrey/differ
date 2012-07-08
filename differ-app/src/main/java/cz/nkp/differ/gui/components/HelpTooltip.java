@@ -51,7 +51,8 @@ public class HelpTooltip extends CustomComponent{
 			
 			@Override
 			public String getMinimizedValueAsHTML() {
-				return "<div class=\"help_tooltip\"></div>";
+				//Help icon, or text backup if img is 404 etc
+				return "<img src=\"/differ/VAADIN/themes/differ/img/help_tooltip_icon.png\" alt= \"[?]\"height=\"15\" width=\"15\"/>";
 			}
 		};	
 		PopupView view = new PopupView(content);

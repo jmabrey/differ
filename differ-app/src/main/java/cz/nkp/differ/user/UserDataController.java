@@ -57,6 +57,7 @@ public class UserDataController{
 	
 	private static String currentUser = null;
 	
+	
 	private UserDataController(){
 		try {
 			passwordHashDigest = MessageDigest.getInstance(PASSWORD_HASH_ALGORITHM_NAME);
@@ -81,7 +82,7 @@ public class UserDataController{
 	 * @param userSuppliedPassword
 	 * @return
 	 */
-	public UserLoginResult attemptLogin(String username, String userSuppliedPassword){
+	public synchronized UserLoginResult attemptLogin(String username, String userSuppliedPassword){
 		
 		if(!DatabaseManager.isLoaded()){
 			LOGGER.error("Database is unloaded. User verification failed.");
@@ -128,19 +129,23 @@ public class UserDataController{
 		String userSuppliedPasswordHash = getHashedPassword(userSuppliedPassword.toCharArray(), dbSuppliedSalt.getBytes());
 		
 		if(dbSuppliedPasswordHash.equals(userSuppliedPasswordHash)){
-			//Valid user			
-			currentUser = username;
+			//Valid user
+				currentUser = username;
+				LOGGER.trace("Logged in user: " + currentUser);
 			return UserLoginResult.USER_LOGIN_SUCCESS;
 		}
 		
 		return UserLoginResult.USER_LOGIN_FAIL;//If all else fails, end the method fail-safe			
 	}
 	
-	public String getLoggedInUser(){
-		return currentUser;
+	public synchronized String getLoggedInUser(){
+			if(currentUser == null){
+				LOGGER.warn("No user logged in!");
+			}
+			return currentUser;
 	}
 	
-	public UserRegisterResult registerUser(String username, String passwordPlaintext){
+	public synchronized UserRegisterResult registerUser(String username, String passwordPlaintext){
 		if(GeneralMacros.containsNull(username,passwordPlaintext)){
 			LOGGER.debug("Null username or password!");
 			return UserRegisterResult.DATABASE_ERROR;

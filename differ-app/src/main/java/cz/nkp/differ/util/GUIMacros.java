@@ -9,6 +9,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 
 import cz.nkp.differ.DifferApplication;
@@ -16,14 +17,16 @@ import cz.nkp.differ.gui.components.HelpTooltip;
 
 /**
  * Contains GUI Macros to simplify both code readability and future code modifications. These methods are
- * common actions for GUI components.If target is null this method will fail with an error
- * that will end the application session.
+ * common actions for GUI components.
  * @author Joshua Mabrey
  * Jun 12, 2012
  */
 public class GUIMacros {
+	
 	static Logger LOGGER = Logger.getLogger(GUIMacros.class);
 	
+	public static final Label ErrorLabel = new Label("There has been an error.");
+		
 	/**
 	 * Returns a Button.ClickListener that will open the Window passed to the method whenever the component
 	 * the listener is attached to fires the ButtonClick event.

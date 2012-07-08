@@ -14,7 +14,12 @@ package net.domesdaybook.reader;
  */
 public class ReadByteException extends RuntimeException {
 
-    public ReadByteException(Exception ex) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5578354344897906813L;
+
+	public ReadByteException(Exception ex) {
         super(ex);
     }
 

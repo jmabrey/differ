@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.sun.jna.Native;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 import cz.nkp.differ.JNAPluginExample.Kernel32;
 
@@ -37,7 +38,7 @@ public class JNAPluginExamplePluginInterface implements DifferPluginInterface{
 	@Override
 	public Component getPluginDisplayComponent() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Label(getName());
 	}
 
 	@Override

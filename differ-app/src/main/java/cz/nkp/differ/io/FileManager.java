@@ -2,12 +2,15 @@ package cz.nkp.differ.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import cz.nkp.differ.DifferApplication;
+import cz.nkp.differ.gui.components.UserFilesWidget;
 import cz.nkp.differ.util.GeneralMacros;
 
 public class FileManager {
@@ -22,7 +25,7 @@ public class FileManager {
 		FILE_ADDED_FAILURE
 	}
 		
-	public static synchronized final FileAddResult addFile(String username,File file,String fileName){
+	public static final FileAddResult addFile(String username,File file,String fileName){
 		File userDir = getUserDirectory(username);
 		if(GeneralMacros.containsNull(username,file,userDir)){
 			//Most probable reason is invalid username
@@ -51,24 +54,16 @@ public class FileManager {
 			
 			FileUtils.deleteQuietly(tempFileInUserDir);
 			
+			//Lets have the File Table UI components refresh
+			UserFilesWidget.refreshFiles();
+			
 			return FileAddResult.FILE_ADDED;
 		} catch (IOException e) {
 			return FileAddResult.FILE_ADDED_FAILURE;
 		}
 	}
 	
-	public synchronized static final File[] getUserFiles(String username){
-		File userDir = getUserDirectory(username);
-		if(!GeneralMacros.containsNull(userDir)){
-			return userDir.listFiles();
-		}
-		else{
-			LOGGER.warn("Unable to get user files for user: " + username);
-			return null;
-		}
-	}
-	
-	public static final File getUsersDirectory(){
+	public static final File getRootUsersDirectory(){
 		if(GeneralMacros.containsNull(homeDir)){
 			homeDir = DifferApplication.getHomeDirectory();
 		}
@@ -82,14 +77,14 @@ public class FileManager {
 		return usersDir;		
 	}
 	
-	private static final File getUserDirectory(String username){
+	public static final File getUserDirectory(String username){
 		if(GeneralMacros.containsNull(username)){
 			return null;
 		}
 		
 		String usernameHash = DigestUtils.md5Hex(username);
 		
-		File userDir = new File(getUsersDirectory(),usernameHash);
+		File userDir = new File(getRootUsersDirectory(),usernameHash);
 		
 		if(!userDir.exists()){
 			userDir.mkdir();
@@ -98,4 +93,9 @@ public class FileManager {
 		return userDir;
 	}
 	
+	public static final boolean isValidFileLength(long length){
+		return true;
+	}
 }
+
+

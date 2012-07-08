@@ -6,6 +6,8 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.LoginForm.LoginListener;
+import com.vaadin.ui.VerticalLayout;
+
 import cz.nkp.differ.gui.windows.RegisterUserWindow;
 import cz.nkp.differ.util.GUIMacros;
 
@@ -31,6 +33,16 @@ public class LoginRegisterComponent extends CustomComponent{
 		Button registerButton = new Button("Register");
 		registerButton.addListener(GUIMacros.createWindowOpenButtonListener(new RegisterUserWindow()));
 		layout.addComponent(registerButton,"left: 65px; top: 80px;");
-		return layout;
+		
+		VerticalLayout wrapper = new VerticalLayout();
+		
+		wrapper.addComponent(layout);	
+		
+		Button guestLogin = new Button("Guest Login");
+		guestLogin.setEnabled(false);
+		
+		wrapper.addComponent(guestLogin);
+		
+		return wrapper;
 	}
 }
