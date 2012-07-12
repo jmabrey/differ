@@ -38,8 +38,6 @@ public class PluginCompareComponent extends CustomComponent{
 			return layout;
 		}
 		
-		layout.addComponent(new PluginComparePanel(plugins,new File[]{image1}));
-		layout.addComponent(new PluginComparePanel(plugins,new File[]{image2}));
 		layout.addComponent(new PluginComparePanel(plugins,new File[]{image1,image2}));
 		return layout;
 	}

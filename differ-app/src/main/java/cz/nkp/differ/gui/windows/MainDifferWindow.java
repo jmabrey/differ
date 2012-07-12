@@ -70,7 +70,7 @@ public class MainDifferWindow extends Window{
 	/**
 	 * Loads a dynamic tab as a <code>Layout</code> which is then added to the given TabSheet
 	 * given <code>TabSheet</code>
-	 * @param source Layout to add to the tab, the Layout is responsible for implementing any and interactions by itself
+	 * @param source Layout to add to the tab, the Layout is responsible for implementing any interactions by itself
 	 * @param caption String that the tab should have as its name in the TabSheet
 	 * @param parent TabSheet to add the new tab to
 	 */
