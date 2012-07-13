@@ -20,7 +20,7 @@ import cz.nkp.differ.gui.components.HelpTooltip;
  * common actions for GUI components.
  * @author Joshua Mabrey
  * Jun 12, 2012
- */
+ */ 
 public class GUIMacros {
 	
 	static Logger LOGGER = Logger.getLogger(GUIMacros.class);

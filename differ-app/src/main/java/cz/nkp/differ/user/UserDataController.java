@@ -21,7 +21,7 @@ import cz.nkp.differ.util.GeneralMacros;
  * Class for application wide user authentication.
  * @author Joshua Mabrey
  * May 4, 2012
- */
+ */ 
 public class UserDataController{
 	
 

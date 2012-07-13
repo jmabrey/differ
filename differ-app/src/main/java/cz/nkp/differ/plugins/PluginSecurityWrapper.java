@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
+import com.vaadin.Application;
 import com.vaadin.ui.Component;
 import cz.nkp.differ.plugins.DifferPluginInterface;
 
@@ -66,20 +67,6 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 	}
 
 	@Override
-	public int getDesiredPosition() {
-		setSecurityMode(true);
-		int child_response = 0;
-		try{
-			child_response = child.getDesiredPosition();
-		}catch(SecurityException se){
-			LOGGER.warn(child.getName() + " executed disallowed code",se);
-		}
-		 
-		setSecurityMode(false);
-		return child_response;
-	}
-
-	@Override
 	public Component getPluginDisplayComponent() {
 		setSecurityMode(true);
 		Component child_response = null;
@@ -97,6 +84,17 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		setSecurityMode(true);
 		try{
 			child.setLogger(logger);
+		}catch(SecurityException se){
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
+		}		
+		setSecurityMode(false);	
+	}
+
+	@Override
+	public void setApplication(Application application) {
+		setSecurityMode(true);
+		try{
+			child.setApplication(application);
 		}catch(SecurityException se){
 			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}		

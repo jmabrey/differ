@@ -15,9 +15,15 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>	
 		<javadjvu-lib.version>0.8.9-RELEASE</javadjvu-lib.version>
+		<apache.commons-io.version>2.3</apache.commons-io.version>
+		<jai.version>1.1.3</jai.version>
 	</properties>
 	
 	<repositories>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
 		<repository>
 		  <id>apache-snapshots</id>
 		  <url>https://repository.apache.org/content/groups/snapshots/</url>
@@ -28,7 +34,7 @@
 			<enabled>true</enabled>
 		  </snapshots>
 		</repository>
-	</repositories>
+    </repositories>
 	
 	<build>
 	   <plugins>
@@ -49,11 +55,14 @@
 			    <version>${maven.jar.plugin.version}</version>
 			    <configuration>
 					<archive>
-						<manifestEntries>
-							<!--<Class-Path>libs/jna-${jna.version}.jar</Class-Path>-->
-							<Class-Path>libs/javadjvu-lib-${javadjvu-lib.version}.jar</Class-Path>
-						</manifestEntries>
-					</archive>
+					  <index>true</index>
+					  <manifest>
+						<addClasspath>true</addClasspath>
+						<classpathPrefix>libs/</classpathPrefix>
+						<classpathLayoutType>custom</classpathLayoutType>
+						<customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
+					  </manifest>
+				    </archive>
 					<outputDirectory>${differ.bin.dir}/plugins</outputDirectory>
 			    </configuration>
 			</plugin>
@@ -69,34 +78,41 @@
 								<configuration>
 									<outputDirectory>${differ.bin.dir}/plugins/libs/</outputDirectory>
 									<excludeScope>provided</excludeScope>
+									<stripVersion>true</stripVersion>
 								</configuration>
 							</execution>
 						</executions>
 			</plugin>
 			
+			<plugin>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.1</version>
+					<executions>
+						<execution>
+						  <phase>package</phase>
+						  <goals>
+							<goal>build-classpath</goal>
+						  </goals>
+						</execution>
+					</executions>
+					<configuration>
+						<fileSeparator>\\\\</fileSeparator>
+						<outputFilterFile>true</outputFilterFile>
+						<outputFile>${project.build.directory}/classpath.properties</outputFile>
+					</configuration>
+			</plugin>
+
+			
 		</plugins>
 	</build>
 	
 	<dependencies>
-   
 	    <dependency>
 			<groupId>cz.nkp</groupId>
 			<artifactId>differ-plugins-root</artifactId>
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!-- 
-			I packaged this dependency personally and submitted it to Maven central. For now it only resides on
-			my personal repository, however it will be available from Maven central in a few days
-		-->
-		<dependency>
-			<groupId>com.lizardtech</groupId>
-			<artifactId>javadjvu-lib</artifactId>
-			<version>${javadjvu-lib.version}</version>
-		</dependency>
-
-		
 	</dependencies>
   
 </project>

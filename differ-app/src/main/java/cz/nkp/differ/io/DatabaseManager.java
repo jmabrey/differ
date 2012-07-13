@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import cz.nkp.differ.DifferApplication;
 import cz.nkp.differ.util.GeneralMacros;
-
+ 
 public class DatabaseManager {
 	
 	private static Logger LOGGER = Logger.getLogger(DatabaseManager.class);

@@ -2,6 +2,7 @@ package cz.nkp.differ.plugins;
 
 import java.io.File;
 
+import com.vaadin.Application;
 import com.vaadin.ui.Component;
 
 import org.apache.log4j.Logger;
@@ -27,13 +28,6 @@ public interface DifferPluginInterface{
 	void addFiles(File... file);
 	
 	/**
-	 * Return the plugins desired display positioning as a non-negative integer. Larger numbers are positioned further down the queue of plugins
-	 * when the application prepares them for display.  If the response is negative then the positioning is Integer.MAX_VALE;
-	 * @return
-	 */
-	int getDesiredPosition();
-	
-	/**
 	 * Return a Component that will be bound by the differ runtime into the application.
 	 * @return
 	 */
@@ -45,4 +39,10 @@ public interface DifferPluginInterface{
 	 * @param logger
 	 */
 	void setLogger(Logger logger);
+	
+	/**
+	 * Called by the Differ runtime to set the plugins application instance.
+	 * @param logger
+	 */
+	void setApplication(Application application);
 }

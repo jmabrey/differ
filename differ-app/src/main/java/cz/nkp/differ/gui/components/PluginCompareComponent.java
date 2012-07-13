@@ -98,7 +98,7 @@ class PluginComparePanel extends CustomComponent{
 		try{
 			pluginComponent = target.getPluginDisplayComponent();
 		}catch(Exception e){
-			LOGGER.warn("Plugin " + target.getName() + " failed");
+			LOGGER.warn("Plugin " + target.getName() + " failed",e);
 			return GUIMacros.ErrorLabel;
 		}
 		

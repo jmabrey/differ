@@ -14,7 +14,7 @@ import cz.nkp.differ.util.GUIMacros;
 
 @SuppressWarnings("serial")
 public class ProfileCreationWindow extends Window{
-	
+	 
 	public ProfileCreationWindow(){
 		setCaption("Create Profile");
 		setModal(true);

@@ -58,7 +58,6 @@ public class PluginManager {
 	}
 	
 	public DifferPluginInterface[] getPlugins(){
-		Collections.sort(pluginClassesWrapped, new DifferPluginInterfaceComparator());
 		return pluginClassesWrapped.toArray(new DifferPluginInterface[0]);
 	}
 	
@@ -85,7 +84,7 @@ public class PluginManager {
 		pluginClassesUnwrapped.clear();
 		pluginClassesUnwrapped = null;
 		
-		setLoggers();
+		givePluginRuntimeResponsibilities();
 	}
 	
 	private static final File[] getPluginSearchLocations(){
@@ -195,28 +194,11 @@ public class PluginManager {
 	/**
 	 * Sets the plugin loggers. Static Access suppressed to inherit logger from Plugin Logger root.
 	 */
-	private static void setLoggers(){
+	private static void givePluginRuntimeResponsibilities(){
 		
 		for(DifferPluginInterface dfi : pluginClassesWrapped){
 			dfi.setLogger(PLUGIN_LOGGER.getLogger(dfi.getName()));
+			dfi.setApplication(new PluginApplicationWrapper(DifferApplication.getCurrentApplication()));
 		}
 	}
-}
-
-class DifferPluginInterfaceComparator implements Comparator<DifferPluginInterface>{
-
-	@Override
-	public int compare(DifferPluginInterface d1, DifferPluginInterface d2) {
-				
-		if(d1.getDesiredPosition() < d2.getDesiredPosition()){
-			//d1 comes first
-			return 1;
-		}
-		else if(d2.getDesiredPosition() < d1.getDesiredPosition()){
-			//d2 comes first
-			return -1;
-		}
-		else return 0;//equal
-	}
-	
 }

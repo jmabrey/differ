@@ -98,6 +98,20 @@
       <id>vaadin-addons</id>
       <url>http://maven.vaadin.com/vaadin-addons</url>
     </repository>
+	<repository>
+		<id>com.springsource.repository.bundles.external</id>
+		<url>http://repository.springsource.com/maven/bundles/external</url>
+	</repository>
+	<repository>
+	  <id>apache-snapshots</id>
+	  <url>https://repository.apache.org/content/groups/snapshots/</url>
+	  <releases>
+		<enabled>false</enabled>
+	  </releases>
+	  <snapshots>
+		<enabled>true</enabled>
+	  </snapshots>
+	</repository>
   </repositories>
 
   <pluginRepositories>
@@ -143,8 +157,6 @@
 		<version>${derby.version}</version>
 	</dependency>
 	
-	
-	
 	<dependency>
 		<groupId>commons-io</groupId>
 		<artifactId>commons-io</artifactId>
@@ -155,6 +167,40 @@
 		<groupId>commons-codec</groupId>
 		<artifactId>commons-codec</artifactId>
 		<version>${apache.commons-codec.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-imaging</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</dependency>
+	
+	<!-- 
+		I packaged this dependency personally and submitted it to Maven central. For now it only resides on
+		my personal repository, however it will be available from Maven central in a few days
+	-->
+	<dependency>
+		<groupId>com.lizardtech</groupId>
+		<artifactId>javadjvu-lib</artifactId>
+		<version>${javadjvu-lib.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>com.lizardtech</groupId>
+		<artifactId>javadjvubean-lib</artifactId>
+		<version>${javadjvu-lib.version}</version>
+	</dependency>
+		
+	<dependency>
+		<groupId>javax.media.jai</groupId>
+		<artifactId>com.springsource.javax.media.jai.core</artifactId>
+		<version>${jai.version}</version>
+	</dependency>
+
+	<dependency> 
+		<groupId>javax.media.jai</groupId>
+		<artifactId>com.springsource.javax.media.jai.codec</artifactId>
+		<version>${jai.version}</version>
 	</dependency>
             
 	
@@ -205,6 +251,6 @@
 	   <artifactId>toolkit-productivity-tools</artifactId>
 	   <version>1.2.0</version>
 	</dependency>
-	
+
   </dependencies>
 </project>
