@@ -6,7 +6,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,16 +13,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.XorDescriptor;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.vaadin.addon.JFreeChartWrapper;
@@ -41,6 +38,7 @@ import cz.nkp.differ.plugins.ComparePluginInterface;
 
 public class ImageFileAnalysisContainer{
 	
+	private Logger LOGGER;
 	/**
 	* this gets rid of exception for not using native acceleration
 	*/
@@ -50,7 +48,7 @@ public class ImageFileAnalysisContainer{
 	}
 	
 	private static enum FileType{
-		JPEG,JPEG2000,TIFF,DJVU,PNG,OTHER
+		JPEG,JPEG2000,TIFF,DJVU,PNG,COMBONATION,OTHER
 	};
 	
 	private static enum FileValidation{
@@ -66,9 +64,11 @@ public class ImageFileAnalysisContainer{
 	private FileType type = null;
 	private File file = null;
 	private String title;
+	private BufferedImage image = null;
 	
 	public ImageFileAnalysisContainer(File f) throws IOException{
 		file = f;
+		LOGGER = ComparePluginInterface.LOGGER;
 		FileValidation validFileResult = isValid();
 		if(validFileResult != FileValidation.VALID){
 			throw new IOException("The file is not valid: FileValidation." + validFileResult.toString());
@@ -76,28 +76,11 @@ public class ImageFileAnalysisContainer{
 		title = f.getName();
 	}
 	
-	private ImageFileAnalysisContainer(BufferedImage image1, BufferedImage image2){
-		type = FileType.OTHER;
-		if(image1.getWidth(null) != image2.getWidth(null) ||
-		   image1.getHeight(null) != image2.getHeight(null)){
-			return;
-		}
-		int image_width = image1.getWidth(null);
-		int image_height = image1.getHeight(null);
-
-		BufferedImage result = new BufferedImage(image_width, image_height, image1.getType());
-		
-		for(int x = 0;x < image_width; x++){
-			for(int y = 0;y < image_height; y++){
-				int image1RGB = image1.getRGB(x, y);
-				int image2RGB = image2.getRGB(x, y);	
-				result.setRGB(x,y,image1RGB ^ image2RGB);
-			}
-		}
-		
-		image = result;
+	private ImageFileAnalysisContainer(BufferedImage combo1, BufferedImage combo2) throws ImageReadException, IOException{
+		type = FileType.COMBONATION;
+		LOGGER = ComparePluginInterface.LOGGER;		
+		getImage(combo1,combo2);
 	}
-	
 	
 	public FileValidation isValid(){
 		
@@ -160,14 +143,14 @@ public class ImageFileAnalysisContainer{
 		
 	}
 	
-	private BufferedImage image;
-	
 	public BufferedImage getImage() throws ImageReadException, IOException{
-		
 		if(image != null){
 			return image;
-		}
-		
+		}	
+		return getImage(null,null);
+	}
+	
+	private synchronized BufferedImage getImage(BufferedImage combo1, BufferedImage combo2) throws ImageReadException, IOException{
 		switch(getFileType()){
 			case JPEG:
 				image = ImageIO.read(file);
@@ -192,21 +175,55 @@ public class ImageFileAnalysisContainer{
 				 break;
 			case PNG:
 				image = Imaging.getBufferedImage(file);
+				break;		
+			case COMBONATION:
+				if(combo1 == null || combo2 == null){
+					LOGGER.warn("Image was null.");
+					image = null;
+				}
+				if(combo1.getWidth(null) != combo2.getWidth(null) ||
+				   combo1.getHeight(null) != combo2.getHeight(null)){
+					LOGGER.warn("Image dimensions are not the same.");
+					image = null;
+					break;
+				}
+				
+				if(combo1.getType() != combo2.getType()){
+					LOGGER.warn("Image types are not the same.");
+					image = null;
+					break;
+				}
+				
+				int image_width = combo1.getWidth(null);
+				int image_height = combo1.getHeight(null);
+
+				image = new BufferedImage(image_width, image_height, combo1.getType());
+				
+				for(int x = 0;x < image_width; x++){
+					for(int y = 0;y < image_height; y++){
+						int combo1RGB = combo1.getRGB(x, y);
+						int combo2RGB = combo2.getRGB(x, y);	
+						image.setRGB(x,y,combo1RGB ^ combo2RGB);
+					}
+				}
+				
 				break;
 			case OTHER:
 				image = null;
 				break;
 			default:
-				image = null;
+				LOGGER.warn("Need to update switch statement",new RuntimeException());
 				break;
 		}
+		
 		if(image == null){
 			throw new IOException("Unable to load the image.");
 		}
+		
 		return image;
 	}
 	
-	public static ImageFileAnalysisContainer getCombinationImage(ImageFileAnalysisContainer cf1, ImageFileAnalysisContainer cf2) throws IOException, ImageReadException{
+	public static ImageFileAnalysisContainer getCombinationImageFileAnalysis(ImageFileAnalysisContainer cf1, ImageFileAnalysisContainer cf2) throws IOException, ImageReadException{
 		if(cf1.isValid() == FileValidation.VALID && cf2.isValid() == FileValidation.VALID){
 			return new ImageFileAnalysisContainer(cf1.getImage(),cf2.getImage());
 		}

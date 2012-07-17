@@ -15,6 +15,13 @@ import org.apache.log4j.Logger;
  */
 public interface DifferPluginInterface{
 	
+	public enum PluginType{
+		ImageProcessing
+	}
+	
+	
+	
+	PluginType getType();
 	/**
 	 * Return the name of the plugin.
 	 * @return
@@ -28,11 +35,11 @@ public interface DifferPluginInterface{
 	void addFiles(File... file);
 	
 	/**
-	 * Return a Component that will be bound by the differ runtime into the application.
+	 * Set the callback that should be notified of plugin progress and completion
 	 * @return
 	 */
-	Component getPluginDisplayComponent();
-	
+	void setPluginDisplayComponentCallback(PluginComponentReadyCallback c);
+		
 	/**
 	 * Called by the Differ runtime to set the plugins logger instance. The plugin SHOULD ONLY use this logger
 	 * to log any output data.

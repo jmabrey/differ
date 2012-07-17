@@ -67,16 +67,14 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 	}
 
 	@Override
-	public Component getPluginDisplayComponent() {
+	public void setPluginDisplayComponentCallback(PluginComponentReadyCallback c){
 		setSecurityMode(true);
-		Component child_response = null;
 		try{
-			child_response = child.getPluginDisplayComponent();
+			child.setPluginDisplayComponentCallback(c);
 		}catch(SecurityException se){
 			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}
 		setSecurityMode(false);
-		return child_response;
 	}
 
 	@Override
@@ -99,6 +97,19 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 			LOGGER.warn(child.getName() + " executed disallowed code",se);
 		}		
 		setSecurityMode(false);	
+	}
+
+	@Override
+	public PluginType getType() {
+		setSecurityMode(true);
+		DifferPluginInterface.PluginType child_response = null;
+		try{
+			 child_response = child.getType();
+		}catch(SecurityException se){
+			LOGGER.warn(child.getName() + " executed disallowed code",se);
+		}
+		setSecurityMode(false);
+		return child_response;
 	}
 
 }

@@ -13,15 +13,16 @@ import com.vaadin.ui.VerticalLayout;
 import cz.nkp.differ.gui.tabs.DifferProgramTab;
 import cz.nkp.differ.gui.windows.ProfileCreationWindow;
 import cz.nkp.differ.gui.windows.UploadFilesWindow;
+import cz.nkp.differ.plugins.DifferPluginInterface;
+import cz.nkp.differ.plugins.PluginManager;
 import cz.nkp.differ.util.GUIMacros;
 
 public class DifferProgramTabButtonPanel extends CustomComponent{
 
 	
 	private static final long serialVersionUID = -3190731385605086001L;
-	private Button uploadFilesButton, createProfilesButton, logoutButton, compareButton;
+	private Button uploadFilesButton, createProfilesButton, logoutButton;
 	private DifferProgramTab parent;
-	
 	
 	public DifferProgramTabButtonPanel(DifferProgramTab parent){
 		this.parent = parent;		
@@ -45,21 +46,44 @@ public class DifferProgramTabButtonPanel extends CustomComponent{
 		createProfilesButton = new Button("Create New Profile");	
 		createProfilesButton.addListener(GUIMacros.createWindowOpenButtonListener(new ProfileCreationWindow()));
 		
-		
-		compareButton = new Button("Compare");
-		compareButton.addListener(compareButtonClickListener);		
-		
 		logoutButton = new Button("Logout");
 		logoutButton.addListener(logoutButtonClickListener);
-		
-		buttonPanelRoot.addComponent(compareButton);
-		
+				
 		buttonPanelRoot.addComponent(GUIMacros.bindTooltipToComponent(uploadFilesButton, "Upload Files", "Use this function to upload new image files"));
 		buttonPanelRoot.addComponent(GUIMacros.bindTooltipToComponent(createProfilesButton, "Create Profile", "Create a new image processing profile"));
+		
+		for(Button b : generatePluginButtons()){
+			buttonPanelRoot.addComponent(b);
+		}
 		
 		buttonPanelRoot.addComponent(logoutButton);
 		
 		return buttonPanelRoot;
+	}
+	
+	private Button[] generatePluginButtons(){
+		DifferPluginInterface[] plugins = PluginManager.getInstance().getPluginsByType(DifferPluginInterface.PluginType.ImageProcessing);
+		Button[] buttons = new Button[plugins.length];
+		
+		for(int i = 0; i < plugins.length && (plugins.length == buttons.length); i++){
+			final DifferPluginInterface d = plugins[i];
+			Button pluginButton = new Button();
+			pluginButton.setCaption(d.getName());
+			pluginButton.addListener(new Button.ClickListener() {
+				@Override
+				public void buttonClick(ClickEvent event) {
+					File[] files = parent.getSelectedFiles();
+					if(files.length > 1){
+						HorizontalLayout layout = new HorizontalLayout();
+						layout.addComponent(new PluginDisplayComponent(d,files[0], files[1]));
+						parent.setCustomView(layout);
+					}
+				}
+			});
+			buttons[i] = pluginButton;
+		}
+		
+		return buttons;
 	}
 	
 	private final Button.ClickListener logoutButtonClickListener = new Button.ClickListener() {
@@ -72,18 +96,4 @@ public class DifferProgramTabButtonPanel extends CustomComponent{
 		}
 	};
 	
-	private final Button.ClickListener compareButtonClickListener = new Button.ClickListener() {
-		
-		private static final long serialVersionUID = 137952271090817351L;
-
-		@Override
-		public void buttonClick(ClickEvent event) {
-			File[] files = parent.getSelectedFiles();
-			if(files.length > 1){
-				HorizontalLayout layout = new HorizontalLayout();
-				layout.addComponent(new PluginCompareComponent(files[0], files[1]));
-				parent.setCustomView(layout);
-			}
-		}
-	};
 }

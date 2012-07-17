@@ -5,13 +5,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import com.vaadin.ui.Component;
 
 import cz.nkp.differ.DifferApplication;
 import cz.nkp.differ.util.GeneralMacros;
@@ -59,6 +59,16 @@ public class PluginManager {
 	
 	public DifferPluginInterface[] getPlugins(){
 		return pluginClassesWrapped.toArray(new DifferPluginInterface[0]);
+	}
+		
+	public final DifferPluginInterface[] getPluginsByType(DifferPluginInterface.PluginType type){
+		List<DifferPluginInterface> interfacesByType = new ArrayList<DifferPluginInterface>();
+		for(DifferPluginInterface d : pluginClassesWrapped){
+			if(d.getType() == type){
+				interfacesByType.add(d);
+			}
+		}
+		return interfacesByType.toArray(new DifferPluginInterface[0]);
 	}
 	
 	private void load(){		
