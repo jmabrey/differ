@@ -2,6 +2,10 @@ Compilation Information:
  
  You must have Maven installed.
  
+
+ 
+==If you recieve errors about the javadjvu library missing, run 'mvn install' from the differ-libs-from-sources directory.==
+ 
 The following commands should be run from the differ root directory.
  
 To package the Differ application into a .war (which is by default placed in ./bin) 

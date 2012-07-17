@@ -10,8 +10,7 @@
 	</prerequisites>
 		
 	<properties>
-		<differ.bin.dir>./bin</differ.bin.dir>
-	
+		<differ.bin.dir>./bin</differ.bin.dir>	
 	    <vaadin.version>6.8.0</vaadin.version>
 		<gwt.version>2.4.0</gwt.version>
 		<derby.version>10.8.2.2</derby.version>

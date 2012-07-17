@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.lizardtech</groupId>
+  <artifactId>javadjvu-lib</artifactId>
+  <version>0.8.9-RELEASE</version>
+  <name>JavaDJVU</name>  
+  <description>The Java DJVU file handling library. Originally part of the JavaDJVU viewer project, this library allows the loading of DJVU formatted files in Java.</description>
+  <url>http://javadjvu.foxtrottechnologies.com/</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License Version 3</name>
+      <url>http://www.gnu.org/licenses/gpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>	
+  </properties>
+  
+  <scm>
+	  <connection>scm:svn:https://javadjvu.svn.sourceforge.net/svnroot/javadjvu/trunk</connection>
+	  <developerConnection>scm:svn:https://javadjvu.svn.sourceforge.net/svnroot/javadjvu/trunk/</developerConnection>
+	  <url>http://javadjvu.svn.sourceforge.net/viewvc/javadjvu/trunk</url>
+  </scm>
+  
+  <developers>
+    <developer>
+      <id>docbill</id>
+      <name>Dr. Bill C Riemers</name>
+      <email>docbill@users.sourceforge.net</email>
+    </developer>
+	<developer>
+      <id>jmwhite</id>
+      <name>Jim White</name>
+      <email>jmwhite@users.sourceforge.net</email>
+    </developer>
+	<developer>
+      <id>leonb</id>
+      <name>Leon Bottou</name>
+      <email>leonb@users.sourceforge.net</email>
+    </developer>
+	<developer>
+      <id>profshadoko</id>
+      <name>Yann LeCun</name>
+      <email>profshadoko@users.sourceforge.net</email>
+    </developer>
+  </developers>  
+  
+  <!--<build>	
+    <plugins>
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+		<version>1.4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-javadoc-plugin</artifactId>
+		  <version>2.3</version>
+		  <executions>
+			<execution>
+			  <id>attach-javadocs</id>
+			  <goals>
+				<goal>jar</goal>
+			  </goals>
+			</execution>
+		  </executions>
+	  </plugin>
+	  <plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-source-plugin</artifactId>
+		  <version>	2.0.4</version>
+		  <executions>
+			<execution>
+			  <id>attach-sources</id>
+			  <goals>
+				<goal>jar</goal>
+			  </goals>
+			</execution>
+		  </executions>
+	  </plugin>
+
+    </plugins>
+  </build>  -->
+  
+  <dependencies><!-- No dependencies --></dependencies>
+</project>

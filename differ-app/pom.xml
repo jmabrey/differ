@@ -176,21 +176,15 @@
 	</dependency>
 	
 	<!-- 
-		I packaged this dependency personally and submitted it to Maven central. For now it only resides on
-		my personal repository, however it will be available from Maven central in a few days
-	-->
+			I packaged this dependency personally and submitted it to Maven central. Until then you need to install it from
+			differ-libs-from-sources to your local repo
+		-->
 	<dependency>
 		<groupId>com.lizardtech</groupId>
 		<artifactId>javadjvu-lib</artifactId>
 		<version>${javadjvu-lib.version}</version>
 	</dependency>
-	
-	<dependency>
-		<groupId>com.lizardtech</groupId>
-		<artifactId>javadjvubean-lib</artifactId>
-		<version>${javadjvu-lib.version}</version>
-	</dependency>
-		
+			
 	<dependency>
 		<groupId>javax.media.jai</groupId>
 		<artifactId>com.springsource.javax.media.jai.core</artifactId>
