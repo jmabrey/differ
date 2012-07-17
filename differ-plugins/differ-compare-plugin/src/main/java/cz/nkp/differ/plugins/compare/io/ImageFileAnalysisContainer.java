@@ -31,6 +31,7 @@ import com.lizardtech.djvubean.DjVuImage;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 
@@ -230,12 +231,19 @@ public class ImageFileAnalysisContainer{
 		else throw new IOException("Multi File Comparison failed, file invalid.");
 	}
 	
+	public Component getMD5() throws ImageReadException, IOException{
+		Label md5Label = new Label();
+		String md5 = ImageDatasetProcessor.getImageMD5(getImage());
+		md5Label.setCaption("MD5: " + md5);
+		return md5Label;
+	}
+	
 	public Component getHistogram() throws ImageReadException, IOException{
 	    JFreeChart histogram = ChartFactory.createXYLineChart(
 	    		"Histogram",
 	    		"pixel",
 	    		"value",
-	    		ImageHistogramDatasetProcessor.getXYDatasets(getImage()),
+	    		ImageDatasetProcessor.getHistogramDataset(getImage()),
 	    		PlotOrientation.VERTICAL,
 	    		false,
 	    		false,
@@ -272,6 +280,7 @@ public class ImageFileAnalysisContainer{
 		Embedded image = new Embedded(title,new BufferedImageStreamResource(getBitmapScaledImage(300,300)));
 		image.setType(Embedded.TYPE_IMAGE);
 		layout.addComponent(image);
+		layout.addComponent(getMD5());
 		layout.addComponent(getHistogram());
 		return layout;
 	}

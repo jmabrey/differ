@@ -87,6 +87,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${apache.commons-codec.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>javax.media.jai</groupId>
 			<artifactId>com.springsource.javax.media.jai.core</artifactId>
 			<version>${jai.version}</version>

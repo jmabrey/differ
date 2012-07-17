@@ -11,7 +11,7 @@
 		<artifactId>differ-plugins</artifactId>
 		<version>1.0</version>
 	</parent>   
-
+ 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>	
 		<javadjvu-lib.version>0.8.9-RELEASE</javadjvu-lib.version>
