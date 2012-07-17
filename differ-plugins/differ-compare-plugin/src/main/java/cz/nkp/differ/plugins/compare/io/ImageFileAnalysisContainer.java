@@ -29,11 +29,18 @@ import com.lizardtech.djvu.DjVuPage;
 import com.lizardtech.djvu.Document;
 import com.lizardtech.djvubean.DjVuImage;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Runo;
 
 import cz.nkp.differ.plugins.ComparePluginInterface;
 
@@ -61,11 +68,16 @@ public class ImageFileAnalysisContainer{
 	}
 		
 	private static final long VALID_FILE_SIZE = 15 * FileUtils.ONE_MB;
+	private static final int COMPONENT_SIZE_SCALE_FACTOR = 300;
 	
+	
+	private boolean errorFlag = false;
+	private String errorMessage = "";
 	private FileType type = null;
 	private File file = null;
 	private String title;
 	private BufferedImage image = null;
+	private ImageDatasetProcessor processor;
 	
 	public ImageFileAnalysisContainer(File f) throws IOException{
 		file = f;
@@ -79,6 +91,7 @@ public class ImageFileAnalysisContainer{
 	
 	private ImageFileAnalysisContainer(BufferedImage combo1, BufferedImage combo2) throws ImageReadException, IOException{
 		type = FileType.COMBONATION;
+		title = "Comparison";
 		LOGGER = ComparePluginInterface.LOGGER;		
 		getImage(combo1,combo2);
 	}
@@ -148,7 +161,16 @@ public class ImageFileAnalysisContainer{
 		if(image != null){
 			return image;
 		}	
-		return getImage(null,null);
+		BufferedImage imageToReturn = getImage(null,null);
+		
+		if(imageToReturn == null){
+			imageToReturn = new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB);
+		}
+		else{
+			processor = new ImageDatasetProcessor(imageToReturn);
+		}
+		
+		return imageToReturn;
 	}
 	
 	private synchronized BufferedImage getImage(BufferedImage combo1, BufferedImage combo2) throws ImageReadException, IOException{
@@ -181,6 +203,7 @@ public class ImageFileAnalysisContainer{
 				if(combo1 == null || combo2 == null){
 					LOGGER.warn("Image was null.");
 					image = null;
+					break;
 				}
 				if(combo1.getWidth(null) != combo2.getWidth(null) ||
 				   combo1.getHeight(null) != combo2.getHeight(null)){
@@ -197,16 +220,23 @@ public class ImageFileAnalysisContainer{
 				
 				int image_width = combo1.getWidth(null);
 				int image_height = combo1.getHeight(null);
+				int image_total_pixels = image_width * image_height;
+				
+				int[] combo1Pixels = new int[image_total_pixels];
+				int[] combo2Pixels = new int[image_total_pixels];
+				int[] imagePixels = new int[image_total_pixels];
+				
+				combo1.getRGB(0, 0, image_width, image_height, combo1Pixels, 0, image_width); //Get all pixels
+				combo2.getRGB(0, 0, image_width, image_height, combo2Pixels, 0, image_width); //Get all pixels
+				
+				for(int pixel = 0; pixel < image_total_pixels; pixel++){
+					imagePixels[pixel] = combo1Pixels[pixel] ^ combo2Pixels[pixel];
+				}
 
 				image = new BufferedImage(image_width, image_height, combo1.getType());
+				image.setRGB(0, 0, image_width, image_height, imagePixels, 0, image_width); //Set all pixels
 				
-				for(int x = 0;x < image_width; x++){
-					for(int y = 0;y < image_height; y++){
-						int combo1RGB = combo1.getRGB(x, y);
-						int combo2RGB = combo2.getRGB(x, y);	
-						image.setRGB(x,y,combo1RGB ^ combo2RGB);
-					}
-				}
+				processor = new ImageDatasetProcessor(image);
 				
 				break;
 			case OTHER:
@@ -218,7 +248,8 @@ public class ImageFileAnalysisContainer{
 		}
 		
 		if(image == null){
-			throw new IOException("Unable to load the image.");
+			errorFlag = true;
+			errorMessage = "Unable to load the image.";
 		}
 		
 		return image;
@@ -233,7 +264,7 @@ public class ImageFileAnalysisContainer{
 	
 	public Component getMD5() throws ImageReadException, IOException{
 		Label md5Label = new Label();
-		String md5 = ImageDatasetProcessor.getImageMD5(getImage());
+		String md5 = processor.getImageMD5();
 		md5Label.setCaption("MD5: " + md5);
 		return md5Label;
 	}
@@ -243,7 +274,7 @@ public class ImageFileAnalysisContainer{
 	    		"Histogram",
 	    		"pixel",
 	    		"value",
-	    		ImageDatasetProcessor.getHistogramDataset(getImage()),
+	    		processor.getHistogramDataset(),
 	    		PlotOrientation.VERTICAL,
 	    		false,
 	    		false,
@@ -258,33 +289,146 @@ public class ImageFileAnalysisContainer{
         
 	    JFreeChartWrapper chartComponent = new JFreeChartWrapper(histogram,JFreeChartWrapper.RenderingMode.PNG);
 	    
-	    chartComponent.setGraphHeight(300);
-	    chartComponent.setGraphWidth(300);
+	    chartComponent.setGraphHeight(COMPONENT_SIZE_SCALE_FACTOR - 25);
+	    chartComponent.setGraphWidth(COMPONENT_SIZE_SCALE_FACTOR - 25);
 	    
-	    chartComponent.setWidth(300, Component.UNITS_PIXELS);
-	    chartComponent.setHeight(300, Component.UNITS_PIXELS);
+	    chartComponent.setWidth(COMPONENT_SIZE_SCALE_FACTOR - 25, Component.UNITS_PIXELS);
+	    chartComponent.setHeight(COMPONENT_SIZE_SCALE_FACTOR - 25, Component.UNITS_PIXELS);
 	 
 	    return chartComponent;
 	}
 	
-	public Image getBitmapScaledImage(int width, int height) throws ImageReadException, IOException{
+	public Image getBitmapScaledImage(int width, boolean scaleFit) throws ImageReadException, IOException{
 		BufferedImage image_local = getImage();
 		if(image_local == null){
 			return null;
 		}
+		int height;
+		
+		if(scaleFit){
+			double scale = ((double)image_local.getWidth())/( (double)width);
+			height = (int) (image_local.getHeight()*scale);
+			
+			if(height > width * 2){
+				height = width * 2;
+			}
+		}
+		else{
+			height = image_local.getHeight();
+		}
+		
 		return image_local.getScaledInstance(width, height, BufferedImage.SCALE_FAST);
 	}
 	
-	public Layout getComponent() throws ImageReadException, IOException{
+	private static Layout getScrollableImagePanel(Component scaledImage,final Component fullImage){
+		final Panel scrollPanel = new Panel();
+		scrollPanel.addStyleName(Runo.PANEL_LIGHT);
+		scrollPanel.setWidth(COMPONENT_SIZE_SCALE_FACTOR, Component.UNITS_PIXELS);
+		scrollPanel.setHeight(COMPONENT_SIZE_SCALE_FACTOR, Component.UNITS_PIXELS);
+		scrollPanel.setScrollable(true);
+		
+		HorizontalLayout scrollButtons = new HorizontalLayout();
+		scrollPanel.addComponent(scrollButtons);
+		        
+		Button scrollUp = new Button("▲");
+		scrollUp.addStyleName(Runo.BUTTON_SMALL);
+		scrollUp.addListener(new Button.ClickListener() {
+		    public void buttonClick(ClickEvent event) {
+		        int scrollPos = scrollPanel.getScrollTop() - 250;
+		        if (scrollPos < 0)
+		            scrollPos = 0;
+		        scrollPanel.setScrollTop(scrollPos);
+		    }
+		});
+		
+		        
+		Button scrollDown = new Button("▼");
+		scrollDown.addStyleName(Runo.BUTTON_SMALL);
+		scrollDown.addListener(new Button.ClickListener() {
+		    public void buttonClick(ClickEvent event) {
+		        int scrollPos = scrollPanel.getScrollTop();
+		        if (scrollPos > scrollPanel.getHeight())
+		            scrollPos = (int) scrollPanel.getHeight();
+		        scrollPanel.setScrollTop(scrollPos + 250);
+		    }
+		});
+		
+		Button fullSizeButton = new Button("Larger");
+		fullSizeButton.addListener(new Button.ClickListener() {
+		    public void buttonClick(ClickEvent event) {
+		        ComparePluginInterface.getApplication().getMainWindow().addWindow(new FullSizeImageWindow(fullImage));
+		    }
+		});
+		
+		scrollUp.setImmediate(true);
+		scrollDown.setImmediate(true);
+		fullSizeButton.setImmediate(true);
+		
+		scrollButtons.addComponent(scrollUp);
+		scrollButtons.addComponent(scrollDown);
+		scrollButtons.addComponent(fullSizeButton);
+		
+		
+		scrollPanel.addComponent(scaledImage);
+		
+		VerticalLayout component = new VerticalLayout();
+		component.addComponent(scrollPanel);
+		component.addComponent(scrollButtons);
+		
+		return component;
+	}
+		
+	public Layout getErrorComponent(String message){
 		VerticalLayout layout = new VerticalLayout();
-		Embedded image = new Embedded(title,new BufferedImageStreamResource(getBitmapScaledImage(300,300)));
-		image.setType(Embedded.TYPE_IMAGE);
-		layout.addComponent(image);
+		layout.setMargin(true);
+		layout.setSpacing(true);
+		layout.setWidth(COMPONENT_SIZE_SCALE_FACTOR, Component.UNITS_PIXELS);
+		layout.addComponent(new Label(message));
+		return layout;
+	}
+	
+	public Layout getComponent() throws ImageReadException, IOException{
+		if(errorFlag){
+			return getErrorComponent(errorMessage);
+		}
+		
+		VerticalLayout layout = new VerticalLayout();
+		layout.setMargin(true);
+		layout.setSpacing(true);
+		layout.setWidth(COMPONENT_SIZE_SCALE_FACTOR, Component.UNITS_PIXELS);
+		
+		Embedded imageScaled = new Embedded(title,new BufferedImageStreamResource(getBitmapScaledImage(COMPONENT_SIZE_SCALE_FACTOR,true)));
+		imageScaled.setType(Embedded.TYPE_IMAGE);
+		
+		Embedded imageFull = new Embedded(title,new BufferedImageStreamResource(getBitmapScaledImage(720,false)));
+		imageFull.setType(Embedded.TYPE_IMAGE);
+		
+		layout.addComponent(getScrollableImagePanel(imageScaled,imageFull));
 		layout.addComponent(getMD5());
 		layout.addComponent(getHistogram());
 		return layout;
 	}
 	
+}
+
+class FullSizeImageWindow extends Window{
+	public FullSizeImageWindow(Component fullImage){
+		setCaption("Image Display");
+		setModal(true);
+		setDraggable(false);
+		setResizable(false); 
+		center();
+		setWidth("800px");
+		setHeight("100%");
+		
+		Panel imagePanel = new Panel();
+		imagePanel.addComponent(fullImage);
+		imagePanel.setScrollable(true);
+		imagePanel.addStyleName(Runo.PANEL_LIGHT);
+		imagePanel.setSizeFull();
+		
+		addComponent(imagePanel);
+	}
 }
 
 class BufferedImageStreamResource extends StreamResource{

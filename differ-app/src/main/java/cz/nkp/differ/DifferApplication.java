@@ -50,10 +50,10 @@ public class DifferApplication extends TPTApplication{
 		//Add this as a listener to the context transaction event pump
 		context.addTransactionListener(this);
 		
-		PluginManager.loadPlugins();//Attempts to find and dynamically load all plugins
 		DatabaseManager.loadDatabase();
 		
 		MainDifferWindow mainWindow = new MainDifferWindow();
+		mainWindow.setSizeUndefined();
 		setMainWindow(mainWindow);
 	}
 	
@@ -93,6 +93,10 @@ public class DifferApplication extends TPTApplication{
     	}
     	
     	return homeDir;
+    }
+    
+    public float getScreenWidth(){
+    	return getMainWindow().getWidth();
     }
     
     private static String differHome;

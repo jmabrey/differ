@@ -54,6 +54,7 @@ class PluginDisplayPanel extends VerticalLayout implements PluginComponentReadyC
 		synchronized(progress){
 			progress.setIndeterminate(false);
 			progress.setImmediate(true);
+			progress.setPollingInterval(750);
 			progress.setCaption("Loading plugin...");
 			progress.setValue(0f);
 			this.addComponent(progress);

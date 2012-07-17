@@ -76,7 +76,7 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		}
 		setSecurityMode(false);
 	}
-
+	
 	@Override
 	public void setLogger(Logger logger) {
 		setSecurityMode(true);
@@ -111,5 +111,6 @@ public class PluginSecurityWrapper implements DifferPluginInterface{
 		setSecurityMode(false);
 		return child_response;
 	}
+
 
 }

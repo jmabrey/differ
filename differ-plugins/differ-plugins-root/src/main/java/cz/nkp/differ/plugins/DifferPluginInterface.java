@@ -39,7 +39,7 @@ public interface DifferPluginInterface{
 	 * @return
 	 */
 	void setPluginDisplayComponentCallback(PluginComponentReadyCallback c);
-		
+	
 	/**
 	 * Called by the Differ runtime to set the plugins logger instance. The plugin SHOULD ONLY use this logger
 	 * to log any output data.

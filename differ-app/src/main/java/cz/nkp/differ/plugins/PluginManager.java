@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.vaadin.Application;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Component;
 
 import cz.nkp.differ.DifferApplication;
@@ -206,9 +208,11 @@ public class PluginManager {
 	 */
 	private static void givePluginRuntimeResponsibilities(){
 		
+		Application app = DifferApplication.getCurrentApplication();
+		
 		for(DifferPluginInterface dfi : pluginClassesWrapped){
 			dfi.setLogger(PLUGIN_LOGGER.getLogger(dfi.getName()));
-			dfi.setApplication(new PluginApplicationWrapper(DifferApplication.getCurrentApplication()));
+			dfi.setApplication(new PluginApplicationWrapper(app));
 		}
 	}
 }

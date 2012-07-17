@@ -2,8 +2,8 @@ package cz.nkp.differ.plugins.compare.io;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.IOException;
-import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -18,27 +18,24 @@ public class ImageDatasetProcessor{
 	
 	private static Logger LOGGER = ComparePluginInterface.LOGGER;
 	
-	private static BufferedImage last_image = null;
 	private static int[] imagePixelCache = null;
 	private static int image_width_cached = 0,image_height_cached = 0;
+	private BufferedImage image = null;
 	
-	private static final void validateImageCache(BufferedImage image){
-		if(last_image == null || !last_image.equals(image)){
-			loadImageToCache(image);
-		}
+	public ImageDatasetProcessor(BufferedImage image){
+		this.image = image;
+		loadImage();
 	}
 	
-	private static final void loadImageToCache(BufferedImage image){
-		int image_width_cached = image.getWidth();
-		int image_height_cached = image.getHeight();
+	
+	private final void loadImage(){
+		image_width_cached = image.getWidth();
+		image_height_cached = image.getHeight();
 		imagePixelCache = new int[image_width_cached * image_height_cached];
 		image.getRGB(0, 0, image_width_cached, image_height_cached, imagePixelCache, 0, image_width_cached); //Get all pixels
-		last_image = image;
 	}
 	
-	public static final XYDataset getHistogramDataset(BufferedImage image){
-		validateImageCache(image);		
-		
+	public final XYDataset getHistogramDataset(){		
 		XYSeries redChannel = new XYSeries("Red");
 		XYSeries greenChannel = new XYSeries("Green");
 		XYSeries blueChannel = new XYSeries("Blue");
@@ -47,7 +44,7 @@ public class ImageDatasetProcessor{
 		
 		for ( int thisPixel = 0; thisPixel < image_width_cached * image_height_cached; thisPixel++ ) {
 			
-        	int rgbCombined= imagePixelCache[thisPixel];
+        	int rgbCombined = imagePixelCache[thisPixel];
         	
             int red = new Color(rgbCombined).getRed();
             bins[0][red]++;
@@ -73,8 +70,7 @@ public class ImageDatasetProcessor{
 		return rgb;
 	}
 	
-	public static final String getImageMD5(BufferedImage image){
-		validateImageCache(image);
+	public final String getImageMD5(){
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		
 		for(int i : imagePixelCache){

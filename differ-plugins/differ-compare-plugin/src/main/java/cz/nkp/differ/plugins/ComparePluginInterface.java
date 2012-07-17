@@ -79,29 +79,39 @@ public class ComparePluginInterface implements DifferPluginInterface{
 			LOGGER.error("Cannot call getPluginDisplayComponent before setting plugin file inputs successfully");
 			return null;
 		}
-				
+		HorizontalLayout layout = new HorizontalLayout();
+		c.setCompleted(10);
+		LOGGER.info("Getting first component");
 		try {
-			HorizontalLayout layout = new HorizontalLayout();
-			c.setCompleted(10);
-			LOGGER.info("Getting first component");
 			layout.addComponent(iFAC1.getComponent());
-			c.setCompleted(40);
-			LOGGER.info("Getting second component");
-			layout.addComponent(iFAC2.getComponent());
-			c.setCompleted(70);
-			//ImageFileAnalysisContainer iFAC3 = ImageFileAnalysisContainer.getCombinationImageFileAnalysis(iFAC1, iFAC2);
-			//layout.addComponent(iFAC3.getComponent());
-			c.setCompleted(100);
-			return layout;
 		} catch (ImageReadException e) {
-			LOGGER.error("Unable to create component! ",e);
-			c.setCompleted(0);
-			return null;
+			LOGGER.error("Unable to load image",e);
 		} catch (IOException e) {
-			LOGGER.error("Unable to create component! ",e);
-			c.setCompleted(0);
-			return null;
+			LOGGER.error("Unable to load image",e);
 		}
+		
+		c.setCompleted(40);
+		LOGGER.info("Getting second component");
+		try {
+			layout.addComponent(iFAC2.getComponent());
+		} catch (ImageReadException e) {
+			LOGGER.error("Unable to load image",e);
+		} catch (IOException e) {
+			LOGGER.error("Unable to load image",e);
+		}
+		
+		c.setCompleted(70);
+		
+		try {
+			ImageFileAnalysisContainer iFAC3 = ImageFileAnalysisContainer.getCombinationImageFileAnalysis(iFAC1, iFAC2);
+			layout.addComponent(iFAC3.getComponent());
+		} catch (ImageReadException e) {
+			LOGGER.error("Unable to load combination image",e);
+		} catch (IOException e) {
+			LOGGER.error("Unable to load combination image",e);
+		}
+		c.setCompleted(100);
+		return layout;
 	}
 
 	@SuppressWarnings("static-access")

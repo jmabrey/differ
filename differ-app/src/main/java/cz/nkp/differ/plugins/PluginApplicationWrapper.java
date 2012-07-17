@@ -47,6 +47,10 @@ public class PluginApplicationWrapper extends Application{
     public String getRelativeLocation(ApplicationResource resource) {
     	return parent.getRelativeLocation(resource);
     }
+	
+	public Window getMainWindow() {
+    	return parent.getMainWindow();
+    }
 
 	
 	public Window getWindow(String name) {
@@ -113,11 +117,6 @@ public class PluginApplicationWrapper extends Application{
 
     public void setTheme(String theme) {
     	throwError("setTheme");
-    }
-
-    public Window getMainWindow() {
-    	throwError("getMainWindow");
-    	return null;
     }
 
     public void setMainWindow(Window mainWindow) {
