@@ -147,7 +147,6 @@ class UserFileWidgetTableEntry{
 			return;
 		}
 		String fileNameFull = f.getName();
-		BasicFileAttributes attr = Files.readAttributes(f.toPath(), BasicFileAttributes.class);
 		
 		subfolder = f.getParentFile().getName();
 		if(subfolder.equals(userDirName)){
@@ -157,12 +156,12 @@ class UserFileWidgetTableEntry{
 		filename = FilenameUtils.removeExtension(fileNameFull);		
 		extension = FilenameUtils.getExtension(fileNameFull).toUpperCase(Locale.ENGLISH);
 		//Intended to always be English since other locales might improperly capitalize
-				
+			
 		created = DateFormat.getDateTimeInstance(DateFormat.DEFAULT,DateFormat.DEFAULT,
 				DifferApplication.getCurrentApplication().getLocale()).format(
-						new Date(attr.creationTime().toMillis()));//Format the creation time for the locale
+						new Date(f.lastModified()));//Format the creation time for the locale
 		
-		file_size = FileUtils.byteCountToDisplaySize(attr.size());
+		file_size = FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(f));
 		
 		ID = f;		
 	}
