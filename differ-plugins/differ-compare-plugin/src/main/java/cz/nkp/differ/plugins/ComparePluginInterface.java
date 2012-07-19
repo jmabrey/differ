@@ -53,7 +53,7 @@ public class ComparePluginInterface implements DifferPluginInterface{
 	public void setPluginDisplayComponentCallback(final PluginComponentReadyCallback c) {
 		try {
 			currentThread = new PluginPollingThread(this,c);
-			EventQueue.invokeLater(currentThread);
+			currentThread.start();
 		} catch (Exception e) {
 			showSeriousError(e.getLocalizedMessage());
 		}
