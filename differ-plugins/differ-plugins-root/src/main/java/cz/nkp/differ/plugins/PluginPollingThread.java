@@ -6,7 +6,7 @@ import com.vaadin.ui.Component;
 
 public class PluginPollingThread extends Thread{
 	
-	private volatile Component comp;
+	private volatile Component comp = null;
 	private volatile PluginComponentReadyCallback callback;
 	private volatile DifferPluginInterface plugin;
 	
@@ -14,6 +14,9 @@ public class PluginPollingThread extends Thread{
 		if(plugin == null || callback == null){
 			throw new IOException("Plugin or callback null!");
 		}
+		
+		this.plugin = plugin;
+		this.callback = callback;
 	}
 	
 	volatile boolean continueRun = true;
