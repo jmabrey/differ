@@ -29,7 +29,6 @@ import com.lizardtech.djvu.DjVuPage;
 import com.lizardtech.djvu.Document;
 import com.lizardtech.djvubean.DjVuImage;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -47,6 +46,7 @@ import cz.nkp.differ.plugins.ComparePluginInterface;
 public class ImageFileAnalysisContainer{
 	
 	private Logger LOGGER;
+	
 	/**
 	* this gets rid of exception for not using native acceleration
 	*/

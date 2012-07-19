@@ -2,7 +2,6 @@ package cz.nkp.differ.plugins.compare.io;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.IOException;
 
 import org.apache.commons.codec.digest.DigestUtils;

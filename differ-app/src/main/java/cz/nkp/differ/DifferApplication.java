@@ -12,7 +12,6 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import cz.nkp.differ.gui.windows.MainDifferWindow;
 import cz.nkp.differ.io.DatabaseManager;
-import cz.nkp.differ.plugins.PluginManager;
 import eu.livotov.tpt.TPTApplication;
 
 /**
@@ -25,6 +24,14 @@ import eu.livotov.tpt.TPTApplication;
 @SuppressWarnings("serial")
 public class DifferApplication extends TPTApplication{
 	
+	/*
+	 * We dont need an X server running on a display to do graphics operations. May be slower on some machines.
+	 * TODO: examine a switching option for this setting
+	 */
+	static
+	{
+		System.setProperty("java.awt.headless", "true");
+	}
 	/**
 	 * Called by the server to run the application and begin the session
 	 */
