@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cz.nkp</groupId>
   <artifactId>differ-compare-plugin</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Image Comparison Plugin</name>
@@ -12,7 +11,7 @@
 		<version>1.0</version>
 	</parent>   
  
-	<properties>
+	<properties> 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>	
 		<javadjvu-lib.version>0.8.9-RELEASE</javadjvu-lib.version>
 		<apache.commons-io.version>2.3</apache.commons-io.version>

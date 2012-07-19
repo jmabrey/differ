@@ -3,29 +3,38 @@ package cz.nkp.differ.plugins;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.imaging.ImageReadException;
 import org.apache.log4j.Logger;
 
 import com.vaadin.Application;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Window;
 
 import cz.nkp.differ.plugins.compare.io.ImageFileAnalysisContainer;
 
 public class ComparePluginInterface implements DifferPluginInterface{
 
 	public static Logger LOGGER = Logger.getRootLogger();
+	
 	private ImageFileAnalysisContainer iFAC1,iFAC2;
 	private static Application application = null;
-	private Thread currentThread;
+	private PluginPollingThread currentThread;
 	
 	@Override
 	public String getName() {
-		return "Compare Plugin";
+		return "Compare";
 	}
 	
 	public DifferPluginInterface.PluginType getType(){
 		return DifferPluginInterface.PluginType.ImageProcessing;
+	}
+	
+	public static void showSeriousError(String message){
+		Window.Notification errorNotif = new Window.Notification("Plugin Error", 
+				"A runtime error has occured while executing a plugin. Plugin operation halted. Message: " + message, 
+				Window.Notification.TYPE_ERROR_MESSAGE);
+		
+		getApplication().getMainWindow().showNotification(errorNotif);
 	}
 	
 	@Override
@@ -35,81 +44,39 @@ public class ComparePluginInterface implements DifferPluginInterface{
 					" Should have given 2 files, gave " + file.length + " files");
 			return;
 		}
-		try {
-			iFAC1 = new ImageFileAnalysisContainer(file[0]);
-			iFAC2 = new ImageFileAnalysisContainer(file[1]);
-		} catch (IOException e) {
-			LOGGER.error("Unable to process files: " + e);
-		}
+		iFAC1 = new ImageFileAnalysisContainer(file[0]);
+		iFAC2 = new ImageFileAnalysisContainer(file[1]);
 	}
 	
 	@Override
 	public void setPluginDisplayComponentCallback(final PluginComponentReadyCallback c) {
-		
-		if(currentThread != null){
-			currentThread.interrupt();
+		try {
+			currentThread = new PluginPollingThread(this,c);
+			currentThread.start();
+		} catch (Exception e) {
+			showSeriousError(e.getLocalizedMessage());
 		}
-		
-		Thread thread = new Thread(){
-
-			@Override
-			public void run() {
-				boolean continueRunning = true;
-				while(!this.isInterrupted()){
-					try{
-						Component comp;
-						comp = getPluginDisplayComponent(c);
-						if(comp!= null){
-							c.ready(comp);
-							break;
-						}
-						wait(1000);
-					}catch(InterruptedException e){}
-				}
-				LOGGER.info("Thread stopped");
-			}			
-		};
-		
-		currentThread = thread;
-		currentThread.start();
 	}
 
-	private Component getPluginDisplayComponent(PluginComponentReadyCallback c) {
+	public Component getPluginDisplayComponent(PluginComponentReadyCallback c){
 		if(iFAC1 == null || iFAC2 == null){
-			LOGGER.error("Cannot call getPluginDisplayComponent before setting plugin file inputs successfully");
-			return null;
+			showSeriousError("Cannot call getPluginDisplayComponent before setting plugin file inputs successfully");
 		}
+		
 		HorizontalLayout layout = new HorizontalLayout();
 		c.setCompleted(10);
 		LOGGER.info("Getting first component");
-		try {
-			layout.addComponent(iFAC1.getComponent());
-		} catch (ImageReadException e) {
-			LOGGER.error("Unable to load image",e);
-		} catch (IOException e) {
-			LOGGER.error("Unable to load image",e);
-		}
+		layout.addComponent(iFAC1.getComponent());
 		
 		c.setCompleted(40);
 		LOGGER.info("Getting second component");
-		try {
-			layout.addComponent(iFAC2.getComponent());
-		} catch (ImageReadException e) {
-			LOGGER.error("Unable to load image",e);
-		} catch (IOException e) {
-			LOGGER.error("Unable to load image",e);
-		}
+		layout.addComponent(iFAC2.getComponent());
 		
 		c.setCompleted(70);
 		
-		try {
-			ImageFileAnalysisContainer iFAC3 = ImageFileAnalysisContainer.getCombinationImageFileAnalysis(iFAC1, iFAC2);
-			layout.addComponent(iFAC3.getComponent());
-		} catch (ImageReadException e) {
-			LOGGER.error("Unable to load combination image",e);
-		} catch (IOException e) {
-			LOGGER.error("Unable to load combination image",e);
-		}
+		ImageFileAnalysisContainer iFAC3 = ImageFileAnalysisContainer.getCombinationContainer(iFAC1, iFAC2);
+		layout.addComponent(iFAC3.getComponent());
+		
 		c.setCompleted(100);
 		return layout;
 	}
@@ -127,7 +94,11 @@ public class ComparePluginInterface implements DifferPluginInterface{
 	
 	public static Application getApplication(){
 		if(application == null){
-			LOGGER.error("You must provide the plugin with an application instance!");
+			try {
+				showSeriousError("Plugin must be provided with an application instance!");
+			} catch (Exception e) {
+				return null;
+			}
 		}
 		
 		return application;

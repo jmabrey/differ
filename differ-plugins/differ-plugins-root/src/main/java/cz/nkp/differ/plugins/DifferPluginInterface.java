@@ -40,6 +40,14 @@ public interface DifferPluginInterface{
 	 */
 	void setPluginDisplayComponentCallback(PluginComponentReadyCallback c);
 	
+	
+	/**
+	 * Called by internal methods to facilitate the process of plugin component generation.
+	 * @param c
+	 * @return
+	 */
+	abstract Component getPluginDisplayComponent(PluginComponentReadyCallback c);
+	
 	/**
 	 * Called by the Differ runtime to set the plugins logger instance. The plugin SHOULD ONLY use this logger
 	 * to log any output data.

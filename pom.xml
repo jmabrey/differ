@@ -23,7 +23,7 @@
 		<proguard-plugin.version>2.0.4</proguard-plugin.version>
 		<gwt-maven-plugin.version>2.4.0</gwt-maven-plugin.version>		
 		<maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
-		<maven.war.plugin.version>2.0</maven.war.plugin.version>
+		<maven.war.plugin.version>2.2</maven.war.plugin.version>
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version>
 	    <vaadin-maven-plugin.version>1.0.2</vaadin-maven-plugin.version>
 		<gmaven-plugin.version>1.0</gmaven-plugin.version>

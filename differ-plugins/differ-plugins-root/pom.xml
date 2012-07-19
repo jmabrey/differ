@@ -4,7 +4,7 @@
   <version>1.0</version>
   <name>plugins-root</name>
   <description>The root library for plugin interaction with the DIFFER</description>
-  
+   
   <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<differ.bin.dir>../../bin</differ.bin.dir>
