@@ -1,5 +1,6 @@
 package cz.nkp.differ.plugins;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
 
@@ -52,7 +53,7 @@ public class ComparePluginInterface implements DifferPluginInterface{
 	public void setPluginDisplayComponentCallback(final PluginComponentReadyCallback c) {
 		try {
 			currentThread = new PluginPollingThread(this,c);
-			currentThread.start();
+			EventQueue.invokeLater(currentThread);
 		} catch (Exception e) {
 			showSeriousError(e.getLocalizedMessage());
 		}

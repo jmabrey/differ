@@ -19,7 +19,7 @@ import cz.nkp.differ.plugins.ComparePluginInterface;
 class BufferedImageStreamResource extends StreamResource{
 
 	public BufferedImageStreamResource(Image image) throws IOException {
-		super(new BufferedImageStreamResource.BufferedImageStreamResourceSource(image),"image",ComparePluginInterface.getApplication());
+		super(new BufferedImageStreamResource.BufferedImageStreamResourceSource(image),"image.img-" + System.nanoTime(),ComparePluginInterface.getApplication());
 	}
 
 	private static Logger LOGGER = ComparePluginInterface.LOGGER;
