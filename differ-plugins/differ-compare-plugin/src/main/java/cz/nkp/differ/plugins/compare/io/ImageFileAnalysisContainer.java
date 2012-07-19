@@ -1,5 +1,6 @@
 package cz.nkp.differ.plugins.compare.io;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -190,7 +191,7 @@ public class ImageFileAnalysisContainer{
 				 document.read(file.toURI().toURL());
 				 final DjVuPage [] page = { document.getPage(0, DjVuPage.MAX_PRIORITY, true) };
 				 final DjVuImage djvuImage = new DjVuImage(page,false);
-				 Image image_local = djvuImage.getImage(new Frame(), djvuImage.getPageBounds(0))[0];
+				 Image image_local = djvuImage.getImage(new Canvas(), djvuImage.getPageBounds(0))[0];
 				 image = new BufferedImage(image_local.getWidth(null),image_local.getHeight(null),BufferedImage.TYPE_INT_ARGB);
 				 Graphics g = image.createGraphics();
 				 g.drawImage(image, 0, 0, null);
