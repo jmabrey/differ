@@ -19,8 +19,6 @@ public interface DifferPluginInterface{
 		ImageProcessing
 	}
 	
-	
-	
 	PluginType getType();
 	/**
 	 * Return the name of the plugin.
@@ -55,9 +53,22 @@ public interface DifferPluginInterface{
 	 */
 	void setLogger(Logger logger);
 	
+	
+	/**
+	 * Get the Logger given to the plugin
+	 * @return
+	 */
+	abstract Logger getLogger();
+	
 	/**
 	 * Called by the Differ runtime to set the plugins application instance.
 	 * @param logger
 	 */
 	void setApplication(Application application);
+	
+	/**
+	 * Get the Differ application instance given to the plugin
+	 * @return
+	 */
+	abstract Application getApplication();
 }

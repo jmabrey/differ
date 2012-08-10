@@ -5,23 +5,26 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.vaadin.addon.JFreeChartWrapper;
 
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 
-import cz.nkp.differ.plugins.ComparePluginInterface;
+import cz.nkp.differ.plugins.BufferedImageStreamResource;
+import cz.nkp.differ.plugins.DifferPluginInterface;
+import cz.nkp.differ.plugins.ScrollableImagePanel;
+import cz.nkp.differ.plugins.ScrollableImagePanel.ScrollableImagePanelException;
 import cz.nkp.differ.plugins.compare.io.FileLoader.FileLoadingException;
 import cz.nkp.differ.plugins.compare.io.ImageManipulator.ImageManipulationException;
-import cz.nkp.differ.plugins.compare.io.ScrollableImagePanel.ScrollableImagePanelException;
 
 public class ImageFileAnalysisContainer{
 	
@@ -34,8 +37,8 @@ public class ImageFileAnalysisContainer{
 	}
 	
 
-	private static Logger LOGGER = ComparePluginInterface.LOGGER;;
-
+	private static DifferPluginInterface parent;
+			
 	private static final int COMPONENT_SIZE_SCALE_FACTOR = 300;
 	
 	private boolean errorFlag = false;
@@ -49,8 +52,8 @@ public class ImageFileAnalysisContainer{
 	
 	private FileLoader fileHandle = null;
 	
-	public ImageFileAnalysisContainer(File f){
-			LOGGER = ComparePluginInterface.LOGGER;
+	public ImageFileAnalysisContainer(File f, DifferPluginInterface parent){
+			ImageFileAnalysisContainer.parent = parent;
 			fileHandle = new FileLoader(f);
 			
 			if(fileHandle.isValid() != FileLoader.FileValidation.VALID){
@@ -94,7 +97,6 @@ public class ImageFileAnalysisContainer{
 			return;
 		}
 		
-		LOGGER = ComparePluginInterface.LOGGER;		
 		title = "Comparison";
 		
 		try {
@@ -130,9 +132,9 @@ public class ImageFileAnalysisContainer{
 	
 	public Component getHistogram(){
 	    JFreeChart histogram = ChartFactory.createXYLineChart(
-	    		"Histogram",
-	    		"pixel",
-	    		"value",
+	    		"",
+	    		"",
+	    		"",
 	    		processor.getHistogramDataset(),
 	    		PlotOrientation.VERTICAL,
 	    		false,
@@ -143,9 +145,13 @@ public class ImageFileAnalysisContainer{
 	    histogram.setBackgroundPaint(Color.WHITE);
 	    
 	    // get a reference to the plot for further customization...
-        Plot plot = histogram.getPlot();
-        plot.setBackgroundPaint(Color.lightGray);
-        
+        XYPlot plot = histogram.getXYPlot();
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setDomainGridlinesVisible(true);  
+        plot.setRangeGridlinesVisible(true);  
+        plot.setRangeGridlinePaint(Color.GRAY);  
+        plot.setDomainGridlinePaint(Color.GRAY); 
+
 	    JFreeChartWrapper chartComponent = new JFreeChartWrapper(histogram,JFreeChartWrapper.RenderingMode.PNG);
 	    
 	    chartComponent.setGraphHeight(COMPONENT_SIZE_SCALE_FACTOR - 25);
@@ -181,14 +187,19 @@ public class ImageFileAnalysisContainer{
 		try {
 			image = getImage();
 			Embedded imageScaled = new Embedded(title,new BufferedImageStreamResource(
-					ImageManipulator.getBitmapScaledImage(image, COMPONENT_SIZE_SCALE_FACTOR,true)));
+					ImageManipulator.getBitmapScaledImage(image, COMPONENT_SIZE_SCALE_FACTOR,true),parent));
 			imageScaled.setType(Embedded.TYPE_IMAGE);
 			
+			int fullSizeWidth = (int) (((WebApplicationContext)parent.getApplication().getContext()).getBrowser().getScreenWidth() * .75);
+			if(fullSizeWidth > image.getWidth()){
+				fullSizeWidth = image.getWidth();
+			}
 			Embedded imageFull = new Embedded(title,new BufferedImageStreamResource(
-					ImageManipulator.getBitmapScaledImage(image, 720,true)));
+					ImageManipulator.getBitmapScaledImage(image,fullSizeWidth,true),parent));
 			imageFull.setType(Embedded.TYPE_IMAGE);
 			
-			layout.addComponent(new ScrollableImagePanel(imageScaled,imageFull,COMPONENT_SIZE_SCALE_FACTOR));
+			layout.addComponent(new ScrollableImagePanel(imageScaled,imageFull,COMPONENT_SIZE_SCALE_FACTOR, parent));
+
 		} catch (FileLoadingException e) {
 			setErrorState(e);
 			return getErrorComponent(errorMessage);
@@ -211,7 +222,7 @@ public class ImageFileAnalysisContainer{
 	private void setErrorState(Exception e){
 		this.errorFlag = true;
 		this.errorMessage = e.getLocalizedMessage();
-		LOGGER.warn(e);
+		parent.getLogger().warn(e);
 		e.printStackTrace();
 	}
 	

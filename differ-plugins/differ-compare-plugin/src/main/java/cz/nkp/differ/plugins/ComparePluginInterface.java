@@ -1,8 +1,6 @@
 package cz.nkp.differ.plugins;
 
-import java.awt.EventQueue;
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +33,7 @@ public class ComparePluginInterface implements DifferPluginInterface{
 				"A runtime error has occured while executing a plugin. Plugin operation halted. Message: " + message, 
 				Window.Notification.TYPE_ERROR_MESSAGE);
 		
-		getApplication().getMainWindow().showNotification(errorNotif);
+		application.getMainWindow().showNotification(errorNotif);
 	}
 	
 	@Override
@@ -45,8 +43,8 @@ public class ComparePluginInterface implements DifferPluginInterface{
 					" Should have given 2 files, gave " + file.length + " files");
 			return;
 		}
-		iFAC1 = new ImageFileAnalysisContainer(file[0]);
-		iFAC2 = new ImageFileAnalysisContainer(file[1]);
+		iFAC1 = new ImageFileAnalysisContainer(file[0],this);
+		iFAC2 = new ImageFileAnalysisContainer(file[1],this);
 	}
 	
 	@Override
@@ -66,11 +64,11 @@ public class ComparePluginInterface implements DifferPluginInterface{
 		
 		HorizontalLayout layout = new HorizontalLayout();
 		c.setCompleted(10);
-		LOGGER.info("Getting first component");
+		LOGGER.trace("Getting first component");
 		layout.addComponent(iFAC1.getComponent());
 		
 		c.setCompleted(40);
-		LOGGER.info("Getting second component");
+		LOGGER.trace("Getting second component");
 		layout.addComponent(iFAC2.getComponent());
 		
 		c.setCompleted(70);
@@ -91,9 +89,22 @@ public class ComparePluginInterface implements DifferPluginInterface{
 	@Override
 	public void setApplication(Application application) {
 		this.application = application;		
-	}	
+	}
+
+	@Override
+	public Logger getLogger() {
+		if(LOGGER == null){
+			try {
+				showSeriousError("Plugin must be provided with an application instance!");
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		
+		return LOGGER;
+	}
 	
-	public static Application getApplication(){
+	public Application getApplication() {
 		if(application == null){
 			try {
 				showSeriousError("Plugin must be provided with an application instance!");

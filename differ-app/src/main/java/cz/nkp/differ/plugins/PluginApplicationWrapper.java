@@ -51,6 +51,11 @@ public class PluginApplicationWrapper extends Application{
 	public Window getMainWindow() {
     	return parent.getMainWindow();
     }
+	
+
+    public ApplicationContext getContext() {
+    	return parent.getContext();
+    }
 
 	
 	public Window getWindow(String name) {
@@ -172,11 +177,6 @@ public class PluginApplicationWrapper extends Application{
 
     public void terminalError(Terminal.ErrorEvent event) {
     	throwError("terminalError");
-    }
-
-    public ApplicationContext getContext() {
-    	throwError("getContext");
-    	return null;
     }
 
     public String getVersion() {

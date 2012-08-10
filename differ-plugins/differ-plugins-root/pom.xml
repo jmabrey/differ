@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>differ-plugins-root</artifactId>
   <version>1.0</version>
-  <name>plugins-root</name>
+  <name>plugins-root</name> 
   <description>The root library for plugin interaction with the DIFFER</description>
    
   <properties>

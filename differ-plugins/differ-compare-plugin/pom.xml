@@ -4,7 +4,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Image Comparison Plugin</name>
   
-	<!-- Differ Plugins Include -->
+	<!-- Differ Plugins Include --> 
 	<parent>
 		<groupId>cz.nkp</groupId>
 		<artifactId>differ-plugins</artifactId>
@@ -68,8 +68,10 @@
 			
 			<plugin>
 					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.1</version>
 						<executions>
 							<execution>
+								<id>copyLibs</id>
 								<phase>process-sources</phase>
 								<goals>
 									<goal>copy-dependencies</goal>
@@ -80,28 +82,20 @@
 									<stripVersion>true</stripVersion>
 								</configuration>
 							</execution>
+							<execution>
+								<id>addLibsToClasspath</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build-classpath</goal>
+								</goals>
+								<configuration>
+									<fileSeparator>\\\\</fileSeparator>
+									<outputFilterFile>true</outputFilterFile>
+									<outputFile>${project.build.directory}/classpath.properties</outputFile>
+								</configuration>
+							</execution>
 						</executions>
 			</plugin>
-			
-			<plugin>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.1</version>
-					<executions>
-						<execution>
-						  <phase>package</phase>
-						  <goals>
-							<goal>build-classpath</goal>
-						  </goals>
-						</execution>
-					</executions>
-					<configuration>
-						<fileSeparator>\\\\</fileSeparator>
-						<outputFilterFile>true</outputFilterFile>
-						<outputFile>${project.build.directory}/classpath.properties</outputFile>
-					</configuration>
-			</plugin>
-
-			
 		</plugins>
 	</build>
 	
@@ -111,6 +105,11 @@
 			<artifactId>differ-plugins-root</artifactId>
 			<version>1.0</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		   <groupId>org.vaadin.addons</groupId>
+		   <artifactId>imagescaler</artifactId>
+		   <version>1.0</version>
 		</dependency>
 	</dependencies>
   

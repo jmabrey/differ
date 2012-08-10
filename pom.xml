@@ -11,7 +11,7 @@
 		
 	<properties>
 		<differ.bin.dir>./bin</differ.bin.dir>	
-	    <vaadin.version>6.8.0</vaadin.version>
+	    <vaadin.version>6.8.1</vaadin.version>
 		<gwt.version>2.4.0</gwt.version>
 		<derby.version>10.8.2.2</derby.version>
 		<apache.commons-io.version>2.3</apache.commons-io.version>		
