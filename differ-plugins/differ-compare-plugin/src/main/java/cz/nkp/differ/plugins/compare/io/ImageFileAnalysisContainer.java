@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.vaadin.addon.JFreeChartWrapper;
@@ -29,11 +30,16 @@ import cz.nkp.differ.plugins.compare.io.ImageManipulator.ImageManipulationExcept
 public class ImageFileAnalysisContainer{
 	
 	/**
-	* this gets rid of exception for not using native acceleration
+	* this gets rid of exception for not using native acceleration as well
+	* as the djvu debug info on the output console
 	*/
 	static
 	{
 		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+		com.lizardtech.djvu.DjVuOptions.out =
+				com.lizardtech.djvu.DjVuOptions.err =
+					new PrintStream(new OutputStream(){public void write(int c){}});
+
 	}
 	
 
@@ -54,6 +60,8 @@ public class ImageFileAnalysisContainer{
 	
 	public ImageFileAnalysisContainer(File f, DifferPluginInterface parent){
 			ImageFileAnalysisContainer.parent = parent;
+			
+			
 			fileHandle = new FileLoader(f);
 			
 			if(fileHandle.isValid() != FileLoader.FileValidation.VALID){

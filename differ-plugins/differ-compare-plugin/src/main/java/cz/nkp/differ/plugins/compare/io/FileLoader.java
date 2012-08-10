@@ -144,14 +144,13 @@ public class FileLoader {
 	
 	protected BufferedImage loadDJVUImage() throws FileLoadingException{
 		 Document document = new Document();
-		 
 		 document.setAsync(false);
 		 Image image_local;
 		 
 		 try {
 			document.read(file.toURI().toURL());
 			DjVuPage[] page = { document.getPage(0, DjVuPage.MAX_PRIORITY, true) };
-			DjVuImage djvuImage = new DjVuImage(page,false);
+			DjVuImage djvuImage = new DjVuImage(page,true);
 			image_local = djvuImage.getImage(new Canvas(), djvuImage.getPageBounds(0))[0];
 		 } catch (MalformedURLException e) {
 		 	throw new FileLoadingException(e);
@@ -159,10 +158,10 @@ public class FileLoader {
 	 		throw new FileLoadingException(e);
 	     }	 
 		 
-		 BufferedImage image = new BufferedImage(image_local.getWidth(null),image_local.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+		 image = new BufferedImage(image_local.getWidth(null),image_local.getHeight(null),BufferedImage.TYPE_INT_ARGB);
 		 
 		 Graphics g = image.createGraphics();
-		 g.drawImage(image, 0, 0, null);
+		 g.drawImage(image_local, 0, 0, null);
 		 g.dispose();
 		 
 		 return image;
