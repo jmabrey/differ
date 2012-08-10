@@ -73,7 +73,12 @@ public class ComparePluginInterface implements DifferPluginInterface{
 		
 		c.setCompleted(70);
 		
-		ImageFileAnalysisContainer iFAC3 = ImageFileAnalysisContainer.getCombinationContainer(iFAC1, iFAC2);
+		String[] hashes = {
+			iFAC1.processor.getImageMD5(),	
+			iFAC2.processor.getImageMD5()
+		};
+		
+		ImageFileAnalysisContainer iFAC3 = ImageFileAnalysisContainer.getCombinationContainer(iFAC1, iFAC2,hashes);
 		layout.addComponent(iFAC3.getComponent());
 		
 		c.setCompleted(100);

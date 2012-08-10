@@ -51,9 +51,10 @@ public class ImageFileAnalysisContainer{
 	private String errorMessage = "Unknown Error";
 	private String title = null;
 	
-	private ImageDatasetProcessor processor = null;
+	public ImageDatasetProcessor processor = null;
 	
 	private boolean synthesizedImage = false;
+	private static boolean hashesEqual = false;
 	private BufferedImage createdImage = null;
 	
 	private FileLoader fileHandle = null;
@@ -79,11 +80,19 @@ public class ImageFileAnalysisContainer{
 			}
 	}
 	
-	public static ImageFileAnalysisContainer getCombinationContainer(ImageFileAnalysisContainer cont1,ImageFileAnalysisContainer cont2){
+	public static ImageFileAnalysisContainer getCombinationContainer(ImageFileAnalysisContainer cont1,ImageFileAnalysisContainer cont2,String[] hashes){
 		ImageFileAnalysisContainer container = new ImageFileAnalysisContainer();
 		
 		if(cont1 == null || cont2 == null){
 			throw new NullPointerException("ImageFileAnalysisContainers passed to combination constructor were null");
+		}
+		
+		if(hashes == null||hashes.length != 2){
+			throw new IllegalArgumentException("Image hashes must not be null and must be given in pairs");
+		}
+		
+		if(hashes[0].equalsIgnoreCase(hashes[1])){
+			hashesEqual = true;
 		}
 		
 		try {
@@ -131,11 +140,26 @@ public class ImageFileAnalysisContainer{
 		}
 	}
 	
-	public Component getMD5(){
-		Label md5Label = new Label();
-		String md5 = processor.getImageMD5();
-		md5Label.setCaption("MD5: " + md5);
-		return md5Label;
+	public Component getHash(){
+		Label hashLabel = new Label();
+		String hashValue;
+		
+		if(synthesizedImage){
+			if(hashesEqual){
+				hashValue = "Are Equal";
+			}
+			else{
+				hashValue = "Not Equal";
+			}				
+			hashesEqual = false;
+		}
+		else{
+			hashValue = processor.getImageMD5();
+		}
+
+		
+		hashLabel.setCaption("Hash: " + hashValue);
+		return hashLabel;
 	}
 	
 	public Component getHistogram(){
@@ -222,7 +246,7 @@ public class ImageFileAnalysisContainer{
 			return getErrorComponent(errorMessage);
 		}		
 		
-		layout.addComponent(getMD5());
+		layout.addComponent(getHash());
 		layout.addComponent(getHistogram());
 		return layout;
 	}

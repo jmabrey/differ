@@ -17,8 +17,8 @@ public class ImageDatasetProcessor{
 	
 	private static Logger LOGGER = ComparePluginInterface.LOGGER;
 	
-	private static int[] imagePixelCache = null;
-	private static int image_width_cached = 0,image_height_cached = 0;
+	private int[] imagePixelCache = null;
+	private int image_width_cached = 0,image_height_cached = 0;
 	private BufferedImage image = null;
 	
 	public ImageDatasetProcessor(BufferedImage image){
