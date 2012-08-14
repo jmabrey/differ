@@ -202,12 +202,6 @@
 		<version>${apache.commons-codec.version}</version>
 	</dependency>
 	
-	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-imaging</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</dependency>
-	
 	<!-- 
 			I packaged this dependency personally and submitted it to Maven central. Until then you need to install it from
 			differ-libs-from-sources to your local repo

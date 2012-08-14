@@ -10,8 +10,6 @@ import java.net.MalformedURLException;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -19,8 +17,6 @@ import org.apache.log4j.Logger;
 import com.lizardtech.djvu.DjVuPage;
 import com.lizardtech.djvu.Document;
 import com.lizardtech.djvubean.DjVuImage;
-
-import cz.nkp.differ.plugins.compare.io.ImageManipulator.ImageManipulationException;
 
 public class FileLoader {
 	
@@ -61,6 +57,11 @@ public class FileLoader {
 	
 	public FileLoader(File load){
 		file = load;
+		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+		ImageIO.scanForPlugins();	
+		for(String s: ImageIO.getReaderFormatNames()){
+			System.out.println(s);
+		}	
 	}
 	
 	public FileType getFileType(){
@@ -189,9 +190,7 @@ public class FileLoader {
 	
 	protected BufferedImage loadTIFFImage() throws FileLoadingException{
 		try {
-			image = Imaging.getBufferedImage(file);
-		} catch (ImageReadException e) {
-			throw new FileLoadingException(e);
+			image = ImageIO.read(file);
 		} catch (IOException e) {
 			throw new FileLoadingException(e);
 		}
@@ -201,9 +200,7 @@ public class FileLoader {
 	
 	protected BufferedImage loadPNGImage() throws FileLoadingException{
 		try {
-			image = Imaging.getBufferedImage(file);
-		} catch (ImageReadException e) {
-			throw new FileLoadingException(e);
+			image = ImageIO.read(file);
 		} catch (IOException e) {
 			throw new FileLoadingException(e);
 		}

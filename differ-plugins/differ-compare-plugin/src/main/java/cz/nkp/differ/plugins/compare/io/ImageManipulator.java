@@ -51,8 +51,12 @@ public class ImageManipulator {
 		for(int pixel = 0; pixel < image_total_pixels; pixel++){
 			imagePixels[pixel] = combo1Pixels[pixel] ^ combo2Pixels[pixel];
 		}
-
-		BufferedImage imageXOR = new BufferedImage(image_width, image_height, image1.getType());
+		
+		int imageType = image1.getType();
+		if(imageType == BufferedImage.TYPE_CUSTOM){
+			imageType = BufferedImage.TYPE_INT_ARGB;
+		}
+		BufferedImage imageXOR = new BufferedImage(image_width, image_height, imageType);
 		imageXOR.setRGB(0, 0, image_width, image_height, imagePixels, 0, image_width); //Set all pixels
 		
 		return imageXOR;

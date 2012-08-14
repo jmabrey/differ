@@ -30,16 +30,6 @@
 	  </snapshots>
 	</repository>
 	<repository>
-		<id>sonatype</id>
-		<name>Sonatype OSS Snapshots Repository</name>
-		<url>http://oss.sonatype.org/content/groups/public</url>
-	  </repository>
-	  <repository>
-		<id>nativelibs4java</id>
-		<name>nativelibs4java Maven2 Repository</name>
-		<url>http://nativelibs4java.sourceforge.net/maven</url>
-	</repository>
-	<repository>
 		  <id>vaadin-snapshots</id>
 		  <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
 		  <releases>
@@ -53,6 +43,15 @@
 		  <id>vaadin-addons</id>
 		  <url>http://maven.vaadin.com/vaadin-addons</url>
 	</repository>
+	<repository>
+            <releases />
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>mygrid-repository</id>
+            <name>myGrid Repository</name>
+            <url>http://www.mygrid.org.uk/maven/repository</url>
+        </repository>
 
   </repositories>
   
@@ -108,13 +107,7 @@
 			<version>1.0.0.GA</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-imaging</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		
+
 		<!-- 
 			I packaged this dependency personally and submitted it to Maven central. Until then you need to install it from
 			differ-libs-from-sources to your local repo
@@ -132,23 +125,11 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>javax.media.jai</groupId>
-			<artifactId>com.springsource.javax.media.jai.core</artifactId>
-			<version>${jai.version}</version>
-		</dependency>
-
-		<dependency> 
-			<groupId>javax.media.jai</groupId>
-			<artifactId>com.springsource.javax.media.jai.codec</artifactId>
-			<version>${jai.version}</version>
-		</dependency> 
-		
-		<dependency>
-			<groupId>com.nativelibs4java</groupId>
-			<artifactId>bridj</artifactId>
-			<version>${birdj.version}</version>
-		</dependency>
-		
+		    <groupId>net.java.dev.jai-imageio</groupId> 
+		    <artifactId>jai-imageio-core-standalone</artifactId> 
+		    <version>1.2-pre-dr-b04-2010-04-30</version> 
+		</dependency>			
+								
 		<!--Graph Support-->
 		<dependency>
 		   <groupId>org.vaadin.addon</groupId>

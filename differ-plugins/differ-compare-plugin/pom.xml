@@ -10,7 +10,7 @@
 		<artifactId>differ-plugins</artifactId>
 		<version>1.0</version>
 	</parent>   
- 
+  
 	<properties> 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>	
 		<javadjvu-lib.version>0.8.9-RELEASE</javadjvu-lib.version>
@@ -61,6 +61,9 @@
 						<classpathLayoutType>custom</classpathLayoutType>
 						<customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
 					  </manifest>
+					  <!-- manifestEntries>
+				            <Class-Path>libs/clib_jiio.dll libs/clib_jiio_sse2.dll libs/clib_jiio_util.dll libs/clibwrapper_jiio.dll libs/jai_imageio_linux-amd64.jar libs/jai_imageio_linux-i586.jar</Class-Path>
+				      </manifestEntries-->
 				    </archive>
 					<outputDirectory>${differ.bin.dir}/plugins</outputDirectory>
 			    </configuration>
@@ -94,6 +97,25 @@
 									<outputFile>${project.build.directory}/classpath.properties</outputFile>
 								</configuration>
 							</execution>
+							<!--execution>
+				             <id>unpack-natives</id>
+				             <phase>package</phase>
+				             <goals>
+				               <goal>unpack</goal>
+				             </goals>
+				             <configuration>
+				               <artifactItems>
+				                 <artifactItem>
+				                   <groupId>com.sun.media</groupId>
+								   <artifactId>jai_imageio_natives</artifactId>
+								   <version>1.1</version>
+				                 </artifactItem>
+				               </artifactItems>
+				               <includes>**/*</includes>
+               				   <excludes>META-INF/*</excludes>
+				               <outputDirectory>${differ.bin.dir}/plugins/libs/</outputDirectory>
+				             </configuration>
+				           </execution-->
 						</executions>
 			</plugin>
 		</plugins>
@@ -105,11 +127,6 @@
 			<artifactId>differ-plugins-root</artifactId>
 			<version>1.0</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-		   <groupId>org.vaadin.addons</groupId>
-		   <artifactId>imagescaler</artifactId>
-		   <version>1.0</version>
 		</dependency>
 	</dependencies>
   
