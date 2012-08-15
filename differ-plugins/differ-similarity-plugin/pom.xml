@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>differ-similarity-plugin</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Similarity Metrics Plugin</name>
+  
+  <!-- Differ Plugins Include --> 
+	<parent>
+		<groupId>cz.nkp</groupId>
+		<artifactId>differ-plugins</artifactId> 
+		<version>1.0</version>
+	</parent>   
+	
+	<properties> 
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>	
+	</properties>
+	
+	<build>
+	   <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java.source.version}</source>
+					<target>${java.source.target.version}</target>
+				</configuration>
+		    </plugin>	
+		    <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-jar-plugin</artifactId>
+			    <version>${maven.jar.plugin.version}</version>
+			    <configuration>
+					<archive>
+					  <index>true</index>
+					  <manifest>
+						<addClasspath>true</addClasspath>
+						<classpathPrefix>libs/</classpathPrefix>
+						<classpathLayoutType>custom</classpathLayoutType>
+						<customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
+					  </manifest>
+					  <!-- manifestEntries>
+				            <Class-Path>libs/clib_jiio.dll libs/clib_jiio_sse2.dll libs/clib_jiio_util.dll libs/clibwrapper_jiio.dll libs/jai_imageio_linux-amd64.jar libs/jai_imageio_linux-i586.jar</Class-Path>
+				      </manifestEntries-->
+				    </archive>
+					<outputDirectory>${differ.bin.dir}/plugins</outputDirectory>
+			    </configuration>
+			</plugin>
+			
+			<plugin>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.1</version>
+						<executions>
+							<execution>
+								<id>copyLibs</id>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${differ.bin.dir}/plugins/libs/</outputDirectory>
+									<excludeScope>provided</excludeScope>
+									<stripVersion>true</stripVersion>
+								</configuration>
+							</execution>
+							<execution>
+								<id>addLibsToClasspath</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build-classpath</goal>
+								</goals>
+								<configuration>
+									<fileSeparator>\\\\</fileSeparator>
+									<outputFilterFile>true</outputFilterFile>
+									<outputFile>${project.build.directory}/classpath.properties</outputFile>
+								</configuration>
+							</execution>
+							<!--execution>
+				             <id>unpack-natives</id>
+				             <phase>package</phase>
+				             <goals>
+				               <goal>unpack</goal>
+				             </goals>
+				             <configuration>
+				               <artifactItems>
+				                 <artifactItem>
+				                   <groupId>com.sun.media</groupId>
+								   <artifactId>jai_imageio_natives</artifactId>
+								   <version>1.1</version>
+				                 </artifactItem>
+				               </artifactItems>
+				               <includes>**/*</includes>
+               				   <excludes>META-INF/*</excludes>
+				               <outputDirectory>${differ.bin.dir}/plugins/libs/</outputDirectory>
+				             </configuration>
+				           </execution-->
+						</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+	    <dependency>
+			<groupId>cz.nkp</groupId>
+			<artifactId>differ-plugins-root</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	
+</project>

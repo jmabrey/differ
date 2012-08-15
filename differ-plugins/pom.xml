@@ -61,10 +61,10 @@
 	<modules>
 		<module>differ-plugins-root</module>
 		<module>differ-compare-plugin</module>
+		<module>differ-similarity-plugin</module>
 	</modules>
 	
 	<dependencies>	
-		
 		<!-- 
 			I packaged this dependency personally and submitted it to Maven central. Until then you need to install it from
 			differ-libs-from-sources to your local repo
