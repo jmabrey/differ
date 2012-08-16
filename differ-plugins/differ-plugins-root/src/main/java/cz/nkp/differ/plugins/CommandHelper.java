@@ -1,16 +1,21 @@
-package cz.nkp.differ.plugins.compare.io;
+package cz.nkp.differ.plugins;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.apache.log4j.Logger;
 
-import cz.nkp.differ.plugins.ComparePluginInterface;
+import org.apache.log4j.Logger;
 
 public class CommandHelper extends Thread{
 
-	private static Logger LOGGER = ComparePluginInterface.LOGGER;
+	public static final class CommandInfo{
+		public String workingDir;
+		public String[] commands;
+	};
+	
+	private static Logger LOGGER = Logger.getRootLogger();
 	
 	private static long MAX_WAIT_TIME = 1000 * 5;
 	
@@ -18,19 +23,22 @@ public class CommandHelper extends Thread{
 	StreamGobbler stdGobbler = null ,errorGobbler = null;
 	private boolean errorFlag = false;
 	
-	public CommandHelper(String command){
+	public CommandHelper(CommandInfo info,Logger logger){
+		LOGGER = logger;
+		
 		pb = new ProcessBuilder();
-		pb.command(command);
+		pb.directory(new File(info.workingDir));
+		pb.command(info.commands);
 	}
 	
 	public void run(){
 		try {
 			Process proc = pb.start();
 			
-			stdGobbler = new StreamGobbler(proc.getInputStream());
+			stdGobbler = new StreamGobbler(proc.getInputStream(),LOGGER);
 			stdGobbler.start();
 			
-			errorGobbler = new StreamGobbler(proc.getErrorStream());
+			errorGobbler = new StreamGobbler(proc.getErrorStream(),LOGGER);
 			errorGobbler.start();
 		} catch (IOException e) {
 			LOGGER.error("Unable to run process",e);
@@ -64,14 +72,15 @@ public class CommandHelper extends Thread{
 
 class StreamGobbler extends Thread
 {
-	private static Logger LOGGER = ComparePluginInterface.LOGGER;
+	private static Logger LOGGER = Logger.getRootLogger();
     InputStream is;
     private boolean isReady = false;
     private String msg = "";
     
-    StreamGobbler(InputStream is)
+    StreamGobbler(InputStream is, Logger logger)
     {
         this.is = is;
+        LOGGER = logger;
     }
     
     public void run()

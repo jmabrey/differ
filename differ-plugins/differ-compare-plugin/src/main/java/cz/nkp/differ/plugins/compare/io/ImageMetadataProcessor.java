@@ -2,6 +2,8 @@ package cz.nkp.differ.plugins.compare.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
@@ -9,6 +11,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+import cz.nkp.differ.plugins.CommandHelper;
 import cz.nkp.differ.plugins.ComparePluginInterface;
 
 public class ImageMetadataProcessor {
@@ -22,7 +25,7 @@ public class ImageMetadataProcessor {
 		this.fileType = type;
 	}
 	
-	private static String getJHoveCommand(File imageFile) throws IOException{
+	private static CommandHelper.CommandInfo getJHoveCommand(File imageFile) throws IOException{
 		//jhove.app.location //home//xrosecky//jhove//bin//JhoveApp.jar
 		//jhove.conf.location //home//xrosecky//jhove//conf//jhove.conf
 		
@@ -39,15 +42,25 @@ public class ImageMetadataProcessor {
 					" Make sure that jhove.app.location and jhove.conf.location are set correctly");
 		}
 		
-		String command = javaHome + File.separator + "bin" + File.separator + "java -jar " + jhoveAppLoc + " -h xml "+ 
-							imageFile.getCanonicalPath() +" -c " + jhoveConfLoc;
+		CommandHelper.CommandInfo info = new CommandHelper.CommandInfo();
 		
-		LOGGER.trace("JHove Command: " + command);
+		ArrayList<String> commands = new ArrayList<String>();
 		
-		return command;
+		commands.add("java");
+		commands.add("-jar " + jhoveAppLoc);
+		commands.add("-h xml");
+		commands.add(imageFile.getCanonicalPath());
+		commands.add("-c jhoveConfLoc");
+		
+		info.workingDir = javaHome + File.separator +"bin" + File.separator;
+		info.commands = commands.toArray(new String[0]);
+		
+		LOGGER.info("JHove Command: " + Arrays.toString(info.commands));
+		
+		return info;
 	}
 	
-	private static String getKDUCommand(File imageFile) throws IOException{
+	private static CommandHelper.CommandInfo getKDUCommand(File imageFile) throws IOException{
 		
 		if(imageFile == null || !imageFile.exists()){
 			throw new IOException("Either the image file is null or non-existant!");
@@ -59,26 +72,38 @@ public class ImageMetadataProcessor {
 			throw new IOException("Unable to form kdu_expand command for metadata extraction." +
 					" Make sure that kduExpand.app.location is set correctly");
 		}
-		String command = kduAppLoc + " -record -quiet /dev/stdout  -i " + imageFile.getCanonicalPath();
 		
-		LOGGER.trace("kdu_expand Command: " + command);
+		CommandHelper.CommandInfo info = new CommandHelper.CommandInfo();
 		
-		return command;
+		ArrayList<String> commands = new ArrayList<String>();
+		
+		commands.add("kdu_expand");
+		commands.add("-record");
+		commands.add("-quiet");
+		commands.add("/dev/stdout");
+		commands.add("-i " + imageFile.getCanonicalPath());
+		
+		info.workingDir = kduAppLoc;
+		info.commands = commands.toArray(new String[0]);
+		
+		LOGGER.info("kdu_expand Command: " + Arrays.toString(info.commands));		
+		
+		return info;
 	}
 	
 	public Component getMetadata(){
-		String kduExpandString = null, jhoveString= null;
+		CommandHelper.CommandInfo kduExpand = null,jhove= null;
 		try {
-			kduExpandString = getKDUCommand(file);
-			jhoveString = getJHoveCommand(file);
+			kduExpand = getKDUCommand(file);
+			jhove = getJHoveCommand(file);
 		} catch (IOException e) {
 			LOGGER.error("Unable to generate metadata", e);
 			return new Label("Unable to generate metadata");
 		}		
 		
 		VerticalLayout layout = new VerticalLayout();
-		CommandHelper kduCommand = new CommandHelper(kduExpandString);
-		CommandHelper jhoveCommand = new CommandHelper(jhoveString);
+		CommandHelper kduCommand = new CommandHelper(kduExpand,LOGGER);
+		CommandHelper jhoveCommand = new CommandHelper(jhove,LOGGER);
 
 		kduCommand.start();
 		jhoveCommand.start();
