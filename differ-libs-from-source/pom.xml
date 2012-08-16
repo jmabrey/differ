@@ -19,5 +19,6 @@
 	
 	<modules>
 		<module>javadjvu-lib</module>
+		<module>jai-imageio-core-standalone</module>
 	</modules>
 </project>
