@@ -1,8 +1,11 @@
 package cz.nkp.differ;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.Security;
 import java.util.Locale;
+import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -32,6 +35,7 @@ public class DifferApplication extends TPTApplication{
 	{
 		System.setProperty("java.awt.headless", "true");
 	}
+	
 	/**
 	 * Called by the server to run the application and begin the session
 	 */
@@ -58,6 +62,27 @@ public class DifferApplication extends TPTApplication{
 		context.addTransactionListener(this);
 		
 		DatabaseManager.loadDatabase();
+		
+		//Load Differ Properties into JVM
+		File differProps = new File(getHomeDirectory(),"differ.properties");
+		if(differProps.exists() && differProps.canRead()){
+			FileInputStream propStream =  null;
+			try {
+				propStream = new FileInputStream(differProps);
+				System.getProperties().load(propStream);
+				LOGGER.info("Loaded differ.properties");
+			} catch (IOException e) {
+				LOGGER.error("Unable to load differ.properties!",e);
+			} finally{
+				if(propStream != null){
+					try {
+						propStream.close();
+					} catch (IOException e) {
+						LOGGER.error("Unable to close differ.properties file stream.",e);
+					}
+				}
+			}
+		}
 		
 		MainDifferWindow mainWindow = new MainDifferWindow();
 		mainWindow.setSizeUndefined();

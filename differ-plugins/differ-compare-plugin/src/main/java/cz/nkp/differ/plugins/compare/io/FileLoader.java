@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -17,6 +18,9 @@ import org.apache.log4j.Logger;
 import com.lizardtech.djvu.DjVuPage;
 import com.lizardtech.djvu.Document;
 import com.lizardtech.djvubean.DjVuImage;
+import com.vaadin.terminal.gwt.client.ui.richtextarea.VRichTextToolbar.Strings;
+
+import cz.nkp.differ.plugins.ComparePluginInterface;
 
 public class FileLoader {
 	
@@ -46,11 +50,11 @@ public class FileLoader {
 
 	private static final long VALID_FILE_SIZE = 15 * FileUtils.ONE_MB;		
 	
-	private static enum FileType{
+	public static enum FileType{
 		JPEG,JPEG2000,TIFF,DJVU,PNG,OTHER
 	};
 	
-	private static Logger LOGGER;	
+	private static Logger LOGGER = ComparePluginInterface.LOGGER;	
 	private FileType type = null;
 	private File file = null;
 	private BufferedImage image = null;
@@ -59,9 +63,7 @@ public class FileLoader {
 		file = load;
 		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		ImageIO.scanForPlugins();	
-		for(String s: ImageIO.getReaderFormatNames()){
-			System.out.println(s);
-		}	
+		LOGGER.trace("Formats: " +  Arrays.toString(ImageIO.getReaderFormatNames()));
 	}
 	
 	public FileType getFileType(){

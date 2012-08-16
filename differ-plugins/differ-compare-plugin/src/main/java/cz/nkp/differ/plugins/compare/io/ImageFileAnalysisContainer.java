@@ -51,7 +51,8 @@ public class ImageFileAnalysisContainer{
 	private String errorMessage = "Unknown Error";
 	private String title = null;
 	
-	public ImageDatasetProcessor processor = null;
+	public ImageDatasetProcessor imageProcessor = null;
+	public ImageMetadataProcessor metadataProcessor = null;
 	
 	private boolean synthesizedImage = false;
 	private static boolean hashesEqual = false;
@@ -73,11 +74,13 @@ public class ImageFileAnalysisContainer{
 			title = f.getName();
 			
 			try {
-				processor = new ImageDatasetProcessor(fileHandle.getImage());
+				imageProcessor = new ImageDatasetProcessor(fileHandle.getImage());
 			} catch (FileLoadingException e) {
 				setErrorState(e);
 				return;
 			}
+			
+			metadataProcessor = new ImageMetadataProcessor(f, fileHandle.getFileType());			
 	}
 	
 	public static ImageFileAnalysisContainer getCombinationContainer(ImageFileAnalysisContainer cont1,ImageFileAnalysisContainer cont2,String[] hashes){
@@ -118,7 +121,7 @@ public class ImageFileAnalysisContainer{
 		
 		try {
 			createdImage = ImageManipulator.XORImages(combo1, combo2);
-			processor = new ImageDatasetProcessor(createdImage);
+			imageProcessor = new ImageDatasetProcessor(createdImage);
 			synthesizedImage = true;
 		} catch (ImageManipulationException e) {
 			setErrorState(e);
@@ -154,7 +157,7 @@ public class ImageFileAnalysisContainer{
 			hashesEqual = false;
 		}
 		else{
-			hashValue = processor.getImageMD5();
+			hashValue = imageProcessor.getImageMD5();
 		}
 
 		
@@ -167,7 +170,7 @@ public class ImageFileAnalysisContainer{
 	    		"",
 	    		"",
 	    		"",
-	    		processor.getHistogramDataset(),
+	    		imageProcessor.getHistogramDataset(),
 	    		PlotOrientation.VERTICAL,
 	    		false,
 	    		false,
@@ -248,6 +251,9 @@ public class ImageFileAnalysisContainer{
 		
 		layout.addComponent(getHash());
 		layout.addComponent(getHistogram());
+		if(!synthesizedImage){
+			layout.addComponent(metadataProcessor.getMetadata());
+		}
 		return layout;
 	}
 	

@@ -9,8 +9,12 @@
 		<maven>2.2.1</maven>
 	</prerequisites>
 		
-	<properties>
+	<properties>	
 		<differ.bin.dir>./bin</differ.bin.dir>	
+		<differ.kdu_expand.location>/usr/bin/kdu_expand</differ.kdu_expand.location>
+		<differ.jhove.app.location>/home/xrosecky/jhove/bin/JhoveApp.jar</differ.jhove.app.location>
+		<differ.jhove.conf.location>/home/xrosecky/jhove/conf/jhove.conf</differ.jhove.conf.location>
+		
 	    <vaadin.version>6.8.1</vaadin.version>
 		<gwt.version>2.4.0</gwt.version>
 		<derby.version>10.8.2.2</derby.version>
@@ -59,18 +63,56 @@
 				<contextPath>/differ</contextPath>
 			  </webAppConfig>
 			  <systemProperties>
-			  <!-- Classpath workarounds because maven modifies working directory-->
+			    <!-- Classpath workarounds because maven modifies working directory-->
 				<systemProperty>
 				  <name>cz.differ.plugins.directory</name>
 				  <value>${differ.bin.dir}/plugins/</value>
 				</systemProperty>
-				<!--<systemProperty>
+				<!--systemProperty>
 				  <name>derby.system.home</name>
 				  <value>${differ.bin.dir}</value>
-				</systemProperty>-->
+				</systemProperty-->
+				
+				<!-- Properties for the Compare Plugin Metadata Extraction tools -->
+				<!--  Replaced by differ.properties -->
+				<!-- systemProperty>
+				  <name>jhove.app.location</name>
+				  <value>${differ.jhove.app.location}</value>
+				</systemProperty>
+				<systemProperty>
+				  <name>jhove.conf.location</name>
+				  <value>${differ.jhove.conf.location}</value>
+				</systemProperty>
+				<systemProperty>
+				  <name>kdu_expand.app.location</name>
+				  <value>${differ.kdu_expand.location}</value>
+				</systemProperty-->
 			 </systemProperties>
 			</configuration>
 	    </plugin>
+	    
+	    <plugin>
+	        <artifactId>maven-resources-plugin</artifactId>
+	        <version>2.5</version>
+	        <executions>
+	          <execution>
+	            <id>copy-resources</id>
+	            <phase>validate</phase>
+	            <goals>
+	              <goal>copy-resources</goal>
+	            </goals>
+	            <configuration>
+	              <outputDirectory>../${differ.bin.dir}</outputDirectory>
+	              <resources>          
+	                <resource>
+	                  <directory>unpacked_resources</directory>
+	                  <filtering>true</filtering>
+	                </resource>
+	              </resources>              
+	            </configuration>            
+	          </execution>
+	        </executions>
+      	</plugin>
 	  
 	    <plugin>
 			<groupId>com.vaadin</groupId>
