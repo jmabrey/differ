@@ -1,4 +1,4 @@
-package cz.nkp.differ.plugins;
+package cz.nkp.differ.plugins.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,14 +49,17 @@ public class CommandHelper extends Thread{
 	
 	public String getMessage() throws IOException{
 		long timeStarted = System.currentTimeMillis();
-		if(errorFlag || errorGobbler == null || stdGobbler == null){
+		if(errorFlag){
 			throw new IOException("The command was invalid and no message could be generated");
+		}
+		if(stdGobbler == null || errorGobbler == null){
+			throw new IOException("The command streams were not correctly created"); 
 		}
 		while(true){
 			if(errorGobbler.isReady() && stdGobbler.isReady()){
 				String errorMsg = errorGobbler.getMessage();
 				if(errorMsg != null){
-					LOGGER.error(errorMsg);
+					LOGGER.error("Process Error Stream: " + errorMsg);
 				}
 				return stdGobbler.getMessage();
 			}

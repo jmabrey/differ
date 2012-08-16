@@ -1,4 +1,4 @@
-package cz.nkp.differ.plugins;
+package cz.nkp.differ.plugins.tools;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -11,6 +11,8 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import com.vaadin.terminal.StreamResource;
+
+import cz.nkp.differ.plugins.DifferPluginInterface;
 
 public class BufferedImageStreamResource extends StreamResource{
 	

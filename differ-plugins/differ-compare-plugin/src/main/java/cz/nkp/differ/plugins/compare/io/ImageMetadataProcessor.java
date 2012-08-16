@@ -11,8 +11,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-import cz.nkp.differ.plugins.CommandHelper;
 import cz.nkp.differ.plugins.ComparePluginInterface;
+import cz.nkp.differ.plugins.tools.CommandHelper;
 
 public class ImageMetadataProcessor {
 	private static Logger LOGGER = ComparePluginInterface.LOGGER;

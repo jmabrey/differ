@@ -1,4 +1,4 @@
-package cz.nkp.differ.plugins;
+package cz.nkp.differ.plugins.tools;
 
 import org.apache.log4j.Logger;
 
@@ -12,6 +12,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
+
+import cz.nkp.differ.plugins.DifferPluginInterface;
 
 public class ScrollableImagePanel extends CustomComponent{
 	

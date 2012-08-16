@@ -20,12 +20,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 
-import cz.nkp.differ.plugins.BufferedImageStreamResource;
 import cz.nkp.differ.plugins.DifferPluginInterface;
-import cz.nkp.differ.plugins.ScrollableImagePanel;
-import cz.nkp.differ.plugins.ScrollableImagePanel.ScrollableImagePanelException;
 import cz.nkp.differ.plugins.compare.io.FileLoader.FileLoadingException;
 import cz.nkp.differ.plugins.compare.io.ImageManipulator.ImageManipulationException;
+import cz.nkp.differ.plugins.tools.BufferedImageStreamResource;
+import cz.nkp.differ.plugins.tools.ScrollableImagePanel;
+import cz.nkp.differ.plugins.tools.ScrollableImagePanel.ScrollableImagePanelException;
 
 public class ImageFileAnalysisContainer{
 	

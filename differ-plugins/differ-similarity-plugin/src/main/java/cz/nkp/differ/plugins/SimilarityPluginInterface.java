@@ -8,6 +8,8 @@ import com.vaadin.Application;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
+import cz.nkp.differ.plugins.tools.PluginPollingThread;
+
 
 public class SimilarityPluginInterface implements DifferPluginInterface{
 

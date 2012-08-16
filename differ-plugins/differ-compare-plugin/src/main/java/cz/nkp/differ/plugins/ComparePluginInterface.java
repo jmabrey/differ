@@ -10,6 +10,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
 
 import cz.nkp.differ.plugins.compare.io.ImageFileAnalysisContainer;
+import cz.nkp.differ.plugins.tools.PluginPollingThread;
 
 public class ComparePluginInterface implements DifferPluginInterface{
 

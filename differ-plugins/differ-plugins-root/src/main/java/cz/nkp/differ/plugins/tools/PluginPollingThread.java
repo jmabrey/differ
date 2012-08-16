@@ -1,8 +1,11 @@
-package cz.nkp.differ.plugins;
+package cz.nkp.differ.plugins.tools;
 
 import java.io.IOException;
 
 import com.vaadin.ui.Component;
+
+import cz.nkp.differ.plugins.DifferPluginInterface;
+import cz.nkp.differ.plugins.PluginComponentReadyCallback;
 
 public class PluginPollingThread extends Thread{
 	
