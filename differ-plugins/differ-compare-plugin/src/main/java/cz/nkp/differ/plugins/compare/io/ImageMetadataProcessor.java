@@ -70,18 +70,13 @@ public class ImageMetadataProcessor {
 		
 		ArrayList<String> commands = new ArrayList<String>();
 		
-		commands.add(javaHome + File.separator + "bin" + File.separator + "java");
-		
-		File jhoveFile = new File(jhoveAppLoc);
-		
-		commands.add("-jar " + jhoveFile.getName());
+		commands.add("java");
+		commands.add("-jar " + jhoveAppLoc);
 		commands.add("-h xml");
-		commands.add(imageFile.getCanonicalPath());
+		commands.add("'" + imageFile.getCanonicalPath() + "'");
 		commands.add("-c " + jhoveConfLoc);
 		
-		
-		
-		info.workingDir = jhoveFile.getParent();
+		info.workingDir = javaHome + File.separator +"bin" + File.separator;
 		info.commands = commands.toArray(new String[0]);
 		
 		LOGGER.info("JHove Command: " + Arrays.toString(info.commands));
