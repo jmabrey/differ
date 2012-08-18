@@ -50,7 +50,7 @@ public class ImageMetadataProcessor {
 		commands.add("-jar " + jhoveAppLoc);
 		commands.add("-h xml");
 		commands.add(imageFile.getCanonicalPath());
-		commands.add("-c jhoveConfLoc");
+		commands.add("-c " + jhoveConfLoc);
 		
 		info.workingDir = javaHome + File.separator +"bin" + File.separator;
 		info.commands = commands.toArray(new String[0]);

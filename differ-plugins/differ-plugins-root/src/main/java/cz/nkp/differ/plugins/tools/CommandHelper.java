@@ -55,6 +55,7 @@ public class CommandHelper extends Thread{
 		if(stdGobbler == null || errorGobbler == null){
 			throw new IOException("The command streams were not correctly created"); 
 		}
+		
 		while(true){
 			if(errorGobbler.isReady() && stdGobbler.isReady()){
 				String errorMsg = errorGobbler.getMessage();
@@ -89,9 +90,10 @@ class StreamGobbler extends Thread
     public void run()
     {
     	InputStreamReader stream = null;
+    	BufferedReader br = null;
         try{
             stream = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(stream);
+            br = new BufferedReader(stream);
             String line = null;
             while ( (line = br.readLine()) != null){
                 msg+=line;  
@@ -105,7 +107,14 @@ class StreamGobbler extends Thread
         		try {
 					stream.close();
 				} catch (IOException e) {
-					LOGGER.error("Unable to close stream!",e);
+					LOGGER.warn("Unable to close stream reader",e);
+				}
+        	}
+        	if(br != null){
+        		try {
+					br.close();
+				} catch (IOException e) {
+					LOGGER.warn("Unable to close stream reader",e);
 				}
         	}
         }

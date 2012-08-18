@@ -8,7 +8,9 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
@@ -84,6 +86,28 @@ public class DifferApplication extends TPTApplication{
 			}
 		}
 		
+		//Setup Apache Log4j Configuration for file logging if the property is set in differ props
+		if(System.getProperty("differ.logging.file").equalsIgnoreCase("true")){
+			
+			String fileLocation = System.getProperty("differ.logging.file.location");
+			if(fileLocation == null){
+				//Create a logging file in the logs directory that is names by the current nanotime
+				fileLocation = new File(new File(getHomeDirectory(),"logs"),"" + System.nanoTime()).toString();
+			}
+			
+			File loggingFile = new File(fileLocation);
+			if(loggingFile.exists()){
+				LOGGER.warn("differ.logging.file.location is an invalid location");
+			}
+			else{
+				try {
+					BasicConfigurator.configure(new FileAppender(new PatternLayout(PatternLayout.DEFAULT_CONVERSION_PATTERN),loggingFile.getAbsolutePath()));
+				} catch (IOException e) {
+					LOGGER.error("Unable to create logging file",e);
+				}
+			}
+		}
+		
 		MainDifferWindow mainWindow = new MainDifferWindow();
 		mainWindow.setSizeUndefined();
 		setMainWindow(mainWindow);
@@ -114,6 +138,12 @@ public class DifferApplication extends TPTApplication{
 			File differHomeFileUsersDirectory = new File(differHomeFile,"users");
 			if(!differHomeFileUsersDirectory.exists()){
 				differHomeFileUsersDirectory.mkdir();
+    		}
+			
+			//Same with logs subdirectory
+			File differHomeLogsDirectory = new File(differHomeFile,"logs");
+			if(!differHomeLogsDirectory.exists()){
+				differHomeLogsDirectory.mkdir();
     		}
 			
     	}
