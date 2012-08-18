@@ -15,20 +15,41 @@ public class CommandHelper extends Thread{
 		public String[] commands;
 	};
 	
+	public static abstract class CommandMessageCallback{
+		public abstract void messageGenerated(String message);
+	};
+	
 	private static Logger LOGGER = Logger.getRootLogger();
 	
-	private static long MAX_WAIT_TIME = 1000 * 5;
+	private long maximumWaitTime = 1000 * 5;
+	
+	private CommandMessageCallback callback;
 	
 	private ProcessBuilder pb;
-	StreamGobbler stdGobbler = null ,errorGobbler = null;
+	private StreamGobbler stdGobbler = null ,errorGobbler = null;
 	private boolean errorFlag = false;
 	
-	public CommandHelper(CommandInfo info,Logger logger){
-		LOGGER = logger;
+	public CommandHelper(CommandInfo info,CommandMessageCallback callback,Logger logger){
+		if(info == null || callback == null || logger == null){
+			throw new IllegalArgumentException("Cannot pass null parameters to CommandHelper");
+		}
+		
+		LOGGER = logger;	
+		this.callback = callback;
 		
 		pb = new ProcessBuilder();
 		pb.directory(new File(info.workingDir));
 		pb.command(info.commands);
+	}
+	
+	public void setMaxCompletionTime(long milliseconds){
+		if(milliseconds > 0){
+			maximumWaitTime = milliseconds;
+		}
+		else{
+			LOGGER.warn("Invalid maximum wait time for CommandHelper");
+		}
+		
 	}
 	
 	public void run(){
@@ -40,6 +61,15 @@ public class CommandHelper extends Thread{
 			
 			errorGobbler = new StreamGobbler(proc.getErrorStream(),LOGGER);
 			errorGobbler.start();
+			
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e) {
+				LOGGER.error("Command process interrupted",e);
+			}
+			
+			callback.messageGenerated(getMessage());
+			
 		} catch (IOException e) {
 			LOGGER.error("Unable to run process",e);
 			errorFlag = true;
@@ -47,7 +77,7 @@ public class CommandHelper extends Thread{
 		}
 	}
 	
-	public String getMessage() throws IOException{
+	private String getMessage() throws IOException{
 		long timeStarted = System.currentTimeMillis();
 		if(errorFlag){
 			throw new IOException("The command was invalid and no message could be generated");
@@ -65,7 +95,7 @@ public class CommandHelper extends Thread{
 				return stdGobbler.getMessage();
 			}
 			else {
-				if((System.currentTimeMillis() - timeStarted) > MAX_WAIT_TIME){
+				if((System.currentTimeMillis() - timeStarted) > maximumWaitTime){
 					throw new IOException("Command took too long to execute");
 				}
 			}

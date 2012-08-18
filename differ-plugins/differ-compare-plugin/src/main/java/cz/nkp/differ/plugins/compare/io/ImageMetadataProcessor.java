@@ -13,6 +13,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import cz.nkp.differ.plugins.ComparePluginInterface;
 import cz.nkp.differ.plugins.tools.CommandHelper;
+import cz.nkp.differ.plugins.tools.CommandHelper.CommandMessageCallback;
 
 public class ImageMetadataProcessor {
 	private static Logger LOGGER = ComparePluginInterface.LOGGER;
@@ -20,10 +21,33 @@ public class ImageMetadataProcessor {
 	private File file = null;
 	private FileLoader.FileType fileType = FileLoader.FileType.OTHER;
 	
+	private Label jhoveLabel,kduLabel;
+	
 	public ImageMetadataProcessor(File file, FileLoader.FileType type){
 		this.file = file;
 		this.fileType = type;
+		
+		jhoveLabel = new Label("JHOVE: Generating...");
+		kduLabel = new Label("KDU: Generating...");
 	}
+	
+	private static class labelCaptionCallback extends CommandMessageCallback{
+
+		private Label l;
+		
+		public labelCaptionCallback(Label l){
+			this.l = l;
+		}
+		
+		@Override
+		public void messageGenerated(String message) {
+			if(l != null){
+				l.setCaption(message);
+			}
+			
+		}
+		
+	};
 	
 	private static CommandHelper.CommandInfo getJHoveCommand(File imageFile) throws IOException{
 		//jhove.app.location //home//xrosecky//jhove//bin//JhoveApp.jar
@@ -102,25 +126,14 @@ public class ImageMetadataProcessor {
 		}		
 		
 		VerticalLayout layout = new VerticalLayout();
-		CommandHelper kduCommand = new CommandHelper(kduExpand,LOGGER);
-		CommandHelper jhoveCommand = new CommandHelper(jhove,LOGGER);
+		CommandHelper kduCommand = new CommandHelper(kduExpand,new labelCaptionCallback(kduLabel), LOGGER);
+		CommandHelper jhoveCommand = new CommandHelper(jhove,new labelCaptionCallback(jhoveLabel),LOGGER);
 
 		kduCommand.start();
 		jhoveCommand.start();
 		
-		try {
-			layout.addComponent(new Label("KDU: " + kduCommand.getMessage()));
-		} catch (IOException e) {
-			LOGGER.error("Unable to generate kdu_expand metadata", e);
-			layout.addComponent(new Label("kdu error"));
-		}
-		
-		try {
-			layout.addComponent(new Label("JHOVE: " + jhoveCommand.getMessage()));
-		} catch (IOException e) {
-			LOGGER.error("Unable to generate jhove metadata", e);
-			layout.addComponent(new Label("Jhove error"));
-		}		
+		layout.addComponent(kduLabel);		
+		layout.addComponent(jhoveLabel);		
 		
 		return layout;
 	}
