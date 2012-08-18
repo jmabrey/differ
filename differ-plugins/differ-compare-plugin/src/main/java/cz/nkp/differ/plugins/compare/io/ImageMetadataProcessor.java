@@ -70,13 +70,18 @@ public class ImageMetadataProcessor {
 		
 		ArrayList<String> commands = new ArrayList<String>();
 		
-		commands.add("java");
-		commands.add("-jar " + jhoveAppLoc);
+		commands.add(javaHome + File.separator + "bin" + File.separator + "java");
+		
+		File jhoveFile = new File(jhoveAppLoc);
+		
+		commands.add("-jar " + jhoveFile.getName());
 		commands.add("-h xml");
 		commands.add(imageFile.getCanonicalPath());
 		commands.add("-c " + jhoveConfLoc);
 		
-		info.workingDir = javaHome + File.separator +"bin" + File.separator;
+		
+		
+		info.workingDir = jhoveFile.getParent();
 		info.commands = commands.toArray(new String[0]);
 		
 		LOGGER.info("JHove Command: " + Arrays.toString(info.commands));
@@ -105,7 +110,7 @@ public class ImageMetadataProcessor {
 		commands.add("-record");
 		commands.add("-quiet");
 		commands.add("/dev/stdout");
-		commands.add("-i " + imageFile.getCanonicalPath());
+		commands.add("-i '" + imageFile.getCanonicalPath() + "'");
 		
 		info.workingDir = kduAppLoc;
 		info.commands = commands.toArray(new String[0]);
