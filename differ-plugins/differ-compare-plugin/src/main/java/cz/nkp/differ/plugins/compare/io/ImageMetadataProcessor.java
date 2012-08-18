@@ -71,15 +71,18 @@ public class ImageMetadataProcessor {
 		ArrayList<String> commands = new ArrayList<String>();
 		
 		commands.add("java");
-		commands.add("-jar " + jhoveAppLoc);
-		commands.add("-h xml");
+		commands.add("-jar");
+		commands.add(jhoveAppLoc);
+		commands.add("-h");
+		commands.add("xml");
 		commands.add("'" + imageFile.getCanonicalPath() + "'");
-		commands.add("-c " + jhoveConfLoc);
+		commands.add("-c");
+		commands.add(jhoveConfLoc);
 		
 		info.workingDir = javaHome + File.separator +"bin" + File.separator;
 		info.commands = commands.toArray(new String[0]);
 		
-		LOGGER.info("JHove Command: " + Arrays.toString(info.commands));
+		LOGGER.trace("JHove Command: " + Arrays.toString(info.commands));
 		
 		return info;
 	}
@@ -105,12 +108,13 @@ public class ImageMetadataProcessor {
 		commands.add("-record");
 		commands.add("-quiet");
 		commands.add("/dev/stdout");
-		commands.add("-i '" + imageFile.getCanonicalPath() + "'");
+		commands.add("-i");
+		commands.add("'" + imageFile.getCanonicalPath() + "'");
 		
 		info.workingDir = kduAppLoc;
 		info.commands = commands.toArray(new String[0]);
 		
-		LOGGER.info("kdu_expand Command: " + Arrays.toString(info.commands));		
+		LOGGER.trace("kdu_expand Command: " + Arrays.toString(info.commands));		
 		
 		return info;
 	}
@@ -126,8 +130,8 @@ public class ImageMetadataProcessor {
 		}		
 		
 		VerticalLayout layout = new VerticalLayout();
-		CommandHelper kduCommand = new CommandHelper(kduExpand,new labelCaptionCallback(kduLabel), LOGGER);
-		CommandHelper jhoveCommand = new CommandHelper(jhove,new labelCaptionCallback(jhoveLabel),LOGGER);
+		CommandHelper kduCommand = new CommandHelper("KDU",kduExpand,new labelCaptionCallback(kduLabel), LOGGER);
+		CommandHelper jhoveCommand = new CommandHelper("JHOVE",jhove,new labelCaptionCallback(jhoveLabel),LOGGER);
 
 		kduCommand.start();
 		jhoveCommand.start();

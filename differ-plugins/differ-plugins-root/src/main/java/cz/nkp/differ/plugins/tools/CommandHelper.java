@@ -25,14 +25,19 @@ public class CommandHelper extends Thread{
 	private ProcessBuilder pb;
 	private StreamGobbler stdGobbler = null ,errorGobbler = null;
 	private boolean errorFlag = false;
+	private String name = "CommandHelper";
 	
-	public CommandHelper(CommandInfo info,CommandMessageCallback callback,Logger logger){
+	public CommandHelper(String name, CommandInfo info,CommandMessageCallback callback,Logger logger){
 		if(info == null || callback == null || logger == null){
 			throw new IllegalArgumentException("Cannot pass null parameters to CommandHelper");
 		}
 		
 		LOGGER = logger;	
 		this.callback = callback;
+		
+		if(name != null){
+			this.name = name;
+		}
 		
 		pb = new ProcessBuilder();
 		pb.directory(new File(info.workingDir));
@@ -52,13 +57,13 @@ public class CommandHelper extends Thread{
 			try {
 				proc.waitFor();
 			} catch (InterruptedException e) {
-				LOGGER.error("Command process interrupted",e);
+				LOGGER.error("["+ name +"]" + "Command process interrupted",e);
 			}
 			
 			callback.messageGenerated(getMessage());
 			
 		} catch (IOException e) {
-			LOGGER.error("Unable to run process",e);
+			LOGGER.error("["+ name +"]" + "Unable to run process",e);
 			errorFlag = true;
 			return;
 		}
@@ -75,11 +80,14 @@ public class CommandHelper extends Thread{
 		}
 		
 		while(true){//infinite loop is ok because this is called from IO processing thread.
-			if(errorGobbler.isReady() && stdGobbler.isReady()){
+			if(errorGobbler.isReady()){
 				String errorMsg = errorGobbler.getMessage();
 				if(errorMsg != null){
-					LOGGER.error("Process Error Stream: " + errorMsg);
+					LOGGER.error("["+ name +"]" + errorMsg);
 				}
+			}
+			
+			if(stdGobbler.isReady()){
 				return stdGobbler.getMessage();
 			}
 		}
@@ -94,16 +102,16 @@ class StreamGobbler extends Thread
     private boolean isReady = false;
     private String msg = "";
     
-    StreamGobbler(InputStream is, Logger logger)
-    {
+    public StreamGobbler(InputStream is, Logger logger){
         this.is = is;
         LOGGER = logger;
     }
     
-    public void run()
-    {
+    public void run(){
+    	
     	InputStreamReader stream = null;
     	BufferedReader br = null;
+    	 
         try{
             stream = new InputStreamReader(is);
             br = new BufferedReader(stream);
@@ -111,12 +119,12 @@ class StreamGobbler extends Thread
             while (true){
             	line = br.readLine();
             	if(line == null){
+                    isReady = true;
             		break;
             	}else{
             		msg += line;
             	} 
             }  
-            isReady = true;
         } catch (IOException e){
             LOGGER.error("Gobbler had an error!",e);
         } finally{
@@ -142,9 +150,9 @@ class StreamGobbler extends Thread
     }
     
     public String getMessage(){
-    	if(!isReady()){
-    		return null;
+    	if(isReady()){
+    		return msg;
     	}
-    	else return msg;
+    	else return null;
     }
 }
