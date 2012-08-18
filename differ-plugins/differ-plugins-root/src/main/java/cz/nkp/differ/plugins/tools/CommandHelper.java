@@ -20,9 +20,6 @@ public class CommandHelper extends Thread{
 	};
 	
 	private static Logger LOGGER = Logger.getRootLogger();
-	
-	private long maximumWaitTime = 1000 * 5;
-	
 	private CommandMessageCallback callback;
 	
 	private ProcessBuilder pb;
@@ -40,16 +37,6 @@ public class CommandHelper extends Thread{
 		pb = new ProcessBuilder();
 		pb.directory(new File(info.workingDir));
 		pb.command(info.commands);
-	}
-	
-	public void setMaxCompletionTime(long milliseconds){
-		if(milliseconds > 0){
-			maximumWaitTime = milliseconds;
-		}
-		else{
-			LOGGER.warn("Invalid maximum wait time for CommandHelper");
-		}
-		
 	}
 	
 	public void run(){
@@ -78,28 +65,26 @@ public class CommandHelper extends Thread{
 	}
 	
 	private String getMessage() throws IOException{
-		long timeStarted = System.currentTimeMillis();
+		
 		if(errorFlag){
 			throw new IOException("The command was invalid and no message could be generated");
 		}
+		
 		if(stdGobbler == null || errorGobbler == null){
 			throw new IOException("The command streams were not correctly created"); 
 		}
-		
-		while(true){
-			if(errorGobbler.isReady() && stdGobbler.isReady()){
-				String errorMsg = errorGobbler.getMessage();
-				if(errorMsg != null){
-					LOGGER.error("Process Error Stream: " + errorMsg);
-				}
-				return stdGobbler.getMessage();
+	
+		if(errorGobbler.isReady() && stdGobbler.isReady()){
+			String errorMsg = errorGobbler.getMessage();
+			if(errorMsg != null){
+				LOGGER.error("Process Error Stream: " + errorMsg);
 			}
-			else {
-				if((System.currentTimeMillis() - timeStarted) > maximumWaitTime){
-					throw new IOException("Command took too long to execute");
-				}
-			}
+			return stdGobbler.getMessage();
 		}
+		else{
+			throw new IOException("Call to getMessage was made before process finished running");
+		}
+		
 		
 	}
 }
