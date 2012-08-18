@@ -73,18 +73,16 @@ public class CommandHelper extends Thread{
 		if(stdGobbler == null || errorGobbler == null){
 			throw new IOException("The command streams were not correctly created"); 
 		}
-	
-		if(errorGobbler.isReady() && stdGobbler.isReady()){
-			String errorMsg = errorGobbler.getMessage();
-			if(errorMsg != null){
-				LOGGER.error("Process Error Stream: " + errorMsg);
-			}
-			return stdGobbler.getMessage();
-		}
-		else{
-			throw new IOException("Call to getMessage was made before process finished running");
-		}
 		
+		while(true){//infinite loop is ok because this is called from IO processing thread.
+			if(errorGobbler.isReady() && stdGobbler.isReady()){
+				String errorMsg = errorGobbler.getMessage();
+				if(errorMsg != null){
+					LOGGER.error("Process Error Stream: " + errorMsg);
+				}
+				return stdGobbler.getMessage();
+			}
+		}
 		
 	}
 }
@@ -110,13 +108,17 @@ class StreamGobbler extends Thread
             stream = new InputStreamReader(is);
             br = new BufferedReader(stream);
             String line = null;
-            while ( (line = br.readLine()) != null){
-                msg+=line;  
+            while (true){
+            	line = br.readLine();
+            	if(line == null){
+            		break;
+            	}else{
+            		msg += line;
+            	} 
             }  
             isReady = true;
         } catch (IOException e){
-        	isReady = false;
-            LOGGER.error(e);
+            LOGGER.error("Gobbler had an error!",e);
         } finally{
         	if(stream != null){
         		try {
