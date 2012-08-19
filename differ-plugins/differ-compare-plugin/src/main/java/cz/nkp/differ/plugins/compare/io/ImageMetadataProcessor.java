@@ -87,7 +87,7 @@ public class ImageMetadataProcessor {
 		String os_name = System.getProperty("os.name").toLowerCase();
 		String kdu_binary_name;
 		
-		if(os_name.indexOf("nix") >= 0 || os.indexOf("nux") >= 0){
+		if(os_name.indexOf("nix") >= 0 || os_name.indexOf("nux") >= 0){
 			kduHome += "/linux";
 			kdu_binary_name = "kdu_expand";
 		}
