@@ -12,6 +12,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 import cz.nkp.differ.plugins.ComparePluginInterface;
+import cz.nkp.differ.plugins.compare.io.FileLoader.FileType;
 import cz.nkp.differ.plugins.tools.CommandHelper;
 import cz.nkp.differ.plugins.tools.CommandHelper.CommandMessageCallback;
 
@@ -42,7 +43,7 @@ public class ImageMetadataProcessor {
 		@Override
 		public void messageGenerated(String message) {
 			if(l != null){
-				l.setCaption(message);
+				l.setValue(message);
 			}
 			
 		}
@@ -130,14 +131,16 @@ public class ImageMetadataProcessor {
 		}		
 		
 		VerticalLayout layout = new VerticalLayout();
-		CommandHelper kduCommand = new CommandHelper("KDU",kduExpand,new labelCaptionCallback(kduLabel), LOGGER);
-		CommandHelper jhoveCommand = new CommandHelper("JHOVE",jhove,new labelCaptionCallback(jhoveLabel),LOGGER);
-
-		kduCommand.start();
-		jhoveCommand.start();
 		
-		layout.addComponent(kduLabel);		
+		CommandHelper jhoveCommand = new CommandHelper("JHOVE",jhove,new labelCaptionCallback(jhoveLabel),LOGGER);		
+		jhoveCommand.start();			
 		layout.addComponent(jhoveLabel);		
+		
+		if(fileType == FileType.JPEG2000){
+			CommandHelper kduCommand = new CommandHelper("KDU",kduExpand,new labelCaptionCallback(kduLabel), LOGGER);
+			kduCommand.start();
+			layout.addComponent(kduLabel);	
+		}
 		
 		return layout;
 	}
