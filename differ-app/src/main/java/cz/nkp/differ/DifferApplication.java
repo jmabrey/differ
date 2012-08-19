@@ -68,7 +68,7 @@ public class DifferApplication extends TPTApplication{
 		DatabaseManager.loadDatabase();
 		
 		//Load Differ Properties into JVM
-		File differProps = new File(getHomeDirectory(),"differ.properties");
+		File differProps = new File(new File(getHomeDirectory(),"resources"),"differ.properties");
 		if(differProps.exists() && differProps.canRead()){
 			FileInputStream propStream =  null;
 			try {

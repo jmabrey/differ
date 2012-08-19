@@ -16,7 +16,7 @@ public class CommandHelper extends Thread{
 	};
 	
 	public static abstract class CommandMessageCallback{
-		public abstract void messageGenerated(String message);
+		public abstract void messageGenerated(String source, String message);
 	};
 	
 	private static Logger LOGGER = Logger.getRootLogger();
@@ -60,7 +60,7 @@ public class CommandHelper extends Thread{
 				LOGGER.error("["+ name +"]" + "Command process interrupted",e);
 			}
 			
-			callback.messageGenerated(getMessage());
+			callback.messageGenerated(name,getMessage());
 			
 		} catch (IOException e) {
 			LOGGER.error("["+ name +"]" + "Unable to run process",e);
@@ -78,13 +78,15 @@ public class CommandHelper extends Thread{
 		if(stdGobbler == null || errorGobbler == null){
 			throw new IOException("The command streams were not correctly created"); 
 		}
-		
+		boolean errorStreamProcessed = false;
 		while(true){//infinite loop is ok because this is called from IO processing thread.
-			if(errorGobbler.isReady()){
+			if(!errorStreamProcessed && errorGobbler.isReady()){
 				String errorMsg = errorGobbler.getMessage();
-				if(errorMsg != null){
-					LOGGER.error("["+ name +"]" + errorMsg);
+				if(errorMsg != null && errorMsg.trim() != errorMsg){
+					LOGGER.error("["+ name +"][stderr]" + errorMsg);
 				}
+				
+				errorStreamProcessed = true;
 			}
 			
 			if(stdGobbler.isReady()){
