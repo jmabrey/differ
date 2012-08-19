@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Security;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -92,7 +94,10 @@ public class DifferApplication extends TPTApplication{
 			String fileLocation = System.getProperty("differ.logging.file.location");
 			if(fileLocation == null){
 				//Create a logging file in the logs directory that is names by the current nanotime
-				fileLocation = new File(new File(getHomeDirectory(),"logs"),"" + System.nanoTime()).toString();
+				Calendar cal = Calendar.getInstance();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss"); 
+				String fileName = sdf.format(cal.getTime()) + ".log";
+				fileLocation = new File(new File(getHomeDirectory(),"logs"),fileName).getAbsolutePath();
 			}
 			
 			File loggingFile = new File(fileLocation);
