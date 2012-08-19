@@ -15,7 +15,6 @@ import org.vaadin.addon.JFreeChartWrapper;
 
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
@@ -23,7 +22,7 @@ import com.vaadin.ui.VerticalLayout;
 import cz.nkp.differ.plugins.DifferPluginInterface;
 import cz.nkp.differ.plugins.compare.io.FileLoader.FileLoadingException;
 import cz.nkp.differ.plugins.compare.io.ImageManipulator.ImageManipulationException;
-import cz.nkp.differ.plugins.tools.BufferedImageStreamResource;
+import cz.nkp.differ.plugins.tools.Java2DImageComponentGenerator;
 import cz.nkp.differ.plugins.tools.ScrollableImagePanel;
 import cz.nkp.differ.plugins.tools.ScrollableImagePanel.ScrollableImagePanelException;
 
@@ -221,24 +220,21 @@ public class ImageFileAnalysisContainer{
 		
 		try {
 			image = getImage();
-			Embedded imageScaled = new Embedded(title,new BufferedImageStreamResource(
-					ImageManipulator.getBitmapScaledImage(image, COMPONENT_SIZE_SCALE_FACTOR,true),parent));
-			imageScaled.setType(Embedded.TYPE_IMAGE);
+			Component imageScaled = new Java2DImageComponentGenerator(
+					ImageManipulator.getBitmapScaledImage(image, COMPONENT_SIZE_SCALE_FACTOR,true),
+					parent.getApplication()).getImageComponent();
 			
 			int fullSizeWidth = (int) (((WebApplicationContext)parent.getApplication().getContext()).getBrowser().getScreenWidth() * .75);
 			if(fullSizeWidth > image.getWidth()){
 				fullSizeWidth = image.getWidth();
 			}
-			Embedded imageFull = new Embedded(title,new BufferedImageStreamResource(
-					ImageManipulator.getBitmapScaledImage(image,fullSizeWidth,true),parent));
-			imageFull.setType(Embedded.TYPE_IMAGE);
+			
+			Component imageFull = new Java2DImageComponentGenerator(image,
+					parent.getApplication()).getImageComponent();
 			
 			layout.addComponent(new ScrollableImagePanel(imageScaled,imageFull,COMPONENT_SIZE_SCALE_FACTOR, parent));
 
 		} catch (FileLoadingException e) {
-			setErrorState(e);
-			return getErrorComponent(errorMessage);
-		} catch (IOException e) {
 			setErrorState(e);
 			return getErrorComponent(errorMessage);
 		} catch (ImageManipulationException e) {
