@@ -84,14 +84,14 @@ public class ImageMetadataProcessor {
 		String kduHome =  System.getProperty("user.home") + "/.differ/resources/kdu";
 		
 		//Determine OS
-		String os_name = System.getProperty("os.name");
+		String os_name = System.getProperty("os.name").toLowerCase();
 		String kdu_binary_name;
 		
-		if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0){
+		if(os_name.indexOf("nix") >= 0 || os.indexOf("nux") >= 0){
 			kduHome += "/linux";
 			kdu_binary_name = "kdu_expand";
 		}
-		else if(os.indexOf("win") >= 0){
+		else if(os_name.indexOf("win") >= 0){
 			kduHome += "/windows";
 			kdu_binary_name = "kdu_expand";
 		}
