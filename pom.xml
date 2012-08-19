@@ -102,8 +102,7 @@
 	              <goal>copy-resources</goal>
 	            </goals>
 	            <configuration>
-	              <outputDirectory>../${differ.bin.dir}/resources</outputDirectory>
-				  <encoding>UTF-8</encoding>
+	              <outputDirectory>../${differ.bin.dir}</outputDirectory>
 	              <resources>          
 	                <resource>
 	                  <directory>unpacked_resources</directory>

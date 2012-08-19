@@ -568,11 +568,17 @@ public class J2KImageReader extends ImageReader implements MsgLogger {
     
     //Implemented to fix Memory Leak in JAI Sun Impl
     public void dispose(){
-    	readState = null;
-    	imageMetadata = null;
-    	hd = null;
+    	if(iis != null){
+    		try {
+				iis.close();
+			} catch (IOException e) {
+				// XXX Ignore
+			}
+    	}
     	
-    	super.dispose();
+        imageMetadata = null;
+        hd = null;
+        readState = null;
     }
 
     // --- Begin jj2000.j2k.util.MsgLogger implementation ---
