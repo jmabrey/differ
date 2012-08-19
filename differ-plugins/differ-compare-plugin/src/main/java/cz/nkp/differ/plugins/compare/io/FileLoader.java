@@ -62,7 +62,7 @@ public class FileLoader {
 	public FileLoader(File load){
 		file = load;
 		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
-		ImageIO.scanForPlugins();	
+		//ImageIO.scanForPlugins();	
 		LOGGER.trace("Formats: " +  Arrays.toString(ImageIO.getReaderFormatNames()));
 	}
 	

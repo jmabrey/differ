@@ -22,6 +22,9 @@ import com.vaadin.ui.VerticalLayout;
 import cz.nkp.differ.plugins.DifferPluginInterface;
 import cz.nkp.differ.plugins.compare.io.FileLoader.FileLoadingException;
 import cz.nkp.differ.plugins.compare.io.ImageManipulator.ImageManipulationException;
+import cz.nkp.differ.plugins.compare.io.generators.HashComponentGenerator;
+import cz.nkp.differ.plugins.compare.io.generators.HistogramComponentGenerator;
+import cz.nkp.differ.plugins.tools.DelayedComponentGenerator;
 import cz.nkp.differ.plugins.tools.Java2DImageComponentGenerator;
 import cz.nkp.differ.plugins.tools.ScrollableImagePanel;
 import cz.nkp.differ.plugins.tools.ScrollableImagePanel.ScrollableImagePanelException;
@@ -48,20 +51,22 @@ public class ImageFileAnalysisContainer{
 	
 	private boolean errorFlag = false;
 	private String errorMessage = "Unknown Error";
-	private String title = null;
 	
 	public ImageDatasetProcessor imageProcessor = null;
 	public ImageMetadataProcessor metadataProcessor = null;
 	
-	private boolean synthesizedImage = false;
-	private static boolean hashesEqual = false;
-	private BufferedImage createdImage = null;
+	private boolean isSynthesizedImage = false;
+	private BufferedImage synthesizedImage = null;
+	private boolean hashesEqual = false;
 	
 	private FileLoader fileHandle = null;
 	
+	private String title = "Image";
+	
 	public ImageFileAnalysisContainer(File f, DifferPluginInterface parent){
-			ImageFileAnalysisContainer.parent = parent;
+			ImageFileAnalysisContainer.parent = parent;			
 			
+			title = f.getName();
 			
 			fileHandle = new FileLoader(f);
 			
@@ -69,8 +74,6 @@ public class ImageFileAnalysisContainer{
 				setErrorState(new IOException("File is invalid."));
 				return;
 			}
-			
-			title = f.getName();
 			
 			try {
 				imageProcessor = new ImageDatasetProcessor(fileHandle.getImage());
@@ -82,119 +85,49 @@ public class ImageFileAnalysisContainer{
 			metadataProcessor = new ImageMetadataProcessor(f, fileHandle.getFileType());			
 	}
 	
-	public static ImageFileAnalysisContainer getCombinationContainer(ImageFileAnalysisContainer cont1,ImageFileAnalysisContainer cont2,String[] hashes){
-		ImageFileAnalysisContainer container = new ImageFileAnalysisContainer();
+	public ImageFileAnalysisContainer(ImageFileAnalysisContainer iFAC1, ImageFileAnalysisContainer iFAC2, DifferPluginInterface parent) throws FileLoadingException, NullPointerException{
+		this(iFAC1.getImage(),iFAC2.getImage(),iFAC1.imageProcessor.getImageMD5(),iFAC2.imageProcessor.getImageMD5(),parent);
+	}
+	
+	public ImageFileAnalysisContainer(BufferedImage image1, BufferedImage image2,String hash1, String hash2, DifferPluginInterface parent){
+		ImageFileAnalysisContainer.parent = parent;
+		isSynthesizedImage = true;
 		
-		if(cont1 == null || cont2 == null){
-			throw new NullPointerException("ImageFileAnalysisContainers passed to combination constructor were null");
+		title = "Compare";
+		
+		try {
+			synthesizedImage = ImageManipulator.XORImages(image1, image2);
+		} catch (ImageManipulationException e) {
+			setErrorState(e);
+			return;
 		}
 		
-		if(hashes == null||hashes.length != 2){
-			throw new IllegalArgumentException("Image hashes must not be null and must be given in pairs");
-		}
-		
-		if(hashes[0].equalsIgnoreCase(hashes[1])){
+		if(hash1.equals(hash2)){
 			hashesEqual = true;
 		}
 		
-		try {
-			BufferedImage image1 = cont1.getImage();
-			BufferedImage image2 = cont2.getImage();
-			container = new ImageFileAnalysisContainer(image1,image2);
-		} catch (FileLoadingException e) {
-			container = new ImageFileAnalysisContainer();
-			container.setErrorState(e);
-			return container;
-		}		
-		
-		return container;
-	}
-	
-	private ImageFileAnalysisContainer(BufferedImage combo1, BufferedImage combo2){
-		if(combo1 == null || combo2 == null){
-			setErrorState(new IOException("Cannot create combination image because files are null."));
-			return;
-		}
-		
-		title = "Comparison";
-		
-		try {
-			createdImage = ImageManipulator.XORImages(combo1, combo2);
-			imageProcessor = new ImageDatasetProcessor(createdImage);
-			synthesizedImage = true;
-		} catch (ImageManipulationException e) {
-			setErrorState(e);
-			synthesizedImage = false;
-			return;
-		}
-	}
-	
-	private ImageFileAnalysisContainer(){
-		//Used only for blank error container that never even attempts to load anything
+		imageProcessor = new ImageDatasetProcessor(synthesizedImage);
 	}
 	
 	public BufferedImage getImage() throws FileLoadingException, NullPointerException{	
-		if(!synthesizedImage || createdImage == null){
+		if(!isSynthesizedImage || synthesizedImage == null){
 			return fileHandle.getImage();
 		}
 		else{
-			return createdImage;
+			return synthesizedImage;
 		}
 	}
 	
 	public Component getHash(){
 		Label hashLabel = new Label();
-		String hashValue;
-		
-		if(synthesizedImage){
-			if(hashesEqual){
-				hashValue = "Are Equal";
-			}
-			else{
-				hashValue = "Not Equal";
-			}				
-			hashesEqual = false;
-		}
-		else{
-			hashValue = imageProcessor.getImageMD5();
-		}
-
-		
-		hashLabel.setCaption("Hash: " + hashValue);
-		return hashLabel;
+		HashComponentGenerator generator = new HashComponentGenerator(isSynthesizedImage,hashesEqual,imageProcessor);
+		return DelayedComponentGenerator.handleComponent(hashLabel, generator);
 	}
 	
 	public Component getHistogram(){
-	    JFreeChart histogram = ChartFactory.createXYLineChart(
-	    		"",
-	    		"",
-	    		"",
-	    		imageProcessor.getHistogramDataset(),
-	    		PlotOrientation.VERTICAL,
-	    		false,
-	    		false,
-	    		false
-	    );
-	    
-	    histogram.setBackgroundPaint(Color.WHITE);
-	    
-	    // get a reference to the plot for further customization...
-        XYPlot plot = histogram.getXYPlot();
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setDomainGridlinesVisible(true);  
-        plot.setRangeGridlinesVisible(true);  
-        plot.setRangeGridlinePaint(Color.GRAY);  
-        plot.setDomainGridlinePaint(Color.GRAY); 
-
-	    JFreeChartWrapper chartComponent = new JFreeChartWrapper(histogram,JFreeChartWrapper.RenderingMode.PNG);
-	    
-	    chartComponent.setGraphHeight(COMPONENT_SIZE_SCALE_FACTOR - 25);
-	    chartComponent.setGraphWidth(COMPONENT_SIZE_SCALE_FACTOR - 25);
-	    
-	    chartComponent.setWidth(COMPONENT_SIZE_SCALE_FACTOR - 25, Component.UNITS_PIXELS);
-	    chartComponent.setHeight(COMPONENT_SIZE_SCALE_FACTOR - 25, Component.UNITS_PIXELS);
-	 
-	    return chartComponent;
+		Layout histogram = new VerticalLayout();
+		HistogramComponentGenerator generator = new HistogramComponentGenerator(imageProcessor,COMPONENT_SIZE_SCALE_FACTOR);
+		return DelayedComponentGenerator.handleComponent(histogram, generator);
 	}
 			
 	private Layout getErrorComponent(String message){
@@ -207,13 +140,30 @@ public class ImageFileAnalysisContainer{
 	}
 	
 	public Layout getComponent(){
+		final VerticalLayout layout = new VerticalLayout();
+		
+		/*new Thread(){
+			public void run(){
+				 generateComponent(layout);
+			}
+		}.start();*/
+		
+		generateComponent(layout);
+		
+		return layout;
+	}
+	
+	private void generateComponent(VerticalLayout layout){
+		
+		layout.addComponent(new Label(title));
 		if(errorFlag){
-			return getErrorComponent(errorMessage);
+			layout.addComponent(getErrorComponent(errorMessage));
+			return;
 		}
 		
-		VerticalLayout layout = new VerticalLayout();
 		layout.setMargin(true);
 		layout.setSpacing(true);
+		layout.setImmediate(true);
 		layout.setWidth(COMPONENT_SIZE_SCALE_FACTOR, Component.UNITS_PIXELS);
 		
 		BufferedImage image;
@@ -236,30 +186,34 @@ public class ImageFileAnalysisContainer{
 
 		} catch (FileLoadingException e) {
 			setErrorState(e);
-			return getErrorComponent(errorMessage);
+			layout.addComponent(getErrorComponent(errorMessage));
+			return;
 		} catch (ImageManipulationException e) {
 			setErrorState(e);
-			return getErrorComponent(errorMessage);
+			layout.addComponent(getErrorComponent(errorMessage));
+			return;
 		} catch (ScrollableImagePanelException e) {
 			setErrorState(e);
-			return getErrorComponent(errorMessage);
+			layout.addComponent(getErrorComponent(errorMessage));
+			return;
 		}		
 		
 		layout.addComponent(getHash());
 		layout.addComponent(getHistogram());
-		if(!synthesizedImage){
+		if(!isSynthesizedImage){
 			layout.addComponent(metadataProcessor.getMetadata());
 		}
-		return layout;
 	}
 	
 	private void setErrorState(Exception e){
 		this.errorFlag = true;
 		this.errorMessage = e.getLocalizedMessage();
-		parent.getLogger().debug(e);
+		parent.getLogger().error(e);
 	}
 	
 }
+
+
 
 
 

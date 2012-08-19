@@ -3,9 +3,11 @@ package cz.nkp.differ.plugins.tools;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
@@ -32,7 +34,7 @@ public class Java2DImageComponentGenerator {
 	public Component getImageComponent(){
 		try {
 			File temp = File.createTempFile("image", "." + FILE_EXT);
-			FileOutputStream stream = new FileOutputStream(temp);
+			OutputStream stream = new BufferedOutputStream(new FileOutputStream(temp));
 			
 			/* Write the image to a buffer. */
 			BufferedImage bimage = new BufferedImage(i.getWidth(null), i.getHeight(null), BufferedImage.TYPE_INT_ARGB);

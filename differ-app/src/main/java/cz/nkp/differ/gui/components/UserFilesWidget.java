@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Table;
@@ -75,6 +76,8 @@ public class UserFilesWidget extends CustomComponent{
 		
 		
 		userFilesTable.setSizeUndefined();
+		userFilesTable.setWidth(450,Component.UNITS_PIXELS);
+		userFilesTable.setColumnExpandRatio("filename", 1.0f);
 		userFilesTable.setPageLength(10);
 
 		refreshFilesFromFileSystem();

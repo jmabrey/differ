@@ -41,15 +41,15 @@ public class ImageMetadataProcessor {
 		String javaHome = System.getProperty("java.home");
 		String jhoveAppLoc = System.getProperty("jhove.app.location");
 		
-		String jhoveHome =  System.getProperty("user.home") + "/.differ/resources/jhove";
+		String jhoveHome =  System.getProperty("user.home") + File.separator + ".differ" + File.separator + "resources" + File.separator + "jhove";
 		
 		if(jhoveAppLoc == null){
-			jhoveAppLoc = jhoveHome + "/JhoveApp.jar"; 
+			jhoveAppLoc = jhoveHome + File.separator + "JhoveApp.jar"; 
 		}
 		
 		String jhoveConfLoc = System.getProperty("jhove.conf.location");
 		if(jhoveConfLoc == null){
-			jhoveConfLoc = jhoveHome +  "/jhove.conf"; 
+			jhoveConfLoc = jhoveHome + File.separator + "jhove.conf"; 
 		}
 		
 		CommandHelper.CommandInfo info = new CommandHelper.CommandInfo();
@@ -81,18 +81,18 @@ public class ImageMetadataProcessor {
 		
 		
 		
-		String kduHome =  System.getProperty("user.home") + "/.differ/resources/kdu";
+		String kduHome =  System.getProperty("user.home") + File.separator + ".differ" + File.separator + "resources" + File.separator + "kdu";
 		
 		//Determine OS
 		String os_name = System.getProperty("os.name").toLowerCase();
 		String kdu_binary_name;
 		
 		if(os_name.indexOf("nix") >= 0 || os_name.indexOf("nux") >= 0){
-			kduHome += "/linux";
+			kduHome += File.separator + "linux";
 			kdu_binary_name = "kdu_expand";
 		}
 		else if(os_name.indexOf("win") >= 0){
-			kduHome += "/windows";
+			kduHome += File.separator + "windows";
 			kdu_binary_name = "kdu_expand";
 		}
 		else{
@@ -136,9 +136,7 @@ public class ImageMetadataProcessor {
 			return new Label("Unable to generate metadata");
 		}		
 		
-		VerticalLayout layout = new VerticalLayout();
-		
-		
+		VerticalLayout layout = new VerticalLayout();		
 		
 		String[] jhoveTags = new String[]{"status","format"};
 		

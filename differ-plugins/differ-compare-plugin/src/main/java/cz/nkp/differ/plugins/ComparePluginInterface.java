@@ -9,6 +9,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
 
+import cz.nkp.differ.plugins.compare.io.FileLoader.FileLoadingException;
 import cz.nkp.differ.plugins.compare.io.ImageFileAnalysisContainer;
 import cz.nkp.differ.plugins.tools.PluginPollingThread;
 
@@ -74,13 +75,17 @@ public class ComparePluginInterface implements DifferPluginInterface{
 		
 		c.setCompleted(70);
 		
-		String[] hashes = {
-			iFAC1.imageProcessor.getImageMD5(),	
-			iFAC2.imageProcessor.getImageMD5()
-		};
-		
-		ImageFileAnalysisContainer iFAC3 = ImageFileAnalysisContainer.getCombinationContainer(iFAC1, iFAC2,hashes);
-		layout.addComponent(iFAC3.getComponent());
+		ImageFileAnalysisContainer iFAC3;
+		try {
+			iFAC3 = new ImageFileAnalysisContainer(iFAC1,iFAC2,this);
+			layout.addComponent(iFAC3.getComponent());
+		} catch (FileLoadingException e) {
+			LOGGER.error(e);
+			return layout;
+		} catch (NullPointerException e) {
+			LOGGER.error(e);
+			return layout;
+		}
 		
 		c.setCompleted(100);
 		return layout;
