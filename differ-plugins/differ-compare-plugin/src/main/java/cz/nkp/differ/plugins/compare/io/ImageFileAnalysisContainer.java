@@ -35,7 +35,7 @@ public class ImageFileAnalysisContainer{
 	*/
 	static
 	{
-		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		com.lizardtech.djvu.DjVuOptions.out =
 				com.lizardtech.djvu.DjVuOptions.err =
 					new PrintStream(new OutputStream(){public void write(int c){}});
