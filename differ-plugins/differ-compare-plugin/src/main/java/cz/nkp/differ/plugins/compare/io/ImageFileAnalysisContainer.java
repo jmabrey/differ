@@ -35,7 +35,7 @@ public class ImageFileAnalysisContainer{
 	*/
 	static
 	{
-		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+		//System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		com.lizardtech.djvu.DjVuOptions.out =
 				com.lizardtech.djvu.DjVuOptions.err =
 					new PrintStream(new OutputStream(){public void write(int c){}});
@@ -45,7 +45,7 @@ public class ImageFileAnalysisContainer{
 
 	private static DifferPluginInterface parent;
 			
-	private static final int COMPONENT_SIZE_SCALE_FACTOR = 300;
+	private static final int COMPONENT_SIZE_SCALE_FACTOR = 400;
 	
 	private boolean errorFlag = false;
 	private String errorMessage = "Unknown Error";
@@ -260,8 +260,7 @@ public class ImageFileAnalysisContainer{
 	private void setErrorState(Exception e){
 		this.errorFlag = true;
 		this.errorMessage = e.getLocalizedMessage();
-		parent.getLogger().warn(e);
-		e.printStackTrace();
+		parent.getLogger().debug(e);
 	}
 	
 }

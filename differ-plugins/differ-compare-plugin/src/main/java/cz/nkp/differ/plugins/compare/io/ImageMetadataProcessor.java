@@ -14,7 +14,6 @@ import com.vaadin.ui.VerticalLayout;
 import cz.nkp.differ.plugins.ComparePluginInterface;
 import cz.nkp.differ.plugins.compare.io.FileLoader.FileType;
 import cz.nkp.differ.plugins.tools.CommandHelper;
-import cz.nkp.differ.plugins.tools.CommandHelper.CommandMessageCallback;
 
 public class ImageMetadataProcessor {
 	private static Logger LOGGER = ComparePluginInterface.LOGGER;
@@ -22,33 +21,14 @@ public class ImageMetadataProcessor {
 	private File file = null;
 	private FileLoader.FileType fileType = FileLoader.FileType.OTHER;
 	
-	private Label jhoveLabel,kduLabel;
+	private Label kduLabel;
 	
 	public ImageMetadataProcessor(File file, FileLoader.FileType type){
 		this.file = file;
 		this.fileType = type;
 		
-		jhoveLabel = new Label("JHOVE: Generating...");
 		kduLabel = new Label("KDU: Generating...");
 	}
-	
-	private static class labelCaptionCallback extends CommandMessageCallback{
-
-		private Label l;
-		
-		public labelCaptionCallback(Label l){
-			this.l = l;
-		}
-		
-		@Override
-		public void messageGenerated(String message) {
-			if(l != null){
-				l.setValue(message);
-			}
-			
-		}
-		
-	};
 	
 	private static CommandHelper.CommandInfo getJHoveCommand(File imageFile) throws IOException{
 		//jhove.app.location //home//xrosecky//jhove//bin//JhoveApp.jar
@@ -60,11 +40,16 @@ public class ImageMetadataProcessor {
 		
 		String javaHome = System.getProperty("java.home");
 		String jhoveAppLoc = System.getProperty("jhove.app.location");
-		String jhoveConfLoc = System.getProperty("jhove.conf.location");
 		
-		if(javaHome == null || jhoveAppLoc == null || jhoveConfLoc == null){
-			throw new IOException("Unable to form Jhove command for metadata extraction." +
-					" Make sure that jhove.app.location and jhove.conf.location are set correctly");
+		String jhoveHome =  System.getProperty("user.home") + "/.differ/resources/jhove";
+		
+		if(jhoveAppLoc == null){
+			jhoveAppLoc = jhoveHome + "/JhoveApp.jar"; 
+		}
+		
+		String jhoveConfLoc = System.getProperty("jhove.conf.location");
+		if(jhoveConfLoc == null){
+			jhoveConfLoc = jhoveHome +  "/jhove.conf"; 
 		}
 		
 		CommandHelper.CommandInfo info = new CommandHelper.CommandInfo();
@@ -76,7 +61,7 @@ public class ImageMetadataProcessor {
 		commands.add(jhoveAppLoc);
 		commands.add("-h");
 		commands.add("xml");
-		commands.add("'" + imageFile.getCanonicalPath() + "'");
+		commands.add(imageFile.getCanonicalPath());
 		commands.add("-c");
 		commands.add(jhoveConfLoc);
 		
@@ -94,23 +79,44 @@ public class ImageMetadataProcessor {
 			throw new IOException("Either the image file is null or non-existant!");
 		}
 		
+		
+		
+		String kduHome =  System.getProperty("user.home") + "/.differ/resources/kdu";
+		
+		//Determine OS
+		String os_name = System.getProperty("os.name");
+		String kdu_binary_name;
+		
+		if(os_name.toLowerCase().endsWith("nix")){
+			kduHome += "/linux";
+			kdu_binary_name = "kdu_expand";
+		}
+		else if(os_name.toLowerCase().startsWith("win")){
+			kduHome += "/windows";
+			kdu_binary_name = "kdu_expand";
+		}
+		else{
+			throw new IOException("Cannot determine OS type for kdu_expand command");
+		}
+		
+		
+		
 		String kduAppLoc = System.getProperty("kdu_expand.app.location");
 		
 		if(kduAppLoc == null){
-			throw new IOException("Unable to form kdu_expand command for metadata extraction." +
-					" Make sure that kduExpand.app.location is set correctly");
+			kduAppLoc = kduHome;
 		}
 		
 		CommandHelper.CommandInfo info = new CommandHelper.CommandInfo();
 		
 		ArrayList<String> commands = new ArrayList<String>();
 		
-		commands.add("kdu_expand");
+		commands.add(kdu_binary_name);
 		commands.add("-record");
 		commands.add("-quiet");
 		commands.add("/dev/stdout");
 		commands.add("-i");
-		commands.add("'" + imageFile.getCanonicalPath() + "'");
+		commands.add(imageFile.getCanonicalPath());
 		
 		info.workingDir = kduAppLoc;
 		info.commands = commands.toArray(new String[0]);
@@ -126,21 +132,31 @@ public class ImageMetadataProcessor {
 			kduExpand = getKDUCommand(file);
 			jhove = getJHoveCommand(file);
 		} catch (IOException e) {
-			LOGGER.error("Unable to generate metadata", e);
+			LOGGER.error("Unable to generate metadata commands", e);
 			return new Label("Unable to generate metadata");
 		}		
 		
 		VerticalLayout layout = new VerticalLayout();
 		
-		CommandHelper jhoveCommand = new CommandHelper("JHOVE",jhove,new labelCaptionCallback(jhoveLabel),LOGGER);		
-		jhoveCommand.start();			
-		layout.addComponent(jhoveLabel);		
+		
+		
+		String[] jhoveTags = new String[]{"status","format"};
 		
 		if(fileType == FileType.JPEG2000){
+			jhoveTags = new String[]{"status","format","size","mimeType","mix:compressionScheme","mix:imageWidth","mix:imageHeight","mix:bitsPerSampleValue","mix:samplesPerPixel"};
+		}
+		
+		
+		XmlTableCallback jhoveCallback = new XmlTableCallback(LOGGER,jhoveTags);
+		CommandHelper jhoveCommand = new CommandHelper("JHOVE",jhove, jhoveCallback,LOGGER);	
+		layout.addComponent(jhoveCallback.getTable());
+		jhoveCommand.start();			
+		
+		/*if(fileType == FileType.JPEG2000){
 			CommandHelper kduCommand = new CommandHelper("KDU",kduExpand,new labelCaptionCallback(kduLabel), LOGGER);
 			kduCommand.start();
 			layout.addComponent(kduLabel);	
-		}
+		}*/
 		
 		return layout;
 	}
